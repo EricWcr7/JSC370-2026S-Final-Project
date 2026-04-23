@@ -1,0 +1,33 @@
+---
+title: "Interactive Visualizations"
+---
+
+Three interactive visualizations from HW5. Each has a caption and a short written summary.
+
+## Figure 1 — _TBD (e.g., interactive map)_
+
+_Placeholder — embed plotly figure here._
+
+**Caption.** _TBD._
+
+**Summary.** _One short paragraph describing what the figure shows and the key takeaway._
+
+---
+
+## Figure 2 — _TBD (e.g., interactive histogram)_
+
+_Placeholder — embed plotly figure here._
+
+**Caption.** _TBD._
+
+**Summary.** _One short paragraph describing what the figure shows and the key takeaway._
+
+---
+
+## Figure 3 — _TBD (e.g., interactive boxplot)_
+
+_Placeholder — embed plotly figure here._
+
+**Caption.** _TBD._
+
+**Summary.** _One short paragraph describing what the figure shows and the key takeaway._

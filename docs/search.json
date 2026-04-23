@@ -1,0 +1,142 @@
+[
+  {
+    "objectID": "viz.html",
+    "href": "viz.html",
+    "title": "Interactive Visualizations",
+    "section": "",
+    "text": "Three interactive visualizations from HW5. Each has a caption and a short written summary."
+  },
+  {
+    "objectID": "viz.html#figure-1-tbd-e.g.-interactive-map",
+    "href": "viz.html#figure-1-tbd-e.g.-interactive-map",
+    "title": "Interactive Visualizations",
+    "section": "Figure 1 — TBD (e.g., interactive map)",
+    "text": "Figure 1 — TBD (e.g., interactive map)\nPlaceholder — embed plotly figure here.\nCaption. TBD.\nSummary. One short paragraph describing what the figure shows and the key takeaway."
+  },
+  {
+    "objectID": "viz.html#figure-2-tbd-e.g.-interactive-histogram",
+    "href": "viz.html#figure-2-tbd-e.g.-interactive-histogram",
+    "title": "Interactive Visualizations",
+    "section": "Figure 2 — TBD (e.g., interactive histogram)",
+    "text": "Figure 2 — TBD (e.g., interactive histogram)\nPlaceholder — embed plotly figure here.\nCaption. TBD.\nSummary. One short paragraph describing what the figure shows and the key takeaway."
+  },
+  {
+    "objectID": "viz.html#figure-3-tbd-e.g.-interactive-boxplot",
+    "href": "viz.html#figure-3-tbd-e.g.-interactive-boxplot",
+    "title": "Interactive Visualizations",
+    "section": "Figure 3 — TBD (e.g., interactive boxplot)",
+    "text": "Figure 3 — TBD (e.g., interactive boxplot)\nPlaceholder — embed plotly figure here.\nCaption. TBD.\nSummary. One short paragraph describing what the figure shows and the key takeaway."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Short description of the project’s motivation and what the site contains. Fill in later."
+  },
+  {
+    "objectID": "about.html#about-this-project",
+    "href": "about.html#about-this-project",
+    "title": "About",
+    "section": "",
+    "text": "Short description of the project’s motivation and what the site contains. Fill in later."
+  },
+  {
+    "objectID": "about.html#author",
+    "href": "about.html#author",
+    "title": "About",
+    "section": "Author",
+    "text": "Author\n\nName: TBD\nCourse: JSC370 – Data Science II (Winter 2026)\nInstitution: University of Toronto"
+  },
+  {
+    "objectID": "about.html#data-sources",
+    "href": "about.html#data-sources",
+    "title": "About",
+    "section": "Data sources",
+    "text": "Data sources\n\nTBD — dataset name, provider, URL, access date.\nTBD — API docs (if scraping / querying an API)."
+  },
+  {
+    "objectID": "about.html#tools-used",
+    "href": "about.html#tools-used",
+    "title": "About",
+    "section": "Tools used",
+    "text": "Tools used\n\nQuarto (website + report rendering)\nPython (data wrangling, modeling, visualization)\nplotly (interactive visualizations)"
+  },
+  {
+    "objectID": "about.html#acknowledgements",
+    "href": "about.html#acknowledgements",
+    "title": "About",
+    "section": "Acknowledgements",
+    "text": "Acknowledgements\nTBD — course staff, data providers, collaborators."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "JSC370 Final Project",
+    "section": "",
+    "text": "One-paragraph summary of the project: the topic, the dataset, and the research question. Fill in later."
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "JSC370 Final Project",
+    "section": "",
+    "text": "One-paragraph summary of the project: the topic, the dataset, and the research question. Fill in later."
+  },
+  {
+    "objectID": "index.html#project-at-a-glance",
+    "href": "index.html#project-at-a-glance",
+    "title": "JSC370 Final Project",
+    "section": "Project at a glance",
+    "text": "Project at a glance\n\nQuestion: TBD — the main question(s) the project answers.\nData: TBD — source, size, time range.\nMethods: TBD — EDA + course-covered modeling method (XGBoost / RF / GAM / LDA).\nKey finding: TBD — one-sentence takeaway."
+  },
+  {
+    "objectID": "index.html#navigate-the-site",
+    "href": "index.html#navigate-the-site",
+    "title": "JSC370 Final Project",
+    "section": "Navigate the site",
+    "text": "Navigate the site\n\nAbout the project\nRead the full report\nInteractive visualizations"
+  },
+  {
+    "objectID": "index.html#downloads-links",
+    "href": "index.html#downloads-links",
+    "title": "JSC370 Final Project",
+    "section": "Downloads & links",
+    "text": "Downloads & links\n\nDownload the PDF report\nGitHub repository"
+  },
+  {
+    "objectID": "report.html",
+    "href": "report.html",
+    "title": "Final Report",
+    "section": "",
+    "text": "The rendered PDF is available for download: report.pdf"
+  },
+  {
+    "objectID": "report.html#introduction",
+    "href": "report.html#introduction",
+    "title": "Final Report",
+    "section": "1. Introduction",
+    "text": "1. Introduction\nBackground on the topic and data. State the research question(s) / hypothesis(es). Narrative of the topic and why it matters."
+  },
+  {
+    "objectID": "report.html#methods",
+    "href": "report.html#methods",
+    "title": "Final Report",
+    "section": "2. Methods",
+    "text": "2. Methods\n\n2.1 Data source\nTBD — where the data came from, how it was obtained, the time window, the size of the dataset.\n\n\n2.2 Data cleaning and wrangling\nTBD — missing values, type conversions, derived variables, filtering rules.\n\n\n2.3 Exploratory tools\nTBD — summary statistics, static plots, interactive plots (see the Interactive Viz page).\n\n\n2.4 Modeling\nTBD — chosen course-covered method (XGBoost / Random Forest / GAM / LDA). Feature engineering. Train/validation/test split. Hyperparameters. Metrics reported (R², RMSE, MAE, ROC/AUC, …)."
+  },
+  {
+    "objectID": "report.html#results",
+    "href": "report.html#results",
+    "title": "Final Report",
+    "section": "3. Results",
+    "text": "3. Results\nTBD — publication-ready, numbered, captioned tables and figures. Reference the website for interactive versions.\nFigure 1. Caption placeholder.\nTable 1. Caption placeholder."
+  },
+  {
+    "objectID": "report.html#conclusions-and-summary",
+    "href": "report.html#conclusions-and-summary",
+    "title": "Final Report",
+    "section": "4. Conclusions and Summary",
+    "text": "4. Conclusions and Summary\nTBD — interpret findings in the bigger picture, connect back to the research question, state limitations and possible extensions."
+  }
+]

@@ -1,0 +1,46 @@
+---
+title: "Final Report"
+format:
+  html:
+    toc: true
+    code-fold: true
+  pdf:
+    output-file: "report"
+    toc: true
+---
+
+> The rendered PDF is available for download: [report.pdf](report.pdf)
+
+## 1. Introduction
+
+_Background on the topic and data. State the research question(s) / hypothesis(es). Narrative of the topic and why it matters._
+
+## 2. Methods
+
+### 2.1 Data source
+
+_TBD — where the data came from, how it was obtained, the time window, the size of the dataset._
+
+### 2.2 Data cleaning and wrangling
+
+_TBD — missing values, type conversions, derived variables, filtering rules._
+
+### 2.3 Exploratory tools
+
+_TBD — summary statistics, static plots, interactive plots (see the [Interactive Viz](viz.qmd) page)._
+
+### 2.4 Modeling
+
+_TBD — chosen course-covered method (XGBoost / Random Forest / GAM / LDA). Feature engineering. Train/validation/test split. Hyperparameters. Metrics reported (R², RMSE, MAE, ROC/AUC, …)._
+
+## 3. Results
+
+_TBD — publication-ready, numbered, captioned tables and figures. Reference the website for interactive versions._
+
+**Figure 1.** _Caption placeholder._
+
+**Table 1.** _Caption placeholder._
+
+## 4. Conclusions and Summary
+
+_TBD — interpret findings in the bigger picture, connect back to the research question, state limitations and possible extensions._

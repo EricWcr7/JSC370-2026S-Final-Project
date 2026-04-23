@@ -1,0 +1,16 @@
+/* Project-wide tweaks on top of the cosmo theme. */
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+main img,
+main figure {
+  max-width: 100%;
+}
+
+blockquote {
+  border-left: 4px solid #dee2e6;
+  padding: 0.25rem 0.75rem;
+  color: #495057;
+}
