@@ -1,0 +1,26 @@
+---
+title: "JSC370 Final Project"
+description: "Project summary, links, and interactive visualizations."
+---
+
+## Overview
+
+_One-paragraph summary of the project: the topic, the dataset, and the research question. Fill in later._
+
+## Project at a glance
+
+- **Question:** _TBD — the main question(s) the project answers._
+- **Data:** _TBD — source, size, time range._
+- **Methods:** _TBD — EDA + course-covered modeling method (XGBoost / RF / GAM / LDA)._
+- **Key finding:** _TBD — one-sentence takeaway._
+
+## Navigate the site
+
+- [About the project](about.qmd)
+- [Read the full report](report.qmd)
+- [Interactive visualizations](viz.qmd)
+
+## Downloads & links
+
+- [Download the PDF report](report.pdf)
+- [GitHub repository](https://github.com/EricWcr7/JSC370-2026S-Final-Project)

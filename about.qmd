@@ -1,0 +1,28 @@
+---
+title: "About"
+---
+
+## About this project
+
+_Short description of the project's motivation and what the site contains. Fill in later._
+
+## Author
+
+- **Name:** _TBD_
+- **Course:** JSC370 – Data Science II (Winter 2026)
+- **Institution:** University of Toronto
+
+## Data sources
+
+- _TBD — dataset name, provider, URL, access date._
+- _TBD — API docs (if scraping / querying an API)._
+
+## Tools used
+
+- Quarto (website + report rendering)
+- Python (data wrangling, modeling, visualization)
+- plotly (interactive visualizations)
+
+## Acknowledgements
+
+_TBD — course staff, data providers, collaborators._

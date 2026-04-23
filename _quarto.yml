@@ -1,0 +1,33 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "index.qmd"
+    - "about.qmd"
+    - "report.qmd"
+    - "viz.qmd"
+
+website:
+  title: "JSC370 Final Project"
+  navbar:
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "About"
+        href: about.qmd
+      - text: "Report"
+        href: report.qmd
+      - text: "Interactive Viz"
+        href: viz.qmd
+    right:
+      - icon: github
+        href: https://github.com/EricWcr7/JSC370-2026S-Final-Project
+        target: _blank
+  page-footer:
+    center: "JSC370 2026S Final Project"
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
