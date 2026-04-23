@@ -107,9 +107,9 @@
   {
     "objectID": "report.html",
     "href": "report.html",
-    "title": "Final Report",
+    "title": "JSC370 2026: Final Project Report",
     "section": "",
-    "text": "The rendered PDF is available for download: report.pdf"
+    "text": "Climate change is one of the major global challenges and is largely driven by carbon dioxide emissions from human activities. However, carbon dioxide emissions are not evenly distributed across countries. Notably, the differences in carbon dioxide emissions per-capita are closely related to variations in energy systems, economic structures, and levels of development in terms of GDP. Understanding these differences is important for designing effective climate and energy policies.\nThis project examines the following research question:\nHow have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?\nTo address this research question, this analysis uses data form 1990 to 2023 from the World Bank Open Data API, which provides a comprehensive set of development indicators covering economic, energy, and land-use factors. The dataset includes carbon dioxide emissions per capita (metric tons), GDP per capita (constant 2015 US dollars), renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and the share of population living in urban areas. Furthermore, the year of observation is included as a key temporal indicator to account for global trends and technological shifts over time.\nThis analysis combines interpretable statistical models and machine learning methods to both explain and predict carbon dioxide emissions. Baseline models from the midterm, Linear Regression (OLS) and Generalized Additive Model (GAM), are estimated again and used as benchmarks. These are compared against tree-based machine learning models, such as Random Forest and XGBoost, which are designed to capture nonlinear relationships and interactions. Model performance is evaluated using a train, validation, and test framework and standard predictive metrics. In addition, variable importance measures are used to identify the most influential predictors and to compare findings across models."
   },
   {
     "objectID": "report.html#introduction",
@@ -138,5 +138,33 @@
     "title": "Final Report",
     "section": "4. Conclusions and Summary",
     "text": "4. Conclusions and Summary\nTBD — interpret findings in the bigger picture, connect back to the research question, state limitations and possible extensions."
+  },
+  {
+    "objectID": "report.html#data-source",
+    "href": "report.html#data-source",
+    "title": "JSC370 2026: Final Project Report",
+    "section": "2.1 Data source",
+    "text": "2.1 Data source\nTBD — where the data came from, how it was obtained, the time window, the size of the dataset."
+  },
+  {
+    "objectID": "report.html#data-cleaning-and-wrangling",
+    "href": "report.html#data-cleaning-and-wrangling",
+    "title": "JSC370 2026: Final Project Report",
+    "section": "2.2 Data cleaning and wrangling",
+    "text": "2.2 Data cleaning and wrangling\nTBD — missing values, type conversions, derived variables, filtering rules."
+  },
+  {
+    "objectID": "report.html#exploratory-tools",
+    "href": "report.html#exploratory-tools",
+    "title": "JSC370 2026: Final Project Report",
+    "section": "2.3 Exploratory tools",
+    "text": "2.3 Exploratory tools\nTBD — summary statistics, static plots, interactive plots (see the Interactive Viz page)."
+  },
+  {
+    "objectID": "report.html#modeling",
+    "href": "report.html#modeling",
+    "title": "JSC370 2026: Final Project Report",
+    "section": "2.4 Modeling",
+    "text": "2.4 Modeling\nTBD — chosen course-covered method (XGBoost / Random Forest / GAM / LDA). Feature engineering. Train/validation/test split. Hyperparameters. Metrics reported (R², RMSE, MAE, ROC/AUC, …)."
   }
 ]
