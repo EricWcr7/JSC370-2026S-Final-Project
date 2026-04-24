@@ -17,8 +17,6 @@ execute:
 ```{python}
 #| label: environment-setup
 #| output: false
-#| code-fold: true
-#| code-summary: "Package Imports"
 #| warning: false
 #| message: false
 
@@ -41,19 +39,25 @@ warnings.filterwarnings("ignore")
 
 # 1. Introduction
 
-Climate change is one of the major global challenges and is largely driven by carbon dioxide emissions from human activities. However, carbon dioxide emissions are not evenly distributed across countries. Notably, the differences in carbon dioxide emissions per-capita are closely related to variations in energy systems, economic structures, and levels of development in terms of GDP. Understanding these differences is important for designing effective climate and energy policies.
+Climate change is one of the major global challenges and is largely driven by carbon dioxide emissions from human activities. However, these emissions are not evenly distributed across countries. Countries at different stages of economic development rely on different energy sources, follow different urbanization trends, and face different land use pressures, all of which leave distinct imprints on their carbon dioxide emissions per capita. International climate commitments such as the Paris Agreement have also pushed many economies to decouple growth from carbon dioxide emissions, but the pace of that transition varies across countries. Therefore, understanding the factors that drive these country-level differences is important for designing effective climate and energy policies.
 
 This project examines the following research question: 
 
 **How have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?**
 
-To address this research question, this analysis uses data form 1990 to 2023 from the World Bank Open Data API, which provides a comprehensive set of development indicators covering economic, energy, and land-use factors. The dataset includes carbon dioxide emissions per capita (metric tons), GDP per capita (constant 2015 US dollars), renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and the share of population living in urban areas. Furthermore, the year of observation is included as a key temporal indicator to account for global trends and technological shifts over time.
+Based on the midterm report analysis, this report hypothesizes that carbon dioxide emissions per capita increase with increases in GDP per capita and urban population share, decrease with increases in renewable energy share, and follow a non-monotonic trajectory with an overall slight net decline.
 
-This analysis combines interpretable statistical models and machine learning methods to both explain and predict carbon dioxide emissions. Baseline models from the midterm, Linear Regression (OLS) and Generalized Additive Model (GAM), are estimated again and used as benchmarks. These are compared against tree-based machine learning models, such as Random Forest and XGBoost, which are designed to capture nonlinear relationships and interactions. Model performance is evaluated using a train, validation, and test framework and standard predictive metrics. In addition, variable importance measures are used to identify the most influential predictors and to compare findings across models.
+To address this research question, this analysis uses data from 1990 to 2023 from the World Bank Open Data API, which provides a comprehensive set of development indicators covering economic, energy, and land use factors. The dataset includes carbon dioxide emissions per capita (metric tons), GDP per capita (constant 2015 US dollars), renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and the share of population living in urban areas. Furthermore, the year of observation is included as a key temporal indicator to account for global trends and technology and policy shifts over time.
+
+This analysis combines interpretable statistical models and machine learning methods to both explain and predict carbon dioxide emissions per capita. The midterm report found strong evidence of non-linearities in the relationships between carbon dioxide emissions per capita and its predictors. Therefore, this report adds a tree-based machine learning model, which is designed to capture nonlinear relationships and interactions, and evaluates its predictive performance on test data and reports variable importance to identify the key predictors of cross-country differences.
 
 # 2. Methods
 
+## 2.1 Data Source and Acquisition
+
 The data for this project were obtained from World Bank Open Data platform through the World Bank Open Data API. The API provides access to the World Development Indicators (WDI) database, which contains standardized economic, energy, and land-use indicators for all countries and regions around the world. The analysis focuses on the period from 1990 to 2023, which ensures sufficient data availability for most countries. Several relevant indicators were retrieved from the API by a loop, including carbon dioxide emissions per capita, GDP per capita, renewable energy share, fossil-fuel electricity share, forest area as a percentage of total land area, and the share of the population living in urban areas. The API responses were in JSON format and converted into `pandas` DataFrames for further analysis by using the `requests` library in Python. All data were retrieved programmatically through the API to ensure reproducibility of the data acquisition process.
+
+## 2.2 Data Cleaning and Wrangling
 
 After retrieving the indicators from the API, several steps were taken to prepare the data for analysis. The raw API responses contain individual datasets for each indicator, so the first step was to organize these datasets into a consistent structure. The goal was to construct a dataset in which each row represents a country–year observation and each column represents a variable.
 
@@ -65,13 +69,23 @@ To facilitate the analysis, the long dataset was reshaped into a wide country-ye
 
 For the main analysis, missing values were handled at the row level by dropping observations with missing values in the core analysis variables, while keeping all other available observations in the dataset until modelling. This approach keeps the missing value treatment transparent and avoids introducing additional assumptions through imputation.
 
+## 2.3 Exploratory Data Analysis
+
 EDA was conducted to examine the structure of the dataset and to identify patterns related to the research question. First, descriptive statistics were computed for all numerical variables included in the dataset. Counts, means, medians, standard deviation, minimum & maximum values, and percentiles were calculated to summarize the distribution of each numerical variable and not including country codes and names. These measures provide an overview of the variables' distributions, which can help identify potential extreme values or outliers.
 
 Visual exploration was then performed to examine patterns in the data. Several graphical methods were used to explore relationships between variables and to identify potential trends. Line plots were used to examine how carbon dioxide emissions per capita change over time. Histograms were used to inspect the distribution of individual variables and to identify skewness or potential outliers. Scatter plots were used to examine the relationship between carbon dioxide emissions per capita and explanatory variables. Box plots with the implementation of quantile binning were used to examine and confirm the relationship between carbon dioxide emissions per capita and explanatory variables that were identified in the scatter plots. So is the correlation matrix to examine the correlation between all the variables.
 
 ## 2.4 Modeling
 
-_TBD — chosen course-covered method (XGBoost / Random Forest / GAM / LDA). Feature engineering. Train/validation/test split. Hyperparameters. Metrics reported (R², RMSE, MAE, ROC/AUC, …)._
+### 2.4.1 Train / validation / test split
+
+### 2.4.2 Baseline Model — Generalized Additive Model (GAM)
+
+### 2.4.3 Tree-based Machine Learning model — XGBoost
+
+### 2.4.4 Variable importance
+
+### 2.4.5 Model Evaluation Metrics
 
 # 3. Results
 
