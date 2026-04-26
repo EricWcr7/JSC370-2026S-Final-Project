@@ -1,0 +1,56 @@
+/*-- scss:defaults --*/
+
+// JSC370 Final Project — editorial warm palette mapped onto Bootstrap.
+// Loaded after cosmo so we override only what we need.
+
+$ink:         #1a1a1a;
+$ink-soft:    #4a4a4a;
+$ink-muted:   #767168;
+$paper:       #fafaf7;
+$surface:     #ffffff;
+$surface-warm:#f5f3ed;
+$rule:        #e5e3dc;
+$rule-strong: #cfccc1;
+$accent:      #c44e2e;
+$accent-hover:#a83f23;
+$accent-soft: #f4d9c8;
+$accent-tint: #fbeee5;
+$cool:        #2c5f6f;
+
+// Bootstrap variable overrides
+$body-bg:     $paper;
+$body-color:  $ink;
+$primary:     $accent;
+$secondary:   $cool;
+$link-color:  $accent;
+$link-hover-color: $accent-hover;
+$border-color: $rule;
+$component-active-bg: $accent;
+
+// Typography stack — Inter (UI/body) + Source Serif 4 (display/headings)
+$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-serif:      "Source Serif 4", Georgia, "Times New Roman", serif;
+$headings-font-family:   $font-family-serif;
+$headings-font-weight:   600;
+$headings-color:         $ink;
+$headings-line-height:   1.2;
+
+// Navbar tweaks
+$navbar-light-color:              $ink-soft;
+$navbar-light-hover-color:        $accent;
+$navbar-light-active-color:       $ink;
+$navbar-light-brand-color:        $ink;
+$navbar-light-brand-hover-color:  $accent;
+
+// Code
+$code-color: $accent-hover;
+$pre-bg:     $surface-warm;
+
+/*-- scss:rules --*/
+// Nothing structural here — heavy lifting lives in styles.css.
+// We only re-assert a couple of Bootstrap pieces that don't pick up the var swap cleanly.
+
+.navbar-light {
+  background-color: $paper !important;
+  border-bottom: 1px solid $rule;
+}

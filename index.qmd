@@ -1,26 +1,163 @@
 ---
-title: "JSC370 Final Project"
-description: "Project summary, links, and interactive visualizations."
+pagetitle: "JSC370 Final Project — Carbon Dioxide Emissions per Capita, 1990–2023"
+title: ""
+toc: false
+page-layout: full
+include-in-header:
+  text: |
+    <style>
+      body { /* tag the home page so the global CSS can scope hero overrides */ }
+    </style>
+include-after-body:
+  text: |
+    <script>document.body.classList.add('home-page');</script>
 ---
 
-## Overview
+```{=html}
+<section class="hero">
+  <span class="eyebrow">JSC370 · Winter 2026 · University of Toronto</span>
+  <h1>Carbon Dioxide Emissions per Capita, 1990&ndash;2023</h1>
+  <p class="lede">How economic, energy, and land-use factors explain cross-country differences.</p>
+  <p class="byline"><strong>Yi Fan (Eric) Wang</strong> &nbsp;·&nbsp; April 26, 2026</p>
+  <div class="cta-row">
+    <a class="btn-primary" href="report.html">Read the Report <span class="arrow">→</span></a>
+    <a class="btn-secondary" href="viz.html">Explore Interactive Visuals</a>
+    <a class="btn-ghost" href="report.pdf">Download PDF <span class="arrow down">↓</span></a>
+  </div>
+</section>
 
-_One-paragraph summary of the project: the topic, the dataset, and the research question. Fill in later._
+<section class="section section-bleed">
+  <div class="section-inner">
+    <span class="section-label">At a glance</span>
+    <div class="stat-strip">
+      <div class="stat-card">
+        <span class="stat-num">~7,400</span>
+        <span class="stat-label">Country–year observations</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">6</span>
+        <span class="stat-label">World Bank indicators</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">XGBoost</span>
+        <span class="stat-label">Final best model</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">GDP / capita</span>
+        <span class="stat-label">Strongest predictor</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-## Project at a glance
+<section class="section">
+  <span class="section-label">The story</span>
+  <div class="section-prose">
+    <p>Climate change is one of the major global challenges, and it is largely driven by carbon dioxide emissions from human activities. Those emissions are not evenly distributed across countries: countries at different stages of economic development rely on different energy sources, follow different urbanization paths, and face different land-use pressures, all of which leave distinct imprints on per-capita emissions.</p>
+    <p>This project uses a <strong>34-year panel of every country</strong> reporting to the World Bank to map how those imprints have evolved &mdash; and to ask which factors actually drive cross-country differences once everything else is held equal.</p>
+  </div>
+  <aside class="callout-question">
+    <span class="label">Research question</span>
+    <p>How have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?</p>
+  </aside>
+  <div class="section-prose">
+    <p>This report extends the midterm analysis with more flexible, tree-based methods &mdash; a pruned <strong>Decision Tree</strong> as an interpretable baseline and a tuned <strong>XGBoost Regressor</strong> as the flexible predictor &mdash; that capture the nonlinearities and interactions hinted at by the midterm's OLS and GAM.</p>
+  </div>
+</section>
 
-- **Question:** _TBD — the main question(s) the project answers._
-- **Data:** _TBD — source, size, time range._
-- **Methods:** _TBD — EDA + course-covered modeling method (XGBoost / RF / GAM / LDA)._
-- **Key finding:** _TBD — one-sentence takeaway._
+<section class="section">
+  <span class="section-label">Key findings</span>
+  <h2>Three takeaways</h2>
+  <div class="findings-grid">
+    <article class="finding-card">
+      <span class="find-label">Trajectory</span>
+      <h3>Emissions peaked in the early 2010s</h3>
+      <p>Global per-capita emissions rose through the 2000s, peaked around 2012, then declined &mdash; with a sharp dip in 2020 from the COVID slowdown.</p>
+    </article>
+    <article class="finding-card">
+      <span class="find-label">Best model</span>
+      <h3>Tuned XGBoost wins on every metric</h3>
+      <p>The tuned XGBoost beats the pruned Decision Tree and an untuned XGBoost baseline on R², RMSE, and MAE on the held-out test set.</p>
+    </article>
+    <article class="finding-card">
+      <span class="find-label">Top driver</span>
+      <h3>Log GDP per capita dominates</h3>
+      <p>Followed by renewable energy share and urban population share. Forest area, fossil-fuel electricity share, and the calendar year contribute the least.</p>
+    </article>
+  </div>
+</section>
 
-## Navigate the site
+<section class="section">
+  <span class="section-label">What's on this site</span>
+  <h2>Three ways to dive in</h2>
+  <div class="site-grid">
+    <a class="site-card" href="report.html">
+      <span class="site-kind">Report</span>
+      <h3>Full written analysis</h3>
+      <p>Introduction, methods, results, and conclusions. Available as <strong>HTML</strong> and as a downloadable <strong>PDF</strong>.</p>
+    </a>
+    <a class="site-card" href="viz.html">
+      <span class="site-kind">Interactive</span>
+      <h3>Three plotly figures</h3>
+      <p>An animated world CO₂ map, a histogram by decade, and a CO₂-vs-GDP scatter by continent &mdash; all interactive.</p>
+    </a>
+    <a class="site-card" href="https://github.com/EricWcr7/JSC370-2026S-Final-Project" target="_blank" rel="noopener">
+      <span class="site-kind">Code</span>
+      <h3>GitHub repository</h3>
+      <p>Source <code>.qmd</code> files, the data pipeline, all figures, and the rendered website &mdash; fully reproducible.</p>
+    </a>
+  </div>
+</section>
 
-- [About the project](about.qmd)
-- [Read the full report](report.qmd)
-- [Interactive visualizations](viz.qmd)
+<section class="section">
+  <span class="section-label">Methodology</span>
+  <h2>How the analysis flows</h2>
+  <div class="method-flow">
+    <span class="method-step">Data</span>
+    <span class="method-arrow">→</span>
+    <span class="method-step">Cleaning</span>
+    <span class="method-arrow">→</span>
+    <span class="method-step">EDA</span>
+    <span class="method-arrow">→</span>
+    <span class="method-step is-primary">Decision Tree + XGBoost</span>
+    <span class="method-arrow">→</span>
+    <span class="method-step">Evaluation</span>
+  </div>
+</section>
 
-## Downloads & links
-
-- [Download the PDF report](report.pdf)
-- [GitHub repository](https://github.com/EricWcr7/JSC370-2026S-Final-Project)
+<section class="section section-bleed">
+  <div class="section-inner">
+    <span class="section-label">About</span>
+    <h2>Project &amp; author</h2>
+    <div class="about-grid">
+      <dl class="about-block">
+        <dt>Author</dt>
+        <dd>Yi Fan (Eric) Wang</dd>
+        <dt>Course</dt>
+        <dd>JSC370 — Data Science II (Winter 2026)</dd>
+        <dt>Institution</dt>
+        <dd>University of Toronto</dd>
+        <dt>Acknowledgements</dt>
+        <dd>Thanks to the JSC370 (Winter 2026) course staff, and to the World Bank Open Data team for keeping the WDI series free and machine-readable.</dd>
+      </dl>
+      <dl class="about-block">
+        <dt>Data source</dt>
+        <dd><a href="https://api.worldbank.org/v2" target="_blank" rel="noopener">World Bank Open Data API</a> &mdash; indicators <code>EN.GHG.CO2.PC.CE.AR5</code>, <code>NY.GDP.PCAP.KD</code>, <code>EG.ELC.FOSL.ZS</code>, <code>EG.FEC.RNEW.ZS</code>, <code>AG.LND.FRST.ZS</code>, <code>SP.URB.TOTL.IN.ZS</code>.</dd>
+        <dt>Period</dt>
+        <dd>1990 — 2023 (34 years)</dd>
+        <dt>Tools</dt>
+        <dd>
+          <div class="pill-row">
+            <span class="pill">Quarto</span>
+            <span class="pill">Python</span>
+            <span class="pill">pandas</span>
+            <span class="pill">plotly</span>
+            <span class="pill">scikit-learn</span>
+            <span class="pill">XGBoost</span>
+          </div>
+        </dd>
+      </dl>
+    </div>
+  </div>
+</section>
+```

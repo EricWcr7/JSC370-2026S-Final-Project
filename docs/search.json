@@ -7,265 +7,6 @@
     "text": "Figure 1\n\n\n\n\nFigure 1: World choropleth of Carbon Dioxide emissions per capita (metric tons), 1990–2023. Press the play button or drag the year slider below the map to animate through years; hover any country to see its exact value. Grey countries have no value reported for that year.\nSummary Across the 34-year window, the high-emitter band shifts visibly. In 1990 the United States, Australia, Russia, and the oil-rich Gulf states dominate the deep-red end (more than 15 metric tons per capita), while most of Asia and Africa sit below 2 metric tons percapita. By the late 2010s Western European nations have lightened as their carbon dioxide emissions per capita declined, China has darkened from pale yellow to mid-range orange, and the Gulf states remain at the top of the scale. The 2020 frame visibly lightens worldwide due to the COVID-19 pandemic and bounces back partially in 2022–2023."
   },
   {
-    "objectID": "viz.html#figure-1-tbd-e.g.-interactive-map",
-    "href": "viz.html#figure-1-tbd-e.g.-interactive-map",
-    "title": "Interactive Visualizations",
-    "section": "Figure 1 — TBD (e.g., interactive map)",
-    "text": "Figure 1 — TBD (e.g., interactive map)\nPlaceholder — embed plotly figure here.\nCaption. TBD.\nSummary. One short paragraph describing what the figure shows and the key takeaway."
-  },
-  {
-    "objectID": "viz.html#figure-2-tbd-e.g.-interactive-histogram",
-    "href": "viz.html#figure-2-tbd-e.g.-interactive-histogram",
-    "title": "Interactive Visualizations",
-    "section": "Figure 2 — TBD (e.g., interactive histogram)",
-    "text": "Figure 2 — TBD (e.g., interactive histogram)\nPlaceholder — embed plotly figure here.\nCaption. TBD.\nSummary. One short paragraph describing what the figure shows and the key takeaway."
-  },
-  {
-    "objectID": "viz.html#figure-3-tbd-e.g.-interactive-boxplot",
-    "href": "viz.html#figure-3-tbd-e.g.-interactive-boxplot",
-    "title": "Interactive Visualizations",
-    "section": "Figure 3 — TBD (e.g., interactive boxplot)",
-    "text": "Figure 3 — TBD (e.g., interactive boxplot)\nPlaceholder — embed plotly figure here.\nCaption. TBD.\nSummary. One short paragraph describing what the figure shows and the key takeaway."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "Short description of the project’s motivation and what the site contains. Fill in later."
-  },
-  {
-    "objectID": "about.html#about-this-project",
-    "href": "about.html#about-this-project",
-    "title": "About",
-    "section": "",
-    "text": "Short description of the project’s motivation and what the site contains. Fill in later."
-  },
-  {
-    "objectID": "about.html#author",
-    "href": "about.html#author",
-    "title": "About",
-    "section": "Author",
-    "text": "Author\n\nName: TBD\nCourse: JSC370 – Data Science II (Winter 2026)\nInstitution: University of Toronto"
-  },
-  {
-    "objectID": "about.html#data-sources",
-    "href": "about.html#data-sources",
-    "title": "About",
-    "section": "Data sources",
-    "text": "Data sources\n\nTBD — dataset name, provider, URL, access date.\nTBD — API docs (if scraping / querying an API)."
-  },
-  {
-    "objectID": "about.html#tools-used",
-    "href": "about.html#tools-used",
-    "title": "About",
-    "section": "Tools used",
-    "text": "Tools used\n\nQuarto (website + report rendering)\nPython (data wrangling, modeling, visualization)\nplotly (interactive visualizations)"
-  },
-  {
-    "objectID": "about.html#acknowledgements",
-    "href": "about.html#acknowledgements",
-    "title": "About",
-    "section": "Acknowledgements",
-    "text": "Acknowledgements\nTBD — course staff, data providers, collaborators."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "JSC370 Final Project",
-    "section": "",
-    "text": "One-paragraph summary of the project: the topic, the dataset, and the research question. Fill in later."
-  },
-  {
-    "objectID": "index.html#overview",
-    "href": "index.html#overview",
-    "title": "JSC370 Final Project",
-    "section": "",
-    "text": "One-paragraph summary of the project: the topic, the dataset, and the research question. Fill in later."
-  },
-  {
-    "objectID": "index.html#project-at-a-glance",
-    "href": "index.html#project-at-a-glance",
-    "title": "JSC370 Final Project",
-    "section": "Project at a glance",
-    "text": "Project at a glance\n\nQuestion: TBD — the main question(s) the project answers.\nData: TBD — source, size, time range.\nMethods: TBD — EDA + course-covered modeling method (XGBoost / RF / GAM / LDA).\nKey finding: TBD — one-sentence takeaway."
-  },
-  {
-    "objectID": "index.html#navigate-the-site",
-    "href": "index.html#navigate-the-site",
-    "title": "JSC370 Final Project",
-    "section": "Navigate the site",
-    "text": "Navigate the site\n\nAbout the project\nRead the full report\nInteractive visualizations"
-  },
-  {
-    "objectID": "index.html#downloads-links",
-    "href": "index.html#downloads-links",
-    "title": "JSC370 Final Project",
-    "section": "Downloads & links",
-    "text": "Downloads & links\n\nDownload the PDF report\nGitHub repository"
-  },
-  {
-    "objectID": "report.html",
-    "href": "report.html",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "",
-    "text": "Climate change is one of the major global challenges and is largely driven by carbon dioxide emissions from human activities. These emissions are not evenly distributed across countries: countries at different stages of economic development rely on different energy sources, follow different urbanization trends, and face different land-use pressures, all of which leave distinct imprints on their per-capita emissions. Understanding what drives these country-level differences is important for designing effective climate and energy policies.\nThis project examines the following research question:\nHow have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?\nBased on the midterm analysis, this report hypothesizes that GDP per capita, urban population share, and renewable energy share are the dominant cross-country drivers of carbon dioxide emissions per capita, while fossil-fuel electricity share, and the calendar year play a smaller role.\nThe analysis uses data from 1990 to 2023 from the World Bank Open Data API, which provides a comprehensive set of development indicators covering economic, energy, and land-use factors. The dataset includes carbon dioxide emissions per capita, GDP per capita, renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and urban population share, along with the year of observation as a temporal indicator.\nThis report extends the midterm analysis with more flexible methods that can capture more complex nonlinearities and interactions, and reports both predictive performance and variable importance to identify the dominant drivers of cross-country differences, as the midterm analysis found statistically significant evidence of non-linear relationships between carbon dioxide emissions per capita and its predictors."
-  },
-  {
-    "objectID": "report.html#introduction",
-    "href": "report.html#introduction",
-    "title": "Final Report",
-    "section": "1. Introduction",
-    "text": "1. Introduction\nBackground on the topic and data. State the research question(s) / hypothesis(es). Narrative of the topic and why it matters."
-  },
-  {
-    "objectID": "report.html#methods",
-    "href": "report.html#methods",
-    "title": "Final Report",
-    "section": "2. Methods",
-    "text": "2. Methods\n\n2.1 Data source\nTBD — where the data came from, how it was obtained, the time window, the size of the dataset.\n\n\n2.2 Data cleaning and wrangling\nTBD — missing values, type conversions, derived variables, filtering rules.\n\n\n2.3 Exploratory tools\nTBD — summary statistics, static plots, interactive plots (see the Interactive Viz page).\n\n\n2.4 Modeling\nTBD — chosen course-covered method (XGBoost / Random Forest / GAM / LDA). Feature engineering. Train/validation/test split. Hyperparameters. Metrics reported (R², RMSE, MAE, ROC/AUC, …)."
-  },
-  {
-    "objectID": "report.html#results",
-    "href": "report.html#results",
-    "title": "Final Report",
-    "section": "3. Results",
-    "text": "3. Results\nTBD — publication-ready, numbered, captioned tables and figures. Reference the website for interactive versions.\nFigure 1. Caption placeholder.\nTable 1. Caption placeholder."
-  },
-  {
-    "objectID": "report.html#conclusions-and-summary",
-    "href": "report.html#conclusions-and-summary",
-    "title": "Final Report",
-    "section": "4. Conclusions and Summary",
-    "text": "4. Conclusions and Summary\nTBD — interpret findings in the bigger picture, connect back to the research question, state limitations and possible extensions."
-  },
-  {
-    "objectID": "report.html#data-source",
-    "href": "report.html#data-source",
-    "title": "JSC370 2026: Final Project Report",
-    "section": "2.1 Data source",
-    "text": "2.1 Data source\nTBD — where the data came from, how it was obtained, the time window, the size of the dataset."
-  },
-  {
-    "objectID": "report.html#data-cleaning-and-wrangling",
-    "href": "report.html#data-cleaning-and-wrangling",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "2.2 Data Cleaning and Wrangling",
-    "text": "2.2 Data Cleaning and Wrangling\nRows were keyed by ISO3 country code and year to construct a country–year panel. Regional aggregates were removed. The table was reshaped to wide format, types and ranges were verified, and missing values were standardized as NaN. Missing observations were retained during EDA and dropped before regression analysis and modelling."
-  },
-  {
-    "objectID": "report.html#exploratory-tools",
-    "href": "report.html#exploratory-tools",
-    "title": "JSC370 2026: Final Project Report",
-    "section": "2.3 Exploratory tools",
-    "text": "2.3 Exploratory tools\nTBD — summary statistics, static plots, interactive plots (see the Interactive Viz page)."
-  },
-  {
-    "objectID": "report.html#modeling",
-    "href": "report.html#modeling",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "2.6 Modeling",
-    "text": "2.6 Modeling\nBecause the GAM showed statistically significant nonlinear relationships, two tree-based models were added. A pruned Decision Tree Regressor was used as an interpretable baseline. Then a XGBoost Regressor was used as a flexible gradient-boosted ensemble that can capture more complex nonlinearities and interactions.\n\n2.6.1 Train / Validation / Test Split\nThe dataset is a country–year panel, so observations were split at the country level (grouped by countryiso3code) to prevent leakage of country-specific effects across sets. The split was approximately 70% / 15% / 15% by country, with the same fixed random seed across models for reproducibility and fair comparison.\nBecause countries (rather than years) are held out, test error measures generalization to unseen countries given their full 1990–2023 predictor history — directly matching the cross-country focus of the research question. It does not measure temporal forecasting (e.g., predicting 2024 from 1990–2023).\n\n\n2.6.2 Decision Tree Model\nA Decision Tree Regressor was fit as the interpretable baseline. The cost-complexity pruning parameter (\\(\\alpha\\)) was tuned on the validation set, and the final pruned tree was refit on the combined training and validation sets and evaluated once on the test set.\n\n\n2.6.3 XGBoost Model\nXGBoost was tuned by randomized search over tree depth, learning rate, regularization, row/column subsampling, and minimum child weight, using 5-fold country-grouped cross-validation on the training set. The number of boosting rounds was then selected by cross-validated early stopping on the training set. Then the final tuned model was refit on those two sets and evaluated once on the test set. An untuned XGBoost (200 trees, maximum depth 5, learning rate 0.1) was also fit on the training set as an inline reference point.\n\n\n2.6.4 Model Evaluation and Comparison\nModels were compared on the same test set using regression model evaluation metrics, i.e. \\(R^2\\), RMSE, and MAE. Variable importance was extracted from the final best model to identify the predictors contributing most to variation in emissions per capita."
-  },
-  {
-    "objectID": "report.html#data-source-and-acquisition",
-    "href": "report.html#data-source-and-acquisition",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "2.1 Data Source and Acquisition",
-    "text": "2.1 Data Source and Acquisition\nData were obtained from the World Bank Open Data API for the period 1990–2023. The variables retained are carbon dioxide emissions per capita, GDP per capita, renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and urban population share."
-  },
-  {
-    "objectID": "report.html#exploratory-data-analysis",
-    "href": "report.html#exploratory-data-analysis",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "2.3 Exploratory Data Analysis",
-    "text": "2.3 Exploratory Data Analysis\nEDA used summary statistics, line plots, histograms, and scatter plots to examine temporal trends, distributional properties, and associations between emissions per capita and the explanatory variables."
-  },
-  {
-    "objectID": "report.html#feature-engineering",
-    "href": "report.html#feature-engineering",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "2.4 Feature Engineering",
-    "text": "2.4 Feature Engineering\nLog transformations were applied to right-skewed variables (carbon dioxide emissions per capita and GDP per capita) to reduce the influence of extreme values. Percentage variables were kept on their original scale. The year was centered at 1990 to make the intercept and model coefficients more interpretable."
-  },
-  {
-    "objectID": "report.html#data-acquisition-wrangling-and-cleaning",
-    "href": "report.html#data-acquisition-wrangling-and-cleaning",
-    "title": "JSC370 2026: Final Project Report",
-    "section": "3.1 Data Acquisition, Wrangling and Cleaning",
-    "text": "3.1 Data Acquisition, Wrangling and Cleaning\nData were retrieved sucessfully from the World Bank Open Data API by using JSON format within a for loop of the indiators specified in advance for this project. Then merged each indicator-specific dataset into a single raw, long format dataset by using countryiso3code (3-letter country codes) and year as the keys. However, in the initial dataset, the values of the coloumns indicator and country were nested dictionaries, which were not suitable for further analysis. Therefore, the nested columns were flattened into plain columns so the data can be filtered and merged as a regular flat table by picking out the attributes to form new columns. The dictionaries in indicator column had the indicator codes, whcih were mapped to indicator_code in the flattened dataset, and their official names, which were mapped to variable_name in the flattened dataset, and the ones in country column had the country ids and their official names, which are mapped to country_name int the flattened dataset. After that, the flattened dataset had 54264 rows and 12 columns.\nWith previewing some rows of the flattened dataset, some aggregates/regions data were found, rows with a country_name like “Africa Eastern and Southern” were removed to avoid misinterpretation by using the country metadata endpoint. After the removal of aggregates data, the dataset had 44268 rows left.\nNext, since the project aims to analyze based on a country-year dataset, the long dataset was reshaped into a wide dataset, where each indicator becomes a column instead of a value in a single column which stored all the indicator names/codes. To ensure safety during the reshaping process, the year identifier was created by converting the API date field into a numeric year so the dataset can be indexed by country-year in the reshape step. After reshaping, the dataset became wide format containing co2_per_capita, gdp_per_capita, fossil_electricity_share, renewable_energy_share, forest_area_percent_land, and urban_share_percent data for each country that represents in countryiso3code and country_name, and year only without other redundant columns and information. At this stage, the dataset had 7378 rows and 9 columns.\n\n\n\n\n\n\nData Type Inspection Table\n\n\n\nColumns\ndtype\n\n\n\n\n0\ncountryiso3code\nobject\n\n\n1\ncountry_name\nobject\n\n\n2\nyear\nint64\n\n\n3\nco2_per_capita\nfloat64\n\n\n4\nforest_area_percent_land\nfloat64\n\n\n5\nfossil_electricity_share\nfloat64\n\n\n6\ngdp_per_capita\nfloat64\n\n\n7\nrenewable_energy_share\nfloat64\n\n\n8\nurban_share_percent\nfloat64\n\n\n\n\n\n\n\nAccording to Data Type Inspection Table, all the indicator columns were float, which were accurate as they were either percentages or metric tons or dollars. The year column was treated as integer, and the country metadata columns were object, i.e. strings. Therefore, it was not necessary to standardize the data types further. In addition, to ensure the consistency of the missing-value inspection, replace all the possible missing-value placeholders, such as empty strings, spaces, N/A, NA, na, null, Null, NULL, -, --, .., etc., to NaN strictly in the dataset.\nBefore performing the plausibility checks, it would be necessary to recall the units of each indicator and the possible formats/ranges of values for each variable. Here are the units of each indicator:\n\nco2_per_capita: metric tons per capita, so the range should be non-negative.\ngdp_per_capita: constant 2015 USD per person, so the range should be non-negative.\nfossil_electricity_share: percentage of electricity from fossil fuels, so the range should be between 0 and 100 inclusive.\nrenewable_energy_share: percentage of total final energy consumption, so the range should be between 0 and 100 inclusive.\nforest_area_percent_land: percentage of land area, so the range should be between 0 and 100 inclusive.\nurban_share_percent: percentage of population, so the range should be between 0 and 100 inclusive.\n\nTherefore, applying the reasonable range for each indicator to check for the entire dataset. Here are the results:\n\nco2_per_capita: 0 out of bounds rows\ngdp_per_capita: 0 out of bounds rows\nfossil_electricity_share: 0 out of bounds rows\nrenewable_energy_share: 0 out of bounds rows\nforest_area_percent_land: 0 out of bounds rows\nurban_share_percent: 0 out of bounds rows\n\nHence, there were no out of bounds values in the dataset, while each row had a standard ISO3 country code with no duplicate country-year rows existed. In addition, the year was within the study period.\n\n\n\n\n\n\nMissing Values Inspection Table\n\n\n\nVariable\nMissing (count)\nMissing (%)\n\n\n\n\n0\nfossil_electricity_share\n1199\n16.25\n\n\n1\nrenewable_energy_share\n632\n8.57\n\n\n2\nco2_per_capita\n476\n6.45\n\n\n3\ngdp_per_capita\n474\n6.42\n\n\n4\nforest_area_percent_land\n317\n4.30\n\n\n5\ncountryiso3code\n0\n0.00\n\n\n6\ncountry_name\n0\n0.00\n\n\n7\nyear\n0\n0.00\n\n\n8\nurban_share_percent\n0\n0.00\n\n\n\n\n\n\n\nThen proceed to inspect the missing values in the dataset. According to Missing Values Inspection Table, (ignore countryiso3code and country_name columns, and year column as left-join were performed while merging the dataset in the early steps) urban_share_percent has no missing values. While co2_per_capita, gdp_per_capita, fossil_electricity_share, renewable_energy_share, and forest_area_percent_land have low missing percentage (less than 10%). However, fossil_electricity_share has a moderate (10-20%) missing percentage 16.25%. The dataset still contains a large number of useful observations in other variables, so the missingness was retained during EDA so that the available observations could be used for the analysis. Later, during the regression analysis, observations with missing values in the explanatory variables would be dropped at row level to aviod introducing additional assumptions through imputation while maintaing a sufficiently large sample size for the regression analysis."
-  },
-  {
-    "objectID": "report.html#summary-of-data-acquisition-cleaning-and-wrangling-from-the-midterm-report",
-    "href": "report.html#summary-of-data-acquisition-cleaning-and-wrangling-from-the-midterm-report",
-    "title": "JSC370 2026: Final Project Report",
-    "section": "3.1 Summary of Data Acquisition, Cleaning, and Wrangling from the Midterm Report",
-    "text": "3.1 Summary of Data Acquisition, Cleaning, and Wrangling from the Midterm Report\nData acquisition, cleaning, and preprocessing followed the procedure described in the midterm report. The final dataset is a country–year panel covering the period from 1990 to 2023, including variables related to carbon dioxide emissions per capita, economic development, energy structure, land use, and urbanization.\nThe dataset contains observations for a large number of countries over time, allowing for cross-country comparisons and analysis of temporal trends. All variables were verified to fall within expected ranges based on their definitions, and no major data inconsistencies were identified.\nMissing values are present in several variables, with moderate missingness in fossil-fuel electricity share. These missing observations were retained during exploratory analysis and handled using complete-case filtering during modelling."
-  },
-  {
-    "objectID": "report.html#regression-analysis",
-    "href": "report.html#regression-analysis",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "2.5 Regression Analysis",
-    "text": "2.5 Regression Analysis\nBefore performing the regression analysis, rows with missing entries were dropped first, so all models were examined on a dataset with no missing entries.\nOrdinary least squares (OLS) and generalized additive models (GAMs) from the midterm were used to capture linear and nonlinear patterns. The nonlinear evidence from the GAM motivated the more flexible machine learning models later on."
-  },
-  {
-    "objectID": "report.html#data-acquisition-preprocessing-exploratory-data-analysis-and-regression-analysis-summary",
-    "href": "report.html#data-acquisition-preprocessing-exploratory-data-analysis-and-regression-analysis-summary",
-    "title": "JSC370 2026: Final Project Report",
-    "section": "3.1 Data Acquisition, Preprocessing, Exploratory Data Analysis, and Regression Analysis Summary",
-    "text": "3.1 Data Acquisition, Preprocessing, Exploratory Data Analysis, and Regression Analysis Summary\nThe dataset follows the preprocessing procedure described in the method section with more details in the midterm report and consists of a country–year panel from 1990 to 2023, including variables on carbon dioxide emissions per capita, GDP per capita, energy structure, land use, and urbanization. Regional aggregates were removed to ensure valid cross-country comparisons, and all variables were verified to fall within expected ranges. Missing values are present but moderate, particularly for fossil-fuel electricity share, and were retained during exploratory analysis and handled via complete-case filtering during modelling.\nThe EDA (plots in midterm report) revealed several key patterns. Carbon dioxide emissions per capita increased during the 2000s and declined after the early 2010s. Substantial variation exists across countries, with developed economies generally declining and emerging economies increasing. In addition, emissions and GDP per capita are strongly right-skewed, motivating log transformations, while the year variable was centered to capture temporal effects.\nBefore performing the regression analysis, the rows with missing values were dropped. Before missing data removal, the dataset had 7378 rows. After missing data removal, the dataset had 5499 rows.\nRegression analysis using GAM showed clear nonlinear relationships between carbon dioxide emissions per capita and its predictors. These findings motivate the use of tree-based machine learning models to capture more complex nonlinear patterns."
-  },
-  {
-    "objectID": "report.html#modeling-1",
-    "href": "report.html#modeling-1",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "3.2 Modeling",
-    "text": "3.2 Modeling\n\n\n\n\nTable 1: Country-grouped train / validation / test split\n\n\n\n\n\n\n\n\n\n\nSet\nRows\nCountries\n\n\n\n\n0\nTrain\n3826\n136\n\n\n1\nValidation\n833\n30\n\n\n2\nTest\n840\n30\n\n\n\n\n\n\n\n\n\n\nAccording to Table 1, the country-level data split placed roughly 70% of countries (136 out of 196) in the training set, 15% (30 out of 196) in the validation set, and 15% (30 out of 196) in the test set, with no country has observations appearing in more than one set. Therefore, test error measures generalization to unseen countries given their full 1990–2023 predictor history, which directly addresses the cross-country focus of the research question.\n\n\n\n\nTable 2: Test-set performance comparison across models\n\n\n\n\n\n\n\n\n\n\nModel\nTest R²\nTest RMSE\nTest MAE\n\n\n\n\n0\nDecision Tree (pruned)\n0.7056\n0.5581\n0.3744\n\n\n1\nXGBoost (tuned)\n0.7217\n0.5426\n0.3592\n\n\n\n\n\n\n\n\n\n\nThe pruned Decision Tree, after tuning ccp_alpha on the validation set and refitting on combined train and validation data, contained 18 leaves at depth 7 and reached a test-set \\(R^2\\) of 0.706, RMSE of 0.558, and MAE of 0.374 on log carbon dioxide emissions per capita.\n\n\n\n\nTable 3: Tuned XGBoost hyperparameters (5-fold GroupKFold random search + CV early stopping)\n\n\n\n\n\n\n\n\n\n\nHyperparameter\nValue\n\n\n\n\n0\nmax_depth\n6.0000\n\n\n1\nlearning_rate\n0.0300\n\n\n2\nn_estimators\n154.0000\n\n\n3\nreg_lambda\n0.1000\n\n\n4\nreg_alpha\n10.0000\n\n\n5\nsubsample\n0.8000\n\n\n6\ncolsample_bytree\n1.0000\n\n\n7\nmin_child_weight\n5.0000\n\n\n8\ngamma\n1.0000\n\n\n9\nCV RMSE (random search)\n0.5979\n\n\n10\nCV RMSE (early stop)\n0.5282\n\n\n\n\n\n\n\n\n\n\nThe tuned XGBoost used the hyperparameters in Table 3, where the hyperparameters were selected by 5-fold country-level randomized search on the training set (best CV RMSE = 0.5979) and refined by cross-validated early stopping on the combined train and validation sets, which selected 154 boosting rounds (CV RMSE = 0.5282). Refit on the combined sets, it reached a \\(R^2\\) of 0.722, RMSE of 0.543, and MAE of 0.359 as the test performance. The untuned baseline XGBoost (200 trees, depth 5, learning rate 0.1) reached \\(R^2\\) = 0.681, RMSE = 0.581, MAE = 0.388, confirming that tuned XGBoost outperformed the untuned baseline.\nOn the same test set (Table 2), the tuned XGBoost outperformed the pruned Decision Tree on every metric: \\(R^2\\) rose from 0.706 to 0.722, and RMSE and MAE both fell from 0.558 to 0.543 log units and from 0.374 to 0.359 log units, respectively. The bettern performance across all three metrics indicates the tuned XGBoost Regressor captures more complex nonlinearities and predictor interactions that the single pruned tree could not. Therefore, the tuned XGBoost Regressor is the final best model.\n\n\n\n\n\n\n\n\nFigure 2: Gain-based feature importance for the tuned XGBoost (final model)\n\n\n\n\n\nAccording to Figure 2, gain-based variable importance from the final model ranks log GDP per capita first by a clear margin, so log GDP per capita is the most important feature in determining the variation in carbon dioxide emissions per capita. Then renewable energy share and urban population share are the second and third most important features, followed by forest area, fossil electricity share, and the year. This ordering agrees with the hypothesis that economic development, energy sources, and urbanization are the key predictors of cross-country differences, while the calendar year adds little once those are known.\n\n\n\n\n\n\n\n\nFigure 3: Predicted vs actual log carbon dioxide emissions per capita on the test set (tuned XGBoost)\n\n\n\n\n\nAccording to Figure 3, the predicted outcome V.S. actual target diagnostic plot shows points clustered along the 45-degree line with no systematic curvature, and residuals are roughly symmetric and centered approximately at zero, meaning the model is not consistently too high or too low for either low emissions or high emissions countries. The remaining spread likely reflects country related features, such as natural resources, climate changes, etc., that the available predictors do not capture directly in the dataset."
-  },
-  {
-    "objectID": "report.html#data-eda-and-regression-analysis-summary",
-    "href": "report.html#data-eda-and-regression-analysis-summary",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "3.1 Data, EDA, and Regression Analysis Summary",
-    "text": "3.1 Data, EDA, and Regression Analysis Summary\n\n\n\n\n\n\n\n\nFigure 1: Global average CO2 emissions per capita over time (1990–2023)\n\n\n\n\n\n\n\n\n\n\n\nGAM smooth-term summary\n\n\n\nTerm\nEDoF\np-value\n\n\n\n\n0\nLog GDP per Capita\n16.4797\n0.0\n\n\n1\nFossil Electricity Share (% of total electrici...\n16.0733\n0.0\n\n\n2\nRenewable Energy Share (% of total final energ...\n15.8542\n0.0\n\n\n3\nForest Area (% of total land area)\n15.4707\n0.0\n\n\n4\nUrban Population Share (% of total population)\n15.1863\n0.0\n\n\n5\nYear (centered at 1990)\n0.9779\n0.0\n\n\n6\nIntercept\n0.0000\n0.0\n\n\n\n\n\n\n\nThe cleaned dataset covers 1990–2023 after regional aggregates were removed and variable ranges were verified. Missing values were moderate (most notably for fossil-fuel electricity share) and were handled by removing all the rows with missing entries before regression analysis and modelling. The dataset had 7378 rows before removal and 5499 rows after.\nAccording to Figure 1, carbon dioxide emissions per capita rose through the 2000s and declined after the early 2010s, with developed countries trending down and developing countries trending up in the long term. Emissions and GDP per capita were strongly right-skewed, which motivated the log transformations. According to @wb-regression-gam, the GAM showed clear nonlinear relationships between emissions and the predictors (with extremely high EDoF values except for the year variable), which motivated the use of tree-based machine learning models to capture more complex patterns."
-  },
-  {
-    "objectID": "report.html#summary-of-findings-and-bigger-picture",
-    "href": "report.html#summary-of-findings-and-bigger-picture",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "4.1 Summary of Findings and Bigger Picture",
-    "text": "4.1 Summary of Findings and Bigger Picture\nCarbon dioxide emissions per capita rose through the 2000s, peaked in the early 2010s, and declined afterward. On the modelling side, the tuned XGBoost Regressor outperformed the pruned Decision Tree and an untuned XGBoost baseline on every regression model evaluation metric (\\(R^2\\), RMSE, MAE), with residuals roughly symmetric around zero in the predicted outcome V.S. actual target diagnostic plot. Gain-based variable importance ranked log GDP per capita as the most important predictor by a clear margin, then renewable energy share and urban population share, with forest area, fossil-fuel electricity share, and the calendar year contributing least, which is consistent with the hypothesis that economic development, energy sources, and urbanization are the dominant cross-country drivers, which proves the hypothesis.\nEconomic development remains the strongest predictor of carbon dioxide emissions per capita even after energy and land-use indicators are included. Growth aspirations and sustainable development goals in developing and less developed countries can only be reconciled through structural shifts (clean energy, more efficient technology, low carbon industry) rather than restraint on growth itself.\nRenewable energy share was the second most important predictor, while fossil-fuel electricity share contributed far less. Renewable share likely includes fossil-fuel electricity information because it reflects the whole energy systemr ather than just electricity. In terms of policy implications, investing in renewables is the strongest single lever within this set of predictors."
-  },
-  {
-    "objectID": "report.html#limitations",
-    "href": "report.html#limitations",
-    "title": "JSC370 2026 Final Project Report",
-    "section": "4.3 Limitations",
-    "text": "4.3 Limitations\nThe country-level data split measures generalization to unseen countries given their full 1990–2023 predictor history, not temporal forecasting; predicting 2024 from 1990–2023 would require a forcasting princple split (strictly use 1990-2022 to trian and validate models, and use 2023 data for testing).\nDropping rows with missing entries before modelling removed a non-trivial share of country-years. If missingness is not uniform across countries, the modelled sample may skew toward those with stronger statistical reporting.\nThe predictor set is small and entirely national aggregated. Plausible predictors are not included, such as energy prices, weather,etc., which could account for some of the residual variance. The carbon dioxide emissions measure is also production-based, whereas trade-intensive countries look different under a consumption-based attribution.\nFinally, all results are associational. Tree-based models do not produce causal estimates, and predictor importance reflects predictive contribution within the model rather than policy effectiveness."
-  },
-  {
-    "objectID": "viz.html#figure-1-world-co₂-emissions-per-capita-over-time",
-    "href": "viz.html#figure-1-world-co₂-emissions-per-capita-over-time",
-    "title": "Interactive Visualizations",
-    "section": "Figure 1 — World CO₂ emissions per capita over time",
-    "text": "Figure 1 — World CO₂ emissions per capita over time\n\n\n\n\n                            \n                                            \n\n\nFigure 1\n\n\n\n\nCaption. Figure 1 — World choropleth of CO₂ emissions per capita (metric tons), 1990–2023. Press the play button or drag the year slider below the map to animate through years; hover any country to see its exact value. Grey countries have no value reported for that year.\nSummary. Across the 34-year window the high-emitter band shifts visibly. In 1990 the United States, Australia, Russia, and the oil-rich Gulf states dominate the deep-red end (&gt;15 t/capita), while most of Asia and Africa sit below 2 t/capita. By the late 2010s Western European nations have desaturated as their emissions decline, China has darkened from pale yellow to mid-range orange, and the Gulf states remain at the top of the scale. The 2020 frame visibly lightens worldwide — the COVID-induced dip — before rebounding partially in 2022–2023."
-  },
-  {
-    "objectID": "viz.html#figure-2-distribution-of-co₂capita-by-decade",
-    "href": "viz.html#figure-2-distribution-of-co₂capita-by-decade",
-    "title": "Interactive Visualizations",
-    "section": "Figure 2 — Distribution of CO₂/capita by decade",
-    "text": "Figure 2 — Distribution of CO₂/capita by decade\n\n\n\n\n                            \n                                            \n\n\nFigure 2\n\n\n\n\nCaption. Figure 2 — Overlaid probability-density histograms of country-year CO₂ per capita, one colour per decade. Bars are normalised so each decade integrates to 1, making the four shapes directly comparable despite the 2020s having only four years of data. Click a decade in the legend to toggle it; double-click to isolate.\nSummary. All four decades share the same long right tail driven by a handful of petro-states (&gt;15 t/capita). The bulk of the distribution does shift, however: the 1990s mass is concentrated tightly near 0–2 t/capita, while the 2010s mode is noticeably broader and slightly right-shifted, consistent with rapid industrialisation in Asia. The 2020s curve again leans toward the low end — a fingerprint of the COVID demand drop that lingered into 2021 — but its mid-range density (4–8 t/capita) is also higher than the 1990s, showing that the long-run shift toward higher emissions in middle-income countries has only partially reversed."
-  },
-  {
-    "objectID": "viz.html#figure-3-co₂capita-by-continent-in-2023",
-    "href": "viz.html#figure-3-co₂capita-by-continent-in-2023",
-    "title": "Interactive Visualizations",
-    "section": "Figure 3 — CO₂/capita by continent in 2023",
-    "text": "Figure 3 — CO₂/capita by continent in 2023\n\n\n\n\n                            \n                                            \n\n\nFigure 3\n\n\n\n\nCaption. Figure 3 — Boxplot of country-level CO₂ per capita in 2023, grouped by continent, on a log y-axis so that low-emitting countries remain visible alongside extreme outliers. Each dot is one country; hover to read its name and exact value (tooltip shows the original linear value). Boxes show the inter-quartile range with the median as the inner line.\nSummary. Africa has by far the lowest median (≈0.5 t/capita), reflecting limited industrialisation and large rural populations. Asia spans the widest range — its IQR is moderate but it is pulled to the top of the chart by Qatar, Bahrain, Kuwait, Brunei, and the UAE, all above 18 t/capita. Europe sits at a higher median (~5 t/capita) with a relatively tight spread, while Oceania is bimodal — Australia and New Zealand near the high end, the small Pacific island states at the bottom, and Palau as a striking outlier near 80 t/capita (a tiny-population denominator inflates per-capita values). The Americas straddle the middle, anchored by the United States, Canada, and Trinidad and Tobago at the top and Caribbean/Central American countries at the bottom."
-  },
-  {
     "objectID": "viz.html#figure-1-world-carbon-dioxide-emissions-per-capita-over-time",
     "href": "viz.html#figure-1-world-carbon-dioxide-emissions-per-capita-over-time",
     "title": "Interactive Visualizations",
@@ -285,5 +26,89 @@
     "title": "Interactive Visualizations",
     "section": "Figure 3 — Carbon Dioxide emissions per capita vs. GDP per capita, by continent",
     "text": "Figure 3 — Carbon Dioxide emissions per capita vs. GDP per capita, by continent\n\n\n\n\n                            \n                                            \n\n\nFigure 3\n\n\n\n\nFigure 3: Country-level scatterplot of Carbon Dioxide emissions per capita against GDP per capita (log x-axis), coloured by continent, with one OLS trendline fitted per continent in each year. Drag the year slider to watch how the GDP-to-emissions relationship evolves between 1990 and 2023; hover any point for the country name and exact values. A small number of extreme petro-state outliers above 25 metric tons per capita are excluded so the bulk of the relationship is readable.\nSummary Across all years and continents the relationship is clearly positive — richer countries emit more carbon dioxide per capita, and the log-x axis makes the slope roughly linear. Europe’s slope visibly flattens after the early 2000s, evidence of the partial decoupling of growth from emissions through renewable adoption. Asia’s slope stays steep throughout, consistent with the rapid industrialisation of China, India, and South-East Asia pushing the cloud of dots up and to the right over the slider. Africa sits to the lower-left with the lowest intercept and a flat slope (limited industrial base even at higher GDP), while Oceania’s small sample is dominated by Australia and New Zealand at the high end."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Carbon Dioxide Emissions per Capita, 1990–2023",
+    "section": "",
+    "text": "JSC370 · Winter 2026 · University of Toronto\n  Carbon Dioxide Emissions per Capita, 1990–2023\n  How economic, energy, and land-use factors explain cross-country differences.\n  Yi Fan (Eric) Wang  ·  April 26, 2026\n  \n    Read the Report →\n    Explore Interactive Visuals\n    Download PDF ↓\n  \n\n\n\n  \n    At a glance\n    \n      \n        ~7,400\n        Country–year observations\n      \n      \n        6\n        World Bank indicators\n      \n      \n        XGBoost\n        Final best model\n      \n      \n        GDP / capita\n        Strongest predictor\n      \n    \n  \n\n\n\n  The story\n  \n    Climate change is one of the major global challenges, and it is largely driven by carbon dioxide emissions from human activities. Those emissions are not evenly distributed across countries: countries at different stages of economic development rely on different energy sources, follow different urbanization paths, and face different land-use pressures, all of which leave distinct imprints on per-capita emissions.\n    This project uses a 34-year panel of every country reporting to the World Bank to map how those imprints have evolved — and to ask which factors actually drive cross-country differences once everything else is held equal.\n  \n  \n    Research question\n    How have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?\n  \n  \n    This report extends the midterm analysis with more flexible, tree-based methods — a pruned Decision Tree as an interpretable baseline and a tuned XGBoost Regressor as the flexible predictor — that capture the nonlinearities and interactions hinted at by the midterm's OLS and GAM.\n  \n\n\n\n  Key findings\n  Three takeaways\n  \n    \n      Trajectory\n      Emissions peaked in the early 2010s\n      Global per-capita emissions rose through the 2000s, peaked around 2012, then declined — with a sharp dip in 2020 from the COVID slowdown.\n    \n    \n      Best model\n      Tuned XGBoost wins on every metric\n      The tuned XGBoost beats the pruned Decision Tree and an untuned XGBoost baseline on R², RMSE, and MAE on the held-out test set.\n    \n    \n      Top driver\n      Log GDP per capita dominates\n      Followed by renewable energy share and urban population share. Forest area, fossil-fuel electricity share, and the calendar year contribute the least.\n    \n  \n\n\n\n  What's on this site\n  Three ways to dive in\n  \n    \n      Report\n      Full written analysis\n      Introduction, methods, results, and conclusions. Available as HTML and as a downloadable PDF.\n    \n    \n      Interactive\n      Three plotly figures\n      An animated world CO₂ map, a histogram by decade, and a CO₂-vs-GDP scatter by continent — all interactive.\n    \n    \n      Code\n      GitHub repository\n      Source .qmd files, the data pipeline, all figures, and the rendered website — fully reproducible.\n    \n  \n\n\n\n  Methodology\n  How the analysis flows\n  \n    Data\n    →\n    Cleaning\n    →\n    EDA\n    →\n    Decision Tree + XGBoost\n    →\n    Evaluation\n  \n\n\n\n  \n    About\n    Project & author\n    \n      \n        Author\n        Yi Fan (Eric) Wang\n        Course\n        JSC370 — Data Science II (Winter 2026)\n        Institution\n        University of Toronto\n        Acknowledgements\n        Thanks to the JSC370 (Winter 2026) course staff, and to the World Bank Open Data team for keeping the WDI series free and machine-readable.\n      \n      \n        Data source\n        World Bank Open Data API — indicators EN.GHG.CO2.PC.CE.AR5, NY.GDP.PCAP.KD, EG.ELC.FOSL.ZS, EG.FEC.RNEW.ZS, AG.LND.FRST.ZS, SP.URB.TOTL.IN.ZS.\n        Period\n        1990 — 2023 (34 years)\n        Tools\n        \n          \n            Quarto\n            Python\n            pandas\n            plotly\n            scikit-learn\n            XGBoost"
+  },
+  {
+    "objectID": "report.html",
+    "href": "report.html",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "",
+    "text": "Climate change is one of the major global challenges and is largely driven by carbon dioxide emissions from human activities. These emissions are not evenly distributed across countries: countries at different stages of economic development rely on different energy sources, follow different urbanization trends, and face different land-use pressures, all of which leave distinct imprints on their per-capita emissions. Understanding what drives these country-level differences is important for designing effective climate and energy policies.\nThis project examines the following research question:\nHow have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?\nBased on the midterm analysis, this report hypothesizes that GDP per capita, urban population share, and renewable energy share are the dominant cross-country drivers of carbon dioxide emissions per capita, while fossil-fuel electricity share, and the calendar year play a smaller role.\nThe analysis uses data from 1990 to 2023 from the World Bank Open Data API, which provides a comprehensive set of development indicators covering economic, energy, and land-use factors. The dataset includes carbon dioxide emissions per capita, GDP per capita, renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and urban population share, along with the year of observation as a temporal indicator.\nThis report extends the midterm analysis with more flexible methods that can capture more complex nonlinearities and interactions, and reports both predictive performance and variable importance to identify the dominant drivers of cross-country differences, as the midterm analysis found statistically significant evidence of non-linear relationships between carbon dioxide emissions per capita and its predictors."
+  },
+  {
+    "objectID": "report.html#data-source-and-acquisition",
+    "href": "report.html#data-source-and-acquisition",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "2.1 Data Source and Acquisition",
+    "text": "2.1 Data Source and Acquisition\nData were obtained from the World Bank Open Data API for the period 1990–2023. The variables retained are carbon dioxide emissions per capita, GDP per capita, renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and urban population share."
+  },
+  {
+    "objectID": "report.html#data-cleaning-and-wrangling",
+    "href": "report.html#data-cleaning-and-wrangling",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "2.2 Data Cleaning and Wrangling",
+    "text": "2.2 Data Cleaning and Wrangling\nRows were keyed by ISO3 country code and year to construct a country–year panel. Regional aggregates were removed. The table was reshaped to wide format, types and ranges were verified, and missing values were standardized as NaN. Missing observations were retained during EDA and dropped before regression analysis and modelling."
+  },
+  {
+    "objectID": "report.html#exploratory-data-analysis",
+    "href": "report.html#exploratory-data-analysis",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "2.3 Exploratory Data Analysis",
+    "text": "2.3 Exploratory Data Analysis\nEDA used summary statistics, line plots, histograms, and scatter plots to examine temporal trends, distributional properties, and associations between emissions per capita and the explanatory variables."
+  },
+  {
+    "objectID": "report.html#feature-engineering",
+    "href": "report.html#feature-engineering",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "2.4 Feature Engineering",
+    "text": "2.4 Feature Engineering\nLog transformations were applied to right-skewed variables (carbon dioxide emissions per capita and GDP per capita) to reduce the influence of extreme values. Percentage variables were kept on their original scale. The year was centered at 1990 to make the intercept and model coefficients more interpretable."
+  },
+  {
+    "objectID": "report.html#regression-analysis",
+    "href": "report.html#regression-analysis",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "2.5 Regression Analysis",
+    "text": "2.5 Regression Analysis\nBefore performing the regression analysis, rows with missing entries were dropped first, so all models were examined on a dataset with no missing entries.\nOrdinary least squares (OLS) and generalized additive models (GAMs) from the midterm were used to capture linear and nonlinear patterns. The nonlinear evidence from the GAM motivated the more flexible machine learning models later on."
+  },
+  {
+    "objectID": "report.html#modeling",
+    "href": "report.html#modeling",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "2.6 Modeling",
+    "text": "2.6 Modeling\nBecause the GAM showed statistically significant nonlinear relationships, two tree-based models were added. A pruned Decision Tree Regressor was used as an interpretable baseline. Then a XGBoost Regressor was used as a flexible gradient-boosted ensemble that can capture more complex nonlinearities and interactions.\n\n2.6.1 Train / Validation / Test Split\nThe dataset is a country–year panel, so observations were split at the country level (grouped by countryiso3code) to prevent leakage of country-specific effects across sets. The split was approximately 70% / 15% / 15% by country, with the same fixed random seed across models for reproducibility and fair comparison.\nBecause countries (rather than years) are held out, test error measures generalization to unseen countries given their full 1990–2023 predictor history — directly matching the cross-country focus of the research question. It does not measure temporal forecasting (e.g., predicting 2024 from 1990–2023).\n\n\n2.6.2 Decision Tree Model\nA Decision Tree Regressor was fit as the interpretable baseline. The cost-complexity pruning parameter (\\(\\alpha\\)) was tuned on the validation set, and the final pruned tree was refit on the combined training and validation sets and evaluated once on the test set.\n\n\n2.6.3 XGBoost Model\nXGBoost was tuned by randomized search over tree depth, learning rate, regularization, row/column subsampling, and minimum child weight, using 5-fold country-grouped cross-validation on the training set. The number of boosting rounds was then selected by cross-validated early stopping on the training set. Then the final tuned model was refit on those two sets and evaluated once on the test set. An untuned XGBoost (200 trees, maximum depth 5, learning rate 0.1) was also fit on the training set as an inline reference point.\n\n\n2.6.4 Model Evaluation and Comparison\nModels were compared on the same test set using regression model evaluation metrics, i.e. \\(R^2\\), RMSE, and MAE. Variable importance was extracted from the final best model to identify the predictors contributing most to variation in emissions per capita."
+  },
+  {
+    "objectID": "report.html#data-eda-and-regression-analysis-summary",
+    "href": "report.html#data-eda-and-regression-analysis-summary",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "3.1 Data, EDA, and Regression Analysis Summary",
+    "text": "3.1 Data, EDA, and Regression Analysis Summary\n\n\n\n\n\n\n\n\nFigure 1: Global average CO2 emissions per capita over time (1990–2023)\n\n\n\n\n\n\n\n\n\n\n\nGAM smooth-term summary\n\n\n\nTerm\nEDoF\np-value\n\n\n\n\n0\nLog GDP per Capita\n16.4797\n0.0\n\n\n1\nFossil Electricity Share (% of total electrici...\n16.0733\n0.0\n\n\n2\nRenewable Energy Share (% of total final energ...\n15.8542\n0.0\n\n\n3\nForest Area (% of total land area)\n15.4707\n0.0\n\n\n4\nUrban Population Share (% of total population)\n15.1863\n0.0\n\n\n5\nYear (centered at 1990)\n0.9779\n0.0\n\n\n6\nIntercept\n0.0000\n0.0\n\n\n\n\n\n\n\nThe cleaned dataset covers 1990–2023 after regional aggregates were removed and variable ranges were verified. Missing values were moderate (most notably for fossil-fuel electricity share) and were handled by removing all the rows with missing entries before regression analysis and modelling. The dataset had 7378 rows before removal and 5499 rows after.\nAccording to Figure 1, carbon dioxide emissions per capita rose through the 2000s and declined after the early 2010s, with developed countries trending down and developing countries trending up in the long term. Emissions and GDP per capita were strongly right-skewed, which motivated the log transformations. According to @wb-regression-gam, the GAM showed clear nonlinear relationships between emissions and the predictors (with extremely high EDoF values except for the year variable), which motivated the use of tree-based machine learning models to capture more complex patterns."
+  },
+  {
+    "objectID": "report.html#modeling-1",
+    "href": "report.html#modeling-1",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "3.2 Modeling",
+    "text": "3.2 Modeling\n\n\n\n\nTable 1: Country-grouped train / validation / test split\n\n\n\n\n\n\n\n\n\n\nSet\nRows\nCountries\n\n\n\n\n0\nTrain\n3826\n136\n\n\n1\nValidation\n833\n30\n\n\n2\nTest\n840\n30\n\n\n\n\n\n\n\n\n\n\nAccording to Table 1, the country-level data split placed roughly 70% of countries (136 out of 196) in the training set, 15% (30 out of 196) in the validation set, and 15% (30 out of 196) in the test set, with no country has observations appearing in more than one set. Therefore, test error measures generalization to unseen countries given their full 1990–2023 predictor history, which directly addresses the cross-country focus of the research question.\n\n\n\n\nTable 2: Test-set performance comparison across models\n\n\n\n\n\n\n\n\n\n\nModel\nTest R²\nTest RMSE\nTest MAE\n\n\n\n\n0\nDecision Tree (pruned)\n0.7056\n0.5581\n0.3744\n\n\n1\nXGBoost (tuned)\n0.7217\n0.5426\n0.3592\n\n\n\n\n\n\n\n\n\n\nThe pruned Decision Tree, after tuning ccp_alpha on the validation set and refitting on combined train and validation data, contained 18 leaves at depth 7 and reached a test-set \\(R^2\\) of 0.706, RMSE of 0.558, and MAE of 0.374 on log carbon dioxide emissions per capita.\n\n\n\n\nTable 3: Tuned XGBoost hyperparameters (5-fold GroupKFold random search + CV early stopping)\n\n\n\n\n\n\n\n\n\n\nHyperparameter\nValue\n\n\n\n\n0\nmax_depth\n6.0000\n\n\n1\nlearning_rate\n0.0300\n\n\n2\nn_estimators\n154.0000\n\n\n3\nreg_lambda\n0.1000\n\n\n4\nreg_alpha\n10.0000\n\n\n5\nsubsample\n0.8000\n\n\n6\ncolsample_bytree\n1.0000\n\n\n7\nmin_child_weight\n5.0000\n\n\n8\ngamma\n1.0000\n\n\n9\nCV RMSE (random search)\n0.5979\n\n\n10\nCV RMSE (early stop)\n0.5282\n\n\n\n\n\n\n\n\n\n\nThe tuned XGBoost used the hyperparameters in Table 3, where the hyperparameters were selected by 5-fold country-level randomized search on the training set (best CV RMSE = 0.5979) and refined by cross-validated early stopping on the combined train and validation sets, which selected 154 boosting rounds (CV RMSE = 0.5282). Refit on the combined sets, it reached a \\(R^2\\) of 0.722, RMSE of 0.543, and MAE of 0.359 as the test performance. The untuned baseline XGBoost (200 trees, depth 5, learning rate 0.1) reached \\(R^2\\) = 0.681, RMSE = 0.581, MAE = 0.388, confirming that tuned XGBoost outperformed the untuned baseline.\nOn the same test set (Table 2), the tuned XGBoost outperformed the pruned Decision Tree on every metric: \\(R^2\\) rose from 0.706 to 0.722, and RMSE and MAE both fell from 0.558 to 0.543 log units and from 0.374 to 0.359 log units, respectively. The bettern performance across all three metrics indicates the tuned XGBoost Regressor captures more complex nonlinearities and predictor interactions that the single pruned tree could not. Therefore, the tuned XGBoost Regressor is the final best model.\n\n\n\n\n\n\n\n\nFigure 2: Gain-based feature importance for the tuned XGBoost (final model)\n\n\n\n\n\nAccording to Figure 2, gain-based variable importance from the final model ranks log GDP per capita first by a clear margin, so log GDP per capita is the most important feature in determining the variation in carbon dioxide emissions per capita. Then renewable energy share and urban population share are the second and third most important features, followed by forest area, fossil electricity share, and the year. This ordering agrees with the hypothesis that economic development, energy sources, and urbanization are the key predictors of cross-country differences, while the calendar year adds little once those are known.\n\n\n\n\n\n\n\n\nFigure 3: Predicted vs actual log carbon dioxide emissions per capita on the test set (tuned XGBoost)\n\n\n\n\n\nAccording to Figure 3, the predicted outcome V.S. actual target diagnostic plot shows points clustered along the 45-degree line with no systematic curvature, and residuals are roughly symmetric and centered approximately at zero, meaning the model is not consistently too high or too low for either low emissions or high emissions countries. The remaining spread likely reflects country related features, such as natural resources, climate changes, etc., that the available predictors do not capture directly in the dataset."
+  },
+  {
+    "objectID": "report.html#summary-of-findings-and-bigger-picture",
+    "href": "report.html#summary-of-findings-and-bigger-picture",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "4.1 Summary of Findings and Bigger Picture",
+    "text": "4.1 Summary of Findings and Bigger Picture\nCarbon dioxide emissions per capita rose through the 2000s, peaked in the early 2010s, and declined afterward. On the modelling side, the tuned XGBoost Regressor outperformed the pruned Decision Tree and an untuned XGBoost baseline on every regression model evaluation metric (\\(R^2\\), RMSE, MAE), with residuals roughly symmetric around zero in the predicted outcome V.S. actual target diagnostic plot. Gain-based variable importance ranked log GDP per capita as the most important predictor by a clear margin, then renewable energy share and urban population share, with forest area, fossil-fuel electricity share, and the calendar year contributing least, which is consistent with the hypothesis that economic development, energy sources, and urbanization are the dominant cross-country drivers, which proves the hypothesis.\nEconomic development remains the strongest predictor of carbon dioxide emissions per capita even after energy and land-use indicators are included. Growth aspirations and sustainable development goals in developing and less developed countries can only be reconciled through structural shifts (clean energy, more efficient technology, low carbon industry) rather than restraint on growth itself.\nRenewable energy share was the second most important predictor, while fossil-fuel electricity share contributed far less. Renewable share likely includes fossil-fuel electricity information because it reflects the whole energy systemr ather than just electricity. In terms of policy implications, investing in renewables is the strongest single lever within this set of predictors."
+  },
+  {
+    "objectID": "report.html#limitations",
+    "href": "report.html#limitations",
+    "title": "JSC370 2026 Final Project Report",
+    "section": "4.3 Limitations",
+    "text": "4.3 Limitations\nThe country-level data split measures generalization to unseen countries given their full 1990–2023 predictor history, not temporal forecasting; predicting 2024 from 1990–2023 would require a forcasting princple split (strictly use 1990-2022 to trian and validate models, and use 2023 data for testing).\nDropping rows with missing entries before modelling removed a non-trivial share of country-years. If missingness is not uniform across countries, the modelled sample may skew toward those with stronger statistical reporting.\nThe predictor set is small and entirely national aggregated. Plausible predictors are not included, such as energy prices, weather,etc., which could account for some of the residual variance. The carbon dioxide emissions measure is also production-based, whereas trade-intensive countries look different under a consumption-based attribution.\nFinally, all results are associational. Tree-based models do not produce causal estimates, and predictor importance reflects predictive contribution within the model rather than policy effectiveness."
   }
 ]

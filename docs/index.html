@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Project summary, links, and interactive visualizations.">
 
-<title>JSC370 Final Project</title>
+<title>JSC370 Final Project — Carbon Dioxide Emissions per Capita, 1990–2023 – JSC370 Final Project</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,7 +24,6 @@ ul.task-list li input[type="checkbox"] {
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -41,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-57e5451768d45849ad0b481e45b57b87.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,6 +67,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<style>
+  body { /* tag the home page so the global CSS can scope hero overrides */ }
+</style>
 
 
 <link rel="stylesheet" href="styles.css">
@@ -96,10 +97,6 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
-<span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./report.html"> 
 <span class="menu-text">Report</span></a>
   </li>  
@@ -110,7 +107,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/EricWcr7/JSC370-2026S-Final-Project" target="_blank"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/EricWcr7/JSC370-2026S-Final-Project" target="_blank"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -122,78 +119,164 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#project-at-a-glance" id="toc-project-at-a-glance" class="nav-link" data-scroll-target="#project-at-a-glance">Project at a glance</a></li>
-  <li><a href="#navigate-the-site" id="toc-navigate-the-site" class="nav-link" data-scroll-target="#navigate-the-site">Navigate the site</a></li>
-  <li><a href="#downloads-links" id="toc-downloads-links" class="nav-link" data-scroll-target="#downloads-links">Downloads &amp; links</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">JSC370 Final Project</h1>
-</div>
 
-<div>
-  <div class="description">
-    Project summary, links, and interactive visualizations.
+
+
+<section class="hero">
+  <span class="eyebrow">JSC370 · Winter 2026 · University of Toronto</span>
+  <h1>Carbon Dioxide Emissions per Capita, 1990–2023</h1>
+  <p class="lede">How economic, energy, and land-use factors explain cross-country differences.</p>
+  <p class="byline"><strong>Yi Fan (Eric) Wang</strong> &nbsp;·&nbsp; April 26, 2026</p>
+  <div class="cta-row">
+    <a class="btn-primary" href="report.html">Read the Report <span class="arrow">→</span></a>
+    <a class="btn-secondary" href="viz.html">Explore Interactive Visuals</a>
+    <a class="btn-ghost" href="report.pdf">Download PDF <span class="arrow down">↓</span></a>
   </div>
-</div>
+</section>
 
-
-<div class="quarto-title-meta">
-
-    
-  
-    
+<section class="section section-bleed">
+  <div class="section-inner">
+    <span class="section-label">At a glance</span>
+    <div class="stat-strip">
+      <div class="stat-card">
+        <span class="stat-num">~7,400</span>
+        <span class="stat-label">Country–year observations</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">6</span>
+        <span class="stat-label">World Bank indicators</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">XGBoost</span>
+        <span class="stat-label">Final best model</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num">GDP / capita</span>
+        <span class="stat-label">Strongest predictor</span>
+      </div>
+    </div>
   </div>
-  
-
-
-</header>
-
-
-<section id="overview" class="level2">
-<h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p><em>One-paragraph summary of the project: the topic, the dataset, and the research question. Fill in later.</em></p>
 </section>
-<section id="project-at-a-glance" class="level2">
-<h2 class="anchored" data-anchor-id="project-at-a-glance">Project at a glance</h2>
-<ul>
-<li><strong>Question:</strong> <em>TBD — the main question(s) the project answers.</em></li>
-<li><strong>Data:</strong> <em>TBD — source, size, time range.</em></li>
-<li><strong>Methods:</strong> <em>TBD — EDA + course-covered modeling method (XGBoost / RF / GAM / LDA).</em></li>
-<li><strong>Key finding:</strong> <em>TBD — one-sentence takeaway.</em></li>
-</ul>
+
+<section class="section page-columns page-full">
+  <span class="section-label">The story</span>
+  <div class="section-prose">
+    <p>Climate change is one of the major global challenges, and it is largely driven by carbon dioxide emissions from human activities. Those emissions are not evenly distributed across countries: countries at different stages of economic development rely on different energy sources, follow different urbanization paths, and face different land-use pressures, all of which leave distinct imprints on per-capita emissions.</p>
+    <p>This project uses a <strong>34-year panel of every country</strong> reporting to the World Bank to map how those imprints have evolved — and to ask which factors actually drive cross-country differences once everything else is held equal.</p>
+  </div>
+  <aside class="callout-question">
+    <span class="label">Research question</span>
+    <p>How have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?</p>
+  </aside>
+  <div class="section-prose">
+    <p>This report extends the midterm analysis with more flexible, tree-based methods — a pruned <strong>Decision Tree</strong> as an interpretable baseline and a tuned <strong>XGBoost Regressor</strong> as the flexible predictor — that capture the nonlinearities and interactions hinted at by the midterm's OLS and GAM.</p>
+  </div>
 </section>
-<section id="navigate-the-site" class="level2">
-<h2 class="anchored" data-anchor-id="navigate-the-site">Navigate the site</h2>
-<ul>
-<li><a href="./about.html">About the project</a></li>
-<li><a href="./report.html">Read the full report</a></li>
-<li><a href="./viz.html">Interactive visualizations</a></li>
-</ul>
+
+<section class="section">
+  <span class="section-label">Key findings</span>
+  <h2 class="anchored">Three takeaways</h2>
+  <div class="findings-grid">
+    <article class="finding-card">
+      <span class="find-label">Trajectory</span>
+      <h3 class="anchored">Emissions peaked in the early 2010s</h3>
+      <p>Global per-capita emissions rose through the 2000s, peaked around 2012, then declined — with a sharp dip in 2020 from the COVID slowdown.</p>
+    </article>
+    <article class="finding-card">
+      <span class="find-label">Best model</span>
+      <h3 class="anchored">Tuned XGBoost wins on every metric</h3>
+      <p>The tuned XGBoost beats the pruned Decision Tree and an untuned XGBoost baseline on R², RMSE, and MAE on the held-out test set.</p>
+    </article>
+    <article class="finding-card">
+      <span class="find-label">Top driver</span>
+      <h3 class="anchored">Log GDP per capita dominates</h3>
+      <p>Followed by renewable energy share and urban population share. Forest area, fossil-fuel electricity share, and the calendar year contribute the least.</p>
+    </article>
+  </div>
 </section>
-<section id="downloads-links" class="level2">
-<h2 class="anchored" data-anchor-id="downloads-links">Downloads &amp; links</h2>
-<ul>
-<li><a href="report.pdf">Download the PDF report</a></li>
-<li><a href="https://github.com/EricWcr7/JSC370-2026S-Final-Project">GitHub repository</a></li>
-</ul>
+
+<section class="section">
+  <span class="section-label">What's on this site</span>
+  <h2 class="anchored">Three ways to dive in</h2>
+  <div class="site-grid">
+    <a class="site-card" href="report.html">
+      <span class="site-kind">Report</span>
+      <h3 class="anchored">Full written analysis</h3>
+      <p>Introduction, methods, results, and conclusions. Available as <strong>HTML</strong> and as a downloadable <strong>PDF</strong>.</p>
+    </a>
+    <a class="site-card" href="viz.html">
+      <span class="site-kind">Interactive</span>
+      <h3 class="anchored">Three plotly figures</h3>
+      <p>An animated world CO₂ map, a histogram by decade, and a CO₂-vs-GDP scatter by continent — all interactive.</p>
+    </a>
+    <a class="site-card" href="https://github.com/EricWcr7/JSC370-2026S-Final-Project" target="_blank" rel="noopener">
+      <span class="site-kind">Code</span>
+      <h3 class="anchored">GitHub repository</h3>
+      <p>Source <code>.qmd</code> files, the data pipeline, all figures, and the rendered website — fully reproducible.</p>
+    </a>
+  </div>
+</section>
+
+<section class="section">
+  <span class="section-label">Methodology</span>
+  <h2 class="anchored">How the analysis flows</h2>
+  <div class="method-flow">
+    <span class="method-step">Data</span>
+    <span class="method-arrow">→</span>
+    <span class="method-step">Cleaning</span>
+    <span class="method-arrow">→</span>
+    <span class="method-step">EDA</span>
+    <span class="method-arrow">→</span>
+    <span class="method-step is-primary">Decision Tree + XGBoost</span>
+    <span class="method-arrow">→</span>
+    <span class="method-step">Evaluation</span>
+  </div>
+</section>
+
+<section class="section section-bleed">
+  <div class="section-inner">
+    <span class="section-label">About</span>
+    <h2 class="anchored">Project &amp; author</h2>
+    <div class="about-grid">
+      <dl class="about-block">
+        <dt>Author</dt>
+        <dd>Yi Fan (Eric) Wang</dd>
+        <dt>Course</dt>
+        <dd>JSC370 — Data Science II (Winter 2026)</dd>
+        <dt>Institution</dt>
+        <dd>University of Toronto</dd>
+        <dt>Acknowledgements</dt>
+        <dd>Thanks to the JSC370 (Winter 2026) course staff, and to the World Bank Open Data team for keeping the WDI series free and machine-readable.</dd>
+      </dl>
+      <dl class="about-block">
+        <dt>Data source</dt>
+        <dd><a href="https://api.worldbank.org/v2" target="_blank" rel="noopener">World Bank Open Data API</a> — indicators <code>EN.GHG.CO2.PC.CE.AR5</code>, <code>NY.GDP.PCAP.KD</code>, <code>EG.ELC.FOSL.ZS</code>, <code>EG.FEC.RNEW.ZS</code>, <code>AG.LND.FRST.ZS</code>, <code>SP.URB.TOTL.IN.ZS</code>.</dd>
+        <dt>Period</dt>
+        <dd>1990 — 2023 (34 years)</dd>
+        <dt>Tools</dt>
+        <dd>
+          <div class="pill-row">
+            <span class="pill">Quarto</span>
+            <span class="pill">Python</span>
+            <span class="pill">pandas</span>
+            <span class="pill">plotly</span>
+            <span class="pill">scikit-learn</span>
+            <span class="pill">XGBoost</span>
+          </div>
+        </dd>
+      </dl>
+    </div>
+  </div>
+</section>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -600,16 +683,17 @@ ul.task-list li input[type="checkbox"] {
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-      &nbsp;
-    </div>   
+<p>JSC370 2026S · Yi Fan (Eric) Wang · University of Toronto</p>
+</div>   
     <div class="nav-footer-center">
-<p>JSC370 2026S Final Project</p>
+<p><a href="report.pdf">Download PDF</a> · <a href="https://github.com/EricWcr7/JSC370-2026S-Final-Project">GitHub</a></p>
 </div>
     <div class="nav-footer-right">
-      &nbsp;
-    </div>
+<p>April 26, 2026</p>
+</div>
   </div>
 </footer>
+<script>document.body.classList.add('home-page');</script>
 
 
 
