@@ -19,7 +19,9 @@ The site contains:
 
 All data are pulled at render-time from the **World Bank Open Data API** (no API key required). 
 
-API Origin: [https://data.worldbank.org/](https://data.worldbank.org/)
+API Origin:
+
+[https://data.worldbank.org/](https://data.worldbank.org/)
 
 API base URL:
 
@@ -62,21 +64,68 @@ Cached snapshots of the cleaned data live in `[data/](data/)` (`with_missing_val
 
 ## 🔁 Reproduce locally
 
-Requires [Quarto](https://quarto.org/) ≥ 1.4 and Python ≥ 3.10 with `pandas`, `numpy`, `requests`, `scikit-learn`, `xgboost`, `plotly`, `plotnine`, `seaborn`, `statsmodels`, `pygam`.
+### 1. Prerequisites
+
+- [Quarto](https://quarto.org/) ≥ 1.4
+- Python ≥ 3.10 with the packages below
+- A LaTeX engine (e.g. [TinyTeX](https://yihui.org/tinytex/) — `quarto install tinytex` is the easiest way) for the PDF render
+- An internet connection — `report.qmd` re-fetches indicator data from the World Bank API at render time
+
+### 2. Clone and install Python dependencies
 
 ```bash
-# Clone
 git clone https://github.com/EricWcr7/JSC370-2026S-Final-Project.git
 cd JSC370-2026S-Final-Project
 
-# Render the full site (re-fetches API data on the report.qmd run)
-quarto render
+# Create a virtualenv (optional but recommended)
+python -m venv .venv
+source .venv/bin/activate           # Windows: .venv\Scripts\activate
 
-# Or preview live
-quarto preview
+# Install the packages used across the .qmd files
+pip install pandas numpy requests scikit-learn xgboost \
+            plotly plotnine seaborn matplotlib \
+            statsmodels pygam jupyter
 ```
 
-The rendered output lands in `docs/`; GitHub Pages serves that folder directly.
+### 3. Render the full site (recommended)
+
+```bash
+quarto render
+```
+
+This rebuilds every page in `_quarto.yml`'s `render:` list — `index.qmd`, `report.qmd`, `viz.qmd` — into `docs/`. The pre-rendered `midterm.html` and `report.pdf` are passed through unchanged. Expect 2–5 minutes the first time (XGBoost tuning + PDF compile).
+
+### 4. Render a single page
+
+You usually only need to rebuild what you changed. Each `.qmd` can be re-rendered on its own:
+
+```bash
+# Home page — fast, no Python execution. Re-render after editing
+# index.qmd, styles.css, theme.scss, or _quarto.yml.
+quarto render index.qmd
+
+# Final report — slow. Runs the full Python pipeline:
+#   API fetch  →  cleaning  →  EDA  →  Decision Tree + tuned XGBoost
+#   →  evaluation  →  HTML  →  PDF (LaTeX).
+# Outputs: docs/report.html and docs/report.pdf.
+quarto render report.qmd
+
+# Interactive figures — moderate. Builds the three plotly figures
+# (animated world CO2 map, decade histogram, GDP scatter) and
+# embeds them into docs/viz.html.
+quarto render viz.qmd
+```
+
+`midterm.html` is **not** rebuilt by Quarto — it's a pre-rendered artifact carried over from the midterm and copied into `docs/midterm.html` directly.
+
+### 5. Live preview while editing
+
+```bash
+quarto preview              # serves the whole site, hot-reloads on save
+quarto preview index.qmd    # serve a single page
+```
+
+The rendered output always lands in `docs/`; GitHub Pages serves that folder directly.
 
 ## 📝 License
 
