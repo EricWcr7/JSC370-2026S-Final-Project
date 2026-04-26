@@ -501,6 +501,8 @@ display(pd.DataFrame(rows))
 ```{python}
 #| label: fig-wb-eda-line-global
 #| fig-cap: "Global average CO2 emissions per capita over time (1990–2023)"
+#| fig-width: 6
+#| fig-height: 3
 #| warning: false
 #| message: false
 
@@ -530,6 +532,8 @@ co2_trend = (
 ```{python}
 #| label: wb-eda-line-countries
 #| fig-cap: "CO2 per capita trends for selected representative countries (1990–2023)"
+#| fig-width: 6
+#| fig-height: 3
 #| output: false
 #| warning: false
 #| message: false
@@ -1367,7 +1371,7 @@ According to @fig-wb-model-pred-vs-actual, the predicted outcome V.S. actual tar
 
 ## 4.1 Summary of Findings and Bigger Picture
 
-Carbon dioxide emissions per capita rose through the 2000s, peaked in the early 2010s, and declined afterward. On the modelling side, the tuned XGBoost Regressor outperformed the pruned Decision Tree and an untuned XGBoost baseline on every regression model evaluation metric ($R^2$, RMSE, MAE), with residuals roughly symmetric around zero in the predicted outcome V.S. actual target diagnostic plot. Gain-based variable importance ranked log GDP per capita as the most important predictor by a clear margin, then renewable energy share and urban population share, with forest area, fossil-fuel electricity share, and the calendar year contributing least, which is consistent with the hypothesis that economic development, energy sources, and urbanization are the dominant cross-country drivers, which proves the hypothesis. 
+Carbon dioxide emissions per capita rose through the 2000s, peaked in the early 2010s, and declined afterward. On the modelling side, the tuned XGBoost Regressor outperformed the pruned Decision Tree and an untuned XGBoost baseline on every regression model evaluation metric ($R^2$, RMSE, MAE), with residuals roughly symmetric around zero in the predicted outcome V.S. actual target diagnostic plot. Gain-based variable importance ranked log GDP per capita as the most important predictor by a clear margin, then renewable energy share and urban population share, with forest area, fossil-fuel electricity share, and the calendar year contributing least, so that economic development, energy sources, and urbanization are the dominant cross-country drivers, which supports the hypothesis. 
 
 Economic development remains the strongest predictor of carbon dioxide emissions per capita even after energy and land-use indicators are included. Growth aspirations and sustainable development goals in developing and less developed countries can only be reconciled through structural shifts (clean energy, more efficient technology, low carbon industry) rather than restraint on growth itself.
 
