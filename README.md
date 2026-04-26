@@ -17,7 +17,11 @@ The site contains:
 
 ## 📊 Data source — World Bank Open Data API
 
-All data are pulled at render-time from the **World Bank Open Data API** (no API key required). API base URL:
+All data are pulled at render-time from the **World Bank Open Data API** (no API key required). 
+
+API Origin: [https://data.worldbank.org/](https://data.worldbank.org/)
+
+API base URL:
 
 [https://api.worldbank.org/v2](https://api.worldbank.org/v2)
 
