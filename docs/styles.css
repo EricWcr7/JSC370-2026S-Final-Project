@@ -344,6 +344,44 @@ header.headroom { background: var(--paper) !important; }
   font-weight: 500;
 }
 
+/* Horizontal modifier — full-width band, label on the left */
+.callout-question.callout-horizontal {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-6) var(--space-7);
+  margin: var(--space-7) 0;
+  width: 100%;
+  max-width: 100%;
+  grid-column: page-start / page-end;
+}
+.callout-question.callout-horizontal .label {
+  flex: 0 0 auto;
+  margin: 0;
+  min-width: 8rem;
+  max-width: 9rem;
+  color: var(--accent);
+}
+.callout-question.callout-horizontal p {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: clamp(1.15rem, 1.7vw, 1.4rem);
+  line-height: 1.45;
+  max-width: none;
+}
+@media (max-width: 768px) {
+  .callout-question.callout-horizontal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-5);
+  }
+  .callout-question.callout-horizontal .label {
+    min-width: 0;
+    max-width: none;
+  }
+}
+
 /* ---------- Findings grid ---------- */
 .findings-grid {
   display: grid;
@@ -390,6 +428,9 @@ header.headroom { background: var(--paper) !important; }
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-5);
   margin-top: var(--space-5);
+}
+.site-grid.site-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
 }
 .site-card {
   display: block;
@@ -599,14 +640,16 @@ main code:not(pre code) {
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
   .findings-grid,
-  .site-grid { grid-template-columns: 1fr 1fr; }
+  .site-grid,
+  .site-grid.site-grid-4 { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 768px) {
   body { font-size: 16px; }
   .hero { padding-top: var(--space-7); }
   .stat-strip { grid-template-columns: 1fr 1fr; gap: var(--space-3); }
   .findings-grid,
-  .site-grid { grid-template-columns: 1fr; }
+  .site-grid,
+  .site-grid.site-grid-4 { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; gap: var(--space-5); }
   .method-flow { flex-direction: column; align-items: stretch; gap: var(--space-2); padding: var(--space-4); }
   .method-arrow { display: none; }

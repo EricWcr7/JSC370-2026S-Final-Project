@@ -98,7 +98,11 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./report.html"> 
-<span class="menu-text">Report</span></a>
+<span class="menu-text">Final Report</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./midterm.html"> 
+<span class="menu-text">Midterm Report</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./viz.html"> 
@@ -124,7 +128,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content page-columns page-full column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
@@ -135,9 +139,9 @@ ul.task-list li input[type="checkbox"] {
   <p class="lede">How economic, energy, and land-use factors explain cross-country differences.</p>
   <p class="byline"><strong>Yi Fan (Eric) Wang</strong> &nbsp;·&nbsp; April 26, 2026</p>
   <div class="cta-row">
-    <a class="btn-primary" href="report.html">Read the Report <span class="arrow">→</span></a>
+    <a class="btn-primary" href="report.html">Read the Final Report <span class="arrow">→</span></a>
     <a class="btn-secondary" href="viz.html">Explore Interactive Visuals</a>
-    <a class="btn-ghost" href="report.pdf">Download PDF <span class="arrow down">↓</span></a>
+    <a class="btn-ghost" href="report.pdf">Download Final Report PDF <span class="arrow down">↓</span></a>
   </div>
 </section>
 
@@ -165,18 +169,18 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </section>
 
-<section class="section page-columns page-full">
+<section class="section">
   <span class="section-label">The story</span>
   <div class="section-prose">
     <p>Climate change is one of the major global challenges, and it is largely driven by carbon dioxide emissions from human activities. Those emissions are not evenly distributed across countries: countries at different stages of economic development rely on different energy sources, follow different urbanization paths, and face different land-use pressures, all of which leave distinct imprints on per-capita emissions.</p>
     <p>This project uses a <strong>34-year panel of every country</strong> reporting to the World Bank to map how those imprints have evolved — and to ask which factors actually drive cross-country differences once everything else is held equal.</p>
   </div>
-  <aside class="callout-question">
+  <div class="callout-question callout-horizontal" role="note">
     <span class="label">Research question</span>
     <p>How have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?</p>
-  </aside>
+  </div>
   <div class="section-prose">
-    <p>This report extends the midterm analysis with more flexible, tree-based methods — a pruned <strong>Decision Tree</strong> as an interpretable baseline and a tuned <strong>XGBoost Regressor</strong> as the flexible predictor — that capture the nonlinearities and interactions hinted at by the midterm's OLS and GAM.</p>
+    <p>This <strong>Final Report</strong> extends the <a href="midterm.html"><strong>Midterm Report</strong></a> with more flexible, tree-based methods — a pruned <strong>Decision Tree</strong> as an interpretable baseline and a tuned <strong>XGBoost Regressor</strong> as the flexible predictor — that capture the nonlinearities and interactions hinted at by the midterm's OLS and GAM.</p>
   </div>
 </section>
 
@@ -204,12 +208,17 @@ ul.task-list li input[type="checkbox"] {
 
 <section class="section">
   <span class="section-label">What's on this site</span>
-  <h2 class="anchored">Three ways to dive in</h2>
-  <div class="site-grid">
+  <h2 class="anchored">Four ways to dive in</h2>
+  <div class="site-grid site-grid-4">
     <a class="site-card" href="report.html">
-      <span class="site-kind">Report</span>
+      <span class="site-kind">Final Report</span>
       <h3 class="anchored">Full written analysis</h3>
       <p>Introduction, methods, results, and conclusions. Available as <strong>HTML</strong> and as a downloadable <strong>PDF</strong>.</p>
+    </a>
+    <a class="site-card" href="midterm.html">
+      <span class="site-kind">Midterm Report</span>
+      <h3 class="anchored">The earlier OLS &amp; GAM analysis</h3>
+      <p>Background context — the midterm-stage analysis (OLS regression and GAM) that this <strong>Final Report</strong> extends. <strong>HTML only.</strong></p>
     </a>
     <a class="site-card" href="viz.html">
       <span class="site-kind">Interactive</span>
@@ -240,41 +249,6 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </section>
 
-<section class="section section-bleed">
-  <div class="section-inner">
-    <span class="section-label">About</span>
-    <h2 class="anchored">Project &amp; author</h2>
-    <div class="about-grid">
-      <dl class="about-block">
-        <dt>Author</dt>
-        <dd>Yi Fan (Eric) Wang</dd>
-        <dt>Course</dt>
-        <dd>JSC370 — Data Science II (Winter 2026)</dd>
-        <dt>Institution</dt>
-        <dd>University of Toronto</dd>
-        <dt>Acknowledgements</dt>
-        <dd>Thanks to the JSC370 (Winter 2026) course staff, and to the World Bank Open Data team for keeping the WDI series free and machine-readable.</dd>
-      </dl>
-      <dl class="about-block">
-        <dt>Data source</dt>
-        <dd><a href="https://api.worldbank.org/v2" target="_blank" rel="noopener">World Bank Open Data API</a> — indicators <code>EN.GHG.CO2.PC.CE.AR5</code>, <code>NY.GDP.PCAP.KD</code>, <code>EG.ELC.FOSL.ZS</code>, <code>EG.FEC.RNEW.ZS</code>, <code>AG.LND.FRST.ZS</code>, <code>SP.URB.TOTL.IN.ZS</code>.</dd>
-        <dt>Period</dt>
-        <dd>1990 — 2023 (34 years)</dd>
-        <dt>Tools</dt>
-        <dd>
-          <div class="pill-row">
-            <span class="pill">Quarto</span>
-            <span class="pill">Python</span>
-            <span class="pill">pandas</span>
-            <span class="pill">plotly</span>
-            <span class="pill">scikit-learn</span>
-            <span class="pill">XGBoost</span>
-          </div>
-        </dd>
-      </dl>
-    </div>
-  </div>
-</section>
 
 
 
@@ -686,7 +660,7 @@ ul.task-list li input[type="checkbox"] {
 <p>JSC370 2026S · Yi Fan (Eric) Wang · University of Toronto</p>
 </div>   
     <div class="nav-footer-center">
-<p><a href="report.pdf">Download PDF</a> · <a href="https://github.com/EricWcr7/JSC370-2026S-Final-Project">GitHub</a></p>
+<p><a href="report.pdf">Download Final Report PDF</a> · <a href="https://github.com/EricWcr7/JSC370-2026S-Final-Project">GitHub</a></p>
 </div>
     <div class="nav-footer-right">
 <p>April 26, 2026</p>

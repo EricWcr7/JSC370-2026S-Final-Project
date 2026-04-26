@@ -15,8 +15,10 @@ website:
     left:
       - text: "Home"
         href: index.qmd
-      - text: "Report"
+      - text: "Final Report"
         href: report.qmd
+      - text: "Midterm Report"
+        href: midterm.html
       - text: "Interactive Viz"
         href: viz.qmd
     right:
@@ -29,7 +31,7 @@ website:
     left: |
       JSC370 2026S · Yi Fan (Eric) Wang · University of Toronto
     center: |
-      [Download PDF](report.pdf) · [GitHub](https://github.com/EricWcr7/JSC370-2026S-Final-Project)
+      [Download Final Report PDF](report.pdf) · [GitHub](https://github.com/EricWcr7/JSC370-2026S-Final-Project)
     right: |
       April 26, 2026
 
