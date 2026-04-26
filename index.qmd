@@ -22,6 +22,7 @@ include-after-body:
   <div class="cta-row">
     <a class="btn-primary" href="report.html">Read the Final Report <span class="arrow">→</span></a>
     <a class="btn-secondary" href="viz.html">Explore Interactive Visuals</a>
+    <a class="btn-secondary" href="https://github.com/EricWcr7/JSC370-2026S-Final-Project" target="_blank" rel="noopener">GitHub Repository <span class="arrow">↗</span></a>
     <a class="btn-ghost" href="report.pdf">Download Final Report PDF <span class="arrow down">↓</span></a>
   </div>
 </section>
@@ -54,14 +55,15 @@ include-after-body:
   <span class="section-label">The story</span>
   <div class="section-prose">
     <p>Climate change is one of the major global challenges, and it is largely driven by carbon dioxide emissions from human activities. Those emissions are not evenly distributed across countries: countries at different stages of economic development rely on different energy sources, follow different urbanization paths, and face different land-use pressures, all of which leave distinct imprints on per-capita emissions.</p>
-    <p>This project uses a <strong>34-year panel of every country</strong> reporting to the World Bank to map how those imprints have evolved &mdash; and to ask which factors actually drive cross-country differences once everything else is held equal.</p>
+    <p>This project uses a <strong>34-year panel of every country</strong> reporting to the World Bank to map how those imprints have evolved &mdash; and to ask which factors actually drive cross-country differences once everything else is held equal. Six indicators carry the analysis: carbon dioxide emissions per capita as the outcome, with GDP per capita, fossil-fuel electricity share, renewable energy share, forest area, and urban population share as candidate predictors, plus the calendar year as a temporal control.</p>
   </div>
   <div class="callout-question callout-horizontal" role="note">
     <span class="label">Research question</span>
     <p>How have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?</p>
   </div>
   <div class="section-prose">
-    <p>This <strong>Final Report</strong> extends the <a href="midterm.html"><strong>Midterm Report</strong></a> with more flexible, tree-based methods &mdash; a pruned <strong>Decision Tree</strong> as an interpretable baseline and a tuned <strong>XGBoost Regressor</strong> as the flexible predictor &mdash; that capture the nonlinearities and interactions hinted at by the midterm's OLS and GAM.</p>
+    <p>The <a href="midterm.html"><strong>Midterm Report</strong></a> built the data pipeline from the World Bank Open Data API, cleaned 7,378 country-year records down to 5,499 complete cases, and laid the explanatory groundwork with an <strong>OLS regression</strong> (adj. R² ≈ 0.66) and a <strong>Generalized Additive Model</strong> (pseudo R² ≈ 0.73). The GAM's significantly nonlinear smooth terms made it clear that a strictly linear story was leaving variance on the table.</p>
+    <p>The <strong>Final Report</strong> picks up from there. It keeps the same panel and the same predictor set so the two reports stay directly comparable, then swaps in two flexible tree-based models &mdash; a pruned <strong>Decision Tree</strong> as an interpretable baseline and a tuned <strong>XGBoost Regressor</strong> as the flexible predictor &mdash; with country-grouped train/validation/test splits to avoid country-level leakage. The result is both better predictive performance and a sharper, gain-based picture of which predictors actually do the work.</p>
   </div>
 </section>
 
