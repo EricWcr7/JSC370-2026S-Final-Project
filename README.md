@@ -52,14 +52,33 @@ Cached snapshots of the cleaned data live in `[data/](data/)` (`with_missing_val
 
 ```
 .
-├── index.qmd          # Home page (Quarto source)
-├── report.qmd         # Final report — Python execution, renders HTML + PDF
-├── viz.qmd            # Three interactive plotly figures
-├── _quarto.yml        # Site config (navbar, theme, footer)
-├── styles.css         # Editorial design system
-├── theme.scss         # Bootstrap variable overrides
-├── data/              # Cached World Bank panel (CSV)
-├── docs/              # Rendered website (served by GitHub Pages)
+├── README.md                      # This file
+├── LICENSE                        # MIT
+├── CLAUDE.md                      # Project context for Claude Code (rubric, skills, midterm recap)
+│
+├── _quarto.yml                    # Site config (navbar, theme, footer, render list)
+├── styles.css                     # Editorial design system (palette, typography, layout)
+├── theme.scss                     # Bootstrap variable overrides loaded by Quarto
+│
+├── index.qmd                      # Home page — hero, story, key findings, site grid
+├── report.qmd                     # Final report — Python pipeline, renders HTML + PDF
+├── viz.qmd                        # Three interactive plotly figures (map, histogram, scatter)
+├── Midterm.qmd                    # Source of the midterm report (rendered HTML lives in docs/)
+│
+├── data/                          # Cached World Bank panel — re-render works offline
+│   ├── with_missing_values.csv    #   full country–year panel, NA preserved
+│   ├── without_missing_values.csv #   complete-case sample used for modeling
+│   └── country_meta.csv           #   ISO3 → country name + continent (for Interactive Visualizations only)
+│
+├── docs/                          # Rendered website (GitHub Pages serves this folder)
+│   ├── index.html
+│   ├── report.html                # Fina report — HTML
+│   ├── report.pdf                 # Final report — PDF
+│   ├── midterm.html               # Midterm report - HTML
+│   ├── viz.html                   # 3 Different Interactive Visualizations
+│   ├── styles.css
+│   ├── search.json
+│   └── site_libs/                 #   Bootstrap, plotly, Quarto runtime assets
 ```
 
 ## 🔁 Reproduce locally
