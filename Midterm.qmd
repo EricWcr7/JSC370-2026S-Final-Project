@@ -7,6 +7,38 @@ format:
   html:
     toc: true
     embed-resources: true
+    output-file: midterm.html
+    include-before-body:
+      text: |
+        <style>
+          .site-banner {
+            position: sticky; top: 0; z-index: 1000;
+            background: #fafaf7; border-bottom: 1px solid #e5e3dc;
+            padding: 0.7rem 1.25rem;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.94rem;
+            display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap;
+          }
+          .site-banner .brand {
+            font-family: "Source Serif 4", Georgia, serif;
+            font-weight: 600; color: #1a1a1a; text-decoration: none;
+          }
+          .site-banner .nav-spacer { flex: 1; }
+          .site-banner a.nav-link {
+            color: #4a4a4a; text-decoration: none; font-weight: 500;
+          }
+          .site-banner a.nav-link:hover { color: #c44e2e; }
+          .site-banner .current { color: #c44e2e; font-weight: 600; }
+        </style>
+        <nav class="site-banner" aria-label="Site navigation">
+          <a class="brand" href="index.html">JSC370 Final Project</a>
+          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link" href="report.html">Final Report</a>
+          <span class="current">Midterm Report</span>
+          <a class="nav-link" href="viz.html">Interactive Viz</a>
+          <span class="nav-spacer"></span>
+          <a class="nav-link" href="https://github.com/EricWcr7/JSC370-2026S-Final-Project" target="_blank" rel="noopener">GitHub &#8599;</a>
+        </nav>
 jupyter: python3
 execute:
   enabled: true
