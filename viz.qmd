@@ -35,7 +35,7 @@ DATA["decade"] = (DATA["year"] // 10) * 10
 DATA["decade_label"] = DATA["decade"].astype(int).astype(str) + "s"
 ```
 
-## Figure 1 — World CO₂ emissions per capita over time
+## Figure 1 — World Carbon Dioxide emissions per capita over time
 
 ```{python}
 #| label: fig-map
@@ -75,13 +75,13 @@ fig1.update_layout(
 fig1.show()
 ```
 
-**Caption.** *Figure 1 — World choropleth of Carbon Dioxide emissions per capita (metric tons), 1990–2023. Press the play button or drag the year slider below the map to animate through years; hover any country to see its exact value. Grey countries have no value reported for that year.*
+*Figure 1 — World choropleth of Carbon Dioxide emissions per capita (metric tons), 1990–2023. Press the play button or drag the year slider below the map to animate through years; hover any country to see its exact value. Grey countries have no value reported for that year.*
 
-**Summary.** Across the 34-year window, the high-emitter band shifts visibly. In 1990 the United States, Australia, Russia, and the oil-rich Gulf states dominate the deep-red end (>15 metric tons per capita), while most of Asia and Africa sit below 2 metric tons percapita. By the late 2010s Western European nations have desaturated as their emissions decline, China has darkened from pale yellow to mid-range orange, and the Gulf states remain at the top of the scale. The 2020 frame visibly lightens worldwide — the COVID-induced dip — before rebounding partially in 2022–2023.
+**Summary** Across the 34-year window, the high-emitter band shifts visibly. In 1990 the United States, Australia, Russia, and the oil-rich Gulf states dominate the deep-red end (more than 15 metric tons per capita), while most of Asia and Africa sit below 2 metric tons percapita. By the late 2010s Western European nations have lightened as their carbon dioxide emissions per capita declined, China has darkened from pale yellow to mid-range orange, and the Gulf states remain at the top of the scale. The 2020 frame visibly lightens worldwide due to the COVID-19 pandemic and bounces back partially in 2022–2023.
 
 ---
 
-## Figure 2 — Distribution of CO₂/capita by decade
+## Figure 2 — Distribution of Carbon Dioxide emissions per capita by decade
 
 ```{python}
 #| label: fig-hist
@@ -107,10 +107,10 @@ fig2 = px.histogram(
     histnorm="probability density",
     range_x=(0, 25),
     labels={
-        "co2_per_capita": "CO₂ per capita (metric tons)",
+        "co2_per_capita": "Carbon Dioxide emissions per capita (metric tons)",
         "decade_label": "Decade",
     },
-    title="Distribution of CO₂ per Capita by Decade (1990s–2020s)",
+    title="Distribution of Carbon Dioxide emissions per capita by Decade (1990s–2020s)",
     template="plotly_white",
     color_discrete_sequence=px.colors.qualitative.Set2,
     category_orders={"decade_label": decade_order},
@@ -127,59 +127,71 @@ fig2.update_layout(
 fig2.show()
 ```
 
-**Caption.** *Figure 2 — Overlaid probability-density histograms of country-year CO₂ per capita, one colour per decade. Bars are normalised so each decade integrates to 1, making the four shapes directly comparable despite the 2020s having only four years of data. Click a decade in the legend to toggle it; double-click to isolate.*
+*Figure 2 — Overlaid probability-density histograms of country-year Carbon Dioxide emissions per capita, one colour per decade. Bars are normalised so each decade integrates to 1, making the four shapes directly comparable despite the 2020s having only four years of data. Click a decade in the legend to toggle it; double-click to isolate.*
 
-**Summary.** All four decades share the same long right tail driven by a handful of petro-states (>15 t/capita). The bulk of the distribution does shift, however: the 1990s mass is concentrated tightly near 0–2 t/capita, while the 2010s mode is noticeably broader and slightly right-shifted, consistent with rapid industrialisation in Asia. The 2020s curve again leans toward the low end — a fingerprint of the COVID demand drop that lingered into 2021 — but its mid-range density (4–8 t/capita) is also higher than the 1990s, showing that the long-run shift toward higher emissions in middle-income countries has only partially reversed.
+**Summary** All four decades share the same long right tail driven by a handful of petro-states (more than 15 metric tons per capita). The bulk of the distribution does shift, however, the 1990s mass is concentrated tightly near 0 to 2 metric tons per capita, while the 2010s mode is noticeably broader and slightly right-shifted. The 2020s curve again leans toward the low end, due to the COVID-19 pandemic, but its mid-range density (4–8 metric tons per capita) is also higher than the 1990s, showing that the long-run shift toward higher emissions in middle-income countries has only partially reversed.
 
 ---
 
-## Figure 3 — CO₂/capita by continent in 2023
+## Figure 3 — Carbon Dioxide emissions per capita vs. GDP per capita, by continent
 
 ```{python}
-#| label: fig-box
+#| label: fig-scatter
 #| warning: false
 #| message: false
 
-continent_order = ["Africa", "Asia", "Americas", "Europe", "Oceania"]
-df_box = (
-    DATA.dropna(subset=["co2_per_capita", "continent"])
-        .query("year == 2023")
+continent_order = ["Africa", "Americas", "Asia", "Europe", "Oceania"]
+df_scatter = (
+    DATA.dropna(subset=["co2_per_capita", "gdp_per_capita", "continent"])
+        .query("1990 <= year <= 2023 and co2_per_capita <= 25")
         .copy()
 )
-df_box["continent"] = pd.Categorical(
-    df_box["continent"], categories=continent_order, ordered=True
+df_scatter["continent"] = pd.Categorical(
+    df_scatter["continent"], categories=continent_order, ordered=True
 )
+df_scatter = df_scatter.sort_values(["year", "continent", "countryiso3code"])
 
-# Add a small floor (0.01) so log scale handles the rare zero/near-zero values cleanly.
-df_box["co2_for_plot"] = df_box["co2_per_capita"].clip(lower=0.01)
-
-fig3 = px.box(
-    df_box.sort_values("continent"),
-    x="continent",
-    y="co2_for_plot",
+fig3 = px.scatter(
+    df_scatter,
+    x="gdp_per_capita",
+    y="co2_per_capita",
     color="continent",
-    points="all",
+    animation_frame="year",
+    animation_group="countryiso3code",
     hover_name="country_name",
-    hover_data={"continent": False, "co2_for_plot": False, "co2_per_capita": ":.2f"},
-    log_y=True,
-    labels={
-        "continent": "Continent",
-        "co2_for_plot": "CO₂ per capita (metric tons, 2023, log scale)",
+    hover_data={
+        "continent": True,
+        "gdp_per_capita": ":,.0f",
+        "co2_per_capita": ":.2f",
+        "year": False,
     },
-    title="CO₂ Emissions per Capita by Continent in 2023 (log scale)",
+    log_x=True,
+    range_x=(300, 200000),
+    range_y=(0, 25),
+    trendline="ols",
+    trendline_options=dict(log_x=True),
+    trendline_scope="trace",
+    opacity=0.75,
+    labels={
+        "gdp_per_capita": "GDP per capita (constant 2015 USD, log scale)",
+        "co2_per_capita": "CO₂ per capita (metric tons)",
+        "continent": "Continent",
+    },
+    title="CO₂ vs. GDP per capita by Continent — drag the year slider",
     template="plotly_white",
     color_discrete_sequence=px.colors.qualitative.Set2,
     category_orders={"continent": continent_order},
 )
+fig3.update_traces(marker=dict(size=8, line=dict(width=0.4, color="white")))
 fig3.update_layout(
-    height=500,
-    showlegend=False,
+    height=560,
     margin=dict(l=10, r=10, t=60, b=10),
-    yaxis_title="CO₂ per capita (metric tons, 2023, log scale)",
+    legend_title_text="Continent",
+    hovermode="closest",
 )
 fig3.show()
 ```
 
-**Caption.** *Figure 3 — Boxplot of country-level CO₂ per capita in 2023, grouped by continent, on a log y-axis so that low-emitting countries remain visible alongside extreme outliers. Each dot is one country; hover to read its name and exact value (tooltip shows the original linear value). Boxes show the inter-quartile range with the median as the inner line.*
+*Figure 3 — Country-level scatter of Carbon Dioxide emissions per capita against GDP per capita (log x-axis), coloured by continent, with one OLS trendline fitted per continent in each year. Drag the year slider to watch how the GDP-to-emissions relationship evolves between 1990 and 2023; hover any point for the country name and exact values. A small number of extreme petro-state outliers above 25 metric tons per capita are excluded so the bulk of the relationship is readable.*
 
-**Summary.** Africa has by far the lowest median (≈0.5 t/capita), reflecting limited industrialisation and large rural populations. Asia spans the widest range — its IQR is moderate but it is pulled to the top of the chart by Qatar, Bahrain, Kuwait, Brunei, and the UAE, all above 18 t/capita. Europe sits at a higher median (~5 t/capita) with a relatively tight spread, while Oceania is bimodal — Australia and New Zealand near the high end, the small Pacific island states at the bottom, and Palau as a striking outlier near 80 t/capita (a tiny-population denominator inflates per-capita values). The Americas straddle the middle, anchored by the United States, Canada, and Trinidad and Tobago at the top and Caribbean/Central American countries at the bottom.
+**Summary** Across all years and continents the relationship is clearly positive — richer countries emit more carbon dioxide per capita, and the log-x axis makes the slope roughly linear. The trendlines do diverge by continent in informative ways. Europe's slope visibly flattens after the early 2000s, evidence of the partial decoupling of growth from emissions through renewable adoption and de-industrialisation. Asia's slope stays steep throughout, consistent with the rapid industrialisation of China, India, and South-East Asia pushing the cloud of dots up and to the right over the slider. Africa sits to the lower-left with the lowest intercept and a flat slope (limited industrial base even at higher GDP), while Oceania's small sample is dominated by Australia and New Zealand at the high end. Pressing play makes the cloud drift right (GDP grows everywhere) and modestly down (per-capita emissions decline at fixed GDP) — a visual fingerprint of the broader decarbonisation trend.
