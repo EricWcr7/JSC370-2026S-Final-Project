@@ -7,7 +7,7 @@ How have carbon dioxide emissions per capita evolved across countries from 1990 
 
 ## 🌐 Website
 
-**Live site:** <https://ericwcr7.github.io/JSC370-2026S-Final-Project/>
+**Live site:** [https://ericwcr7.github.io/JSC370-2026S-Final-Project/](https://ericwcr7.github.io/JSC370-2026S-Final-Project/)
 
 The site contains:
 
@@ -19,26 +19,28 @@ The site contains:
 
 All data are pulled at render-time from the **World Bank Open Data API** (no API key required). API base URL:
 
-<https://api.worldbank.org/v2>
+[https://api.worldbank.org/v2](https://api.worldbank.org/v2)
 
 Indicators used (WDI series codes — each link returns JSON for the country-year panel):
 
-| Variable | Indicator code | API endpoint |
-|---|---|---|
-| CO₂ emissions per capita (outcome) | `EN.GHG.CO2.PC.CE.AR5` | <https://api.worldbank.org/v2/country/all/indicator/EN.GHG.CO2.PC.CE.AR5?format=json&date=1990:2023> |
-| GDP per capita (constant 2015 USD) | `NY.GDP.PCAP.KD` | <https://api.worldbank.org/v2/country/all/indicator/NY.GDP.PCAP.KD?format=json&date=1990:2023> |
-| Fossil-fuel electricity share | `EG.ELC.FOSL.ZS` | <https://api.worldbank.org/v2/country/all/indicator/EG.ELC.FOSL.ZS?format=json&date=1990:2023> |
-| Renewable energy share | `EG.FEC.RNEW.ZS` | <https://api.worldbank.org/v2/country/all/indicator/EG.FEC.RNEW.ZS?format=json&date=1990:2023> |
-| Forest area (% of land) | `AG.LND.FRST.ZS` | <https://api.worldbank.org/v2/country/all/indicator/AG.LND.FRST.ZS?format=json&date=1990:2023> |
-| Urban population share | `SP.URB.TOTL.IN.ZS` | <https://api.worldbank.org/v2/country/all/indicator/SP.URB.TOTL.IN.ZS?format=json&date=1990:2023> |
+
+| Variable                           | Indicator code         | API endpoint                                                                                                                                                                                             |
+| ---------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CO₂ emissions per capita (outcome) | `EN.GHG.CO2.PC.CE.AR5` | [https://api.worldbank.org/v2/country/all/indicator/EN.GHG.CO2.PC.CE.AR5?format=json&date=1990:2023](https://api.worldbank.org/v2/country/all/indicator/EN.GHG.CO2.PC.CE.AR5?format=json&date=1990:2023) |
+| GDP per capita (constant 2015 USD) | `NY.GDP.PCAP.KD`       | [https://api.worldbank.org/v2/country/all/indicator/NY.GDP.PCAP.KD?format=json&date=1990:2023](https://api.worldbank.org/v2/country/all/indicator/NY.GDP.PCAP.KD?format=json&date=1990:2023)             |
+| Fossil-fuel electricity share      | `EG.ELC.FOSL.ZS`       | [https://api.worldbank.org/v2/country/all/indicator/EG.ELC.FOSL.ZS?format=json&date=1990:2023](https://api.worldbank.org/v2/country/all/indicator/EG.ELC.FOSL.ZS?format=json&date=1990:2023)             |
+| Renewable energy share             | `EG.FEC.RNEW.ZS`       | [https://api.worldbank.org/v2/country/all/indicator/EG.FEC.RNEW.ZS?format=json&date=1990:2023](https://api.worldbank.org/v2/country/all/indicator/EG.FEC.RNEW.ZS?format=json&date=1990:2023)             |
+| Forest area (% of land)            | `AG.LND.FRST.ZS`       | [https://api.worldbank.org/v2/country/all/indicator/AG.LND.FRST.ZS?format=json&date=1990:2023](https://api.worldbank.org/v2/country/all/indicator/AG.LND.FRST.ZS?format=json&date=1990:2023)             |
+| Urban population share             | `SP.URB.TOTL.IN.ZS`    | [https://api.worldbank.org/v2/country/all/indicator/SP.URB.TOTL.IN.ZS?format=json&date=1990:2023](https://api.worldbank.org/v2/country/all/indicator/SP.URB.TOTL.IN.ZS?format=json&date=1990:2023)       |
+
 
 Country metadata (used to drop regional aggregates):
 
-<https://api.worldbank.org/v2/country?format=json&per_page=500>
+[https://api.worldbank.org/v2/country?format=json&per_page=500](https://api.worldbank.org/v2/country?format=json&per_page=500)
 
-API documentation: <https://datahelpdesk.worldbank.org/knowledgebase/topics/125589-developer-information>
+API documentation: [https://datahelpdesk.worldbank.org/knowledgebase/topics/125589-developer-information](https://datahelpdesk.worldbank.org/knowledgebase/topics/125589-developer-information)
 
-Cached snapshots of the cleaned data live in [`data/`](data/) (`with_missing_values.csv`, `without_missing_values.csv`, `country_meta.csv`) so the website can be re-rendered offline.
+Cached snapshots of the cleaned data live in `[data/](data/)` (`with_missing_values.csv`, `without_missing_values.csv`, `country_meta.csv`) so the website can be re-rendered offline.
 
 ## 📁 Repository layout
 
@@ -52,9 +54,6 @@ Cached snapshots of the cleaned data live in [`data/`](data/) (`with_missing_val
 ├── theme.scss         # Bootstrap variable overrides
 ├── data/              # Cached World Bank panel (CSV)
 ├── docs/              # Rendered website (served by GitHub Pages)
-└── .claude/
-    ├── rules/         # Project rubric, factored per deliverable
-    └── skills/        # Reusable how-to scripts (web scraping, EDA, modeling, viz)
 ```
 
 ## 🔁 Reproduce locally
