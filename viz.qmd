@@ -1,33 +1,185 @@
 ---
 title: "Interactive Visualizations"
+format:
+  html:
+    toc: true
+    embed-resources: true
+    title-block-style: default
+jupyter: python3
+execute:
+  enabled: true
+  echo: false
 ---
 
-Three interactive visualizations from HW5. Each has a caption and a short written summary.
+```{python}
+#| label: setup
+#| warning: false
+#| message: false
+import warnings
+warnings.filterwarnings("ignore")
 
-## Figure 1 — _TBD (e.g., interactive map)_
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 
-_Placeholder — embed plotly figure here._
+# Use the full panel (with missing) so the map shows every country-year that exists,
+# and the per-figure cells decide how to handle NA below.
+DATA = pd.read_csv("data/with_missing_values.csv")
+META = (
+    pd.read_csv("data/country_meta.csv")[["id", "continent"]]
+    .rename(columns={"id": "countryiso3code"})
+)
+DATA = DATA.merge(META, on="countryiso3code", how="left")
 
-**Caption.** _TBD._
+DATA["decade"] = (DATA["year"] // 10) * 10
+DATA["decade_label"] = DATA["decade"].astype(int).astype(str) + "s"
+```
 
-**Summary.** _One short paragraph describing what the figure shows and the key takeaway._
+## Figure 1 — World CO₂ emissions per capita over time
+
+```{python}
+#| label: fig-map
+#| warning: false
+#| message: false
+
+df_map = (
+    DATA.dropna(subset=["co2_per_capita"])
+        .query("1990 <= year <= 2023")
+        .sort_values(["year", "countryiso3code"])
+)
+
+fig1 = px.choropleth(
+    df_map,
+    locations="countryiso3code",
+    color="co2_per_capita",
+    hover_name="country_name",
+    hover_data={"countryiso3code": False, "year": True, "co2_per_capita": ":.2f"},
+    animation_frame="year",
+    color_continuous_scale="YlOrRd",
+    range_color=(0, 25),
+    labels={"co2_per_capita": "CO₂ (t/capita)"},
+    title="CO₂ Emissions per Capita by Country, 1990–2023",
+    template="plotly_white",
+)
+fig1.update_layout(
+    height=520,
+    geo=dict(
+        projection_type="natural earth",
+        showframe=False,
+        showcoastlines=True,
+        showland=True,
+        landcolor="lightgrey",
+    ),
+    margin=dict(l=10, r=10, t=60, b=10),
+)
+fig1.show()
+```
+
+**Caption.** *Figure 1 — World choropleth of Carbon Dioxide emissions per capita (metric tons), 1990–2023. Press the play button or drag the year slider below the map to animate through years; hover any country to see its exact value. Grey countries have no value reported for that year.*
+
+**Summary.** Across the 34-year window, the high-emitter band shifts visibly. In 1990 the United States, Australia, Russia, and the oil-rich Gulf states dominate the deep-red end (>15 metric tons per capita), while most of Asia and Africa sit below 2 metric tons percapita. By the late 2010s Western European nations have desaturated as their emissions decline, China has darkened from pale yellow to mid-range orange, and the Gulf states remain at the top of the scale. The 2020 frame visibly lightens worldwide — the COVID-induced dip — before rebounding partially in 2022–2023.
 
 ---
 
-## Figure 2 — _TBD (e.g., interactive histogram)_
+## Figure 2 — Distribution of CO₂/capita by decade
 
-_Placeholder — embed plotly figure here._
+```{python}
+#| label: fig-hist
+#| warning: false
+#| message: false
 
-**Caption.** _TBD._
+decade_order = ["1990s", "2000s", "2010s", "2020s"]
+df_hist = (
+    DATA.dropna(subset=["co2_per_capita"])
+        .query("1990 <= year <= 2023")
+        .copy()
+)
+df_hist["decade_label"] = pd.Categorical(
+    df_hist["decade_label"], categories=decade_order, ordered=True
+)
 
-**Summary.** _One short paragraph describing what the figure shows and the key takeaway._
+fig2 = px.histogram(
+    df_hist,
+    x="co2_per_capita",
+    color="decade_label",
+    barmode="overlay",
+    opacity=0.55,
+    histnorm="probability density",
+    range_x=(0, 25),
+    labels={
+        "co2_per_capita": "CO₂ per capita (metric tons)",
+        "decade_label": "Decade",
+    },
+    title="Distribution of CO₂ per Capita by Decade (1990s–2020s)",
+    template="plotly_white",
+    color_discrete_sequence=px.colors.qualitative.Set2,
+    category_orders={"decade_label": decade_order},
+)
+# Force consistent narrow bins so the four decades are directly comparable.
+fig2.update_traces(xbins=dict(start=0, end=30, size=0.5), autobinx=False)
+fig2.update_layout(
+    height=480,
+    hovermode="x unified",
+    margin=dict(l=10, r=10, t=60, b=10),
+    legend_title_text="Decade",
+    yaxis_title="Density (probability per unit t/capita)",
+)
+fig2.show()
+```
+
+**Caption.** *Figure 2 — Overlaid probability-density histograms of country-year CO₂ per capita, one colour per decade. Bars are normalised so each decade integrates to 1, making the four shapes directly comparable despite the 2020s having only four years of data. Click a decade in the legend to toggle it; double-click to isolate.*
+
+**Summary.** All four decades share the same long right tail driven by a handful of petro-states (>15 t/capita). The bulk of the distribution does shift, however: the 1990s mass is concentrated tightly near 0–2 t/capita, while the 2010s mode is noticeably broader and slightly right-shifted, consistent with rapid industrialisation in Asia. The 2020s curve again leans toward the low end — a fingerprint of the COVID demand drop that lingered into 2021 — but its mid-range density (4–8 t/capita) is also higher than the 1990s, showing that the long-run shift toward higher emissions in middle-income countries has only partially reversed.
 
 ---
 
-## Figure 3 — _TBD (e.g., interactive boxplot)_
+## Figure 3 — CO₂/capita by continent in 2023
 
-_Placeholder — embed plotly figure here._
+```{python}
+#| label: fig-box
+#| warning: false
+#| message: false
 
-**Caption.** _TBD._
+continent_order = ["Africa", "Asia", "Americas", "Europe", "Oceania"]
+df_box = (
+    DATA.dropna(subset=["co2_per_capita", "continent"])
+        .query("year == 2023")
+        .copy()
+)
+df_box["continent"] = pd.Categorical(
+    df_box["continent"], categories=continent_order, ordered=True
+)
 
-**Summary.** _One short paragraph describing what the figure shows and the key takeaway._
+# Add a small floor (0.01) so log scale handles the rare zero/near-zero values cleanly.
+df_box["co2_for_plot"] = df_box["co2_per_capita"].clip(lower=0.01)
+
+fig3 = px.box(
+    df_box.sort_values("continent"),
+    x="continent",
+    y="co2_for_plot",
+    color="continent",
+    points="all",
+    hover_name="country_name",
+    hover_data={"continent": False, "co2_for_plot": False, "co2_per_capita": ":.2f"},
+    log_y=True,
+    labels={
+        "continent": "Continent",
+        "co2_for_plot": "CO₂ per capita (metric tons, 2023, log scale)",
+    },
+    title="CO₂ Emissions per Capita by Continent in 2023 (log scale)",
+    template="plotly_white",
+    color_discrete_sequence=px.colors.qualitative.Set2,
+    category_orders={"continent": continent_order},
+)
+fig3.update_layout(
+    height=500,
+    showlegend=False,
+    margin=dict(l=10, r=10, t=60, b=10),
+    yaxis_title="CO₂ per capita (metric tons, 2023, log scale)",
+)
+fig3.show()
+```
+
+**Caption.** *Figure 3 — Boxplot of country-level CO₂ per capita in 2023, grouped by continent, on a log y-axis so that low-emitting countries remain visible alongside extreme outliers. Each dot is one country; hover to read its name and exact value (tooltip shows the original linear value). Boxes show the inter-quartile range with the median as the inner line.*
+
+**Summary.** Africa has by far the lowest median (≈0.5 t/capita), reflecting limited industrialisation and large rural populations. Asia spans the widest range — its IQR is moderate but it is pulled to the top of the chart by Qatar, Bahrain, Kuwait, Brunei, and the UAE, all above 18 t/capita. Europe sits at a higher median (~5 t/capita) with a relatively tight spread, while Oceania is bimodal — Australia and New Zealand near the high end, the small Pacific island states at the bottom, and Palau as a striking outlier near 80 t/capita (a tiny-population denominator inflates per-capita values). The Americas straddle the middle, anchored by the United States, Canada, and Trinidad and Tobago at the top and Caribbean/Central American countries at the bottom.

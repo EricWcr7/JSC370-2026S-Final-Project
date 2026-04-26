@@ -1,0 +1,157 @@
+---
+title: "Lab 1 — Setup: VS Code with Python and Quarto"
+subtitle: "JSC370 (Winter 2026)"
+format:
+  live-html:
+    toc: true
+jupyter: python3
+execute:
+  enabled: true
+  echo: true
+  warning: false
+  message: false
+---
+
+## Overview
+
+In this lab you will:
+
+-   Install/confirm **VS Code**, **Python**, and **Quarto**
+-   Confirm Quarto can run Python chunks (via Jupyter)
+-   Render a Quarto document locally
+-   Upload your .qmd to MarkUs
+
+## What you will submit to MarkUs
+
+-   This completed `.qmd` file. Download the [lab .qmd on GitHub](https://github.com/JSC370/JSC370-2026/blob/main/labs/JSC370-lab-01.qmd)
+-   The rendered HTML output (`JSC370-lab-01.html`)
+
+## 0. Before you start
+
+1.  If you do not already have it, install **VS Code**. Then open this file in .
+2.  In VS Code open the terminal (**Terminal -\> New Terminal**). Recall you can toggle between terminals in VS Code. You should see a list of terminals on the bottom right panel.
+
+------------------------------------------------------------------------
+
+## 1. Quarto
+
+In the terminal, run:
+
+```{bash}
+quarto --version
+```
+
+If it is not installed, go to the Quarto download page and install for your OS: https://quarto.org/docs/download/.
+
+After installing, quit and reopen VS Code (so PATH updates), then run quarto --version again.
+
+```{bash}
+1.8.26
+```
+
+Now install the Quarto extension in VS Code:
+
+1.  In VS Code, click the Extensions icon (left sidebar), or press:
+    -   macOS: Cmd+Shift+X
+    -   Windows/Linux: Ctrl+Shift+X
+2.  Search: Quarto
+3.  Install: Quarto (publisher: quarto-dev)
+4.  You may need to reload VS Code.
+
+Preview this lab in VS Code
+
+Open this .qmd file, then preview it with Command Palette (Cmd/Ctrl+Shift+P) and select Quarto: Preview.
+
+To stop preview: press Ctrl+C in the terminal running the preview.
+
+## 2. Confirm Python is installed
+
+You can try this in terminal:
+
+```{bash}
+#| echo: true
+python3 --version
+```
+
+(If python3 doesn’t work, try python --version in terminal.) Paste the output, but the chunk above should do it for you if installed correctly.
+
+## 3. Install core packages in terminal
+
+Run the following in terminal. It is best to install packages in the terminal (not from inside Quarto).
+
+```{bash}
+python3 -m pip install -U pip
+python3 -m pip install numpy pandas matplotlib jupyter ipykernel plotnine plotly
+```
+
+Also install the Jupyter extension in VS Code, similarly to how we installed the Quarto extension above (search for Jupyter).
+
+Confirm Quarto can see Jupyter
+
+```{bash}
+quarto check jupyter
+```
+
+```{bash}
+Quarto 1.8.26
+[✓] Checking Python 3 installation....OK
+      Version: 3.13.5
+      Path: /Library/Frameworks/Python.framework/Versions/3.13/bin/python3
+      Jupyter: 5.8.1
+      Kernels: python311, python312, python3
+
+[✓] Checking Jupyter engine render....OK
+```
+
+## 4. Verify your Python environment
+
+Run the chunk below. If this fails, double-check that VS Code is using the Python environment where you installed packages.
+
+```{python}
+import sys
+import pandas as pd
+
+print("Python executable:", sys.executable)
+print("pandas version:", pd.__version__)
+```
+
+## 5. Your turn: make a plot
+
+Use the `plotnine` library (`ggplot`-like) to make a simple scatterplot. Update the code below:
+
+1.  Title must include your name (e.g., `"Penguin bill measurements — Your Name"`).
+2.  Change the point transparency by setting `alpha` to a new value.
+
+```{python}
+from plotnine import ggplot, aes, geom_point, labs, theme_minimal
+from plotnine.data import penguins
+
+(
+    ggplot(penguins, aes("bill_length_mm", "bill_depth_mm", color="species"))
+    + geom_point(alpha=1)  
+    + labs(title="Penguin bill measurements — Yi Fan (Eric) Wang")  
+    + theme_minimal()
+)
+```
+
+## 6. Render '.qmd' to '.html'
+
+In the terminal, make sure you are in the folder containing this file, then run:
+
+```{bash}
+quarto render JSC370-lab-01.qmd
+```
+
+This should create an HTML file in the same folder, e.g. JSC370-lab-01.html.
+
+Confirm it exists:
+
+```{bash}
+ls -l JSC370-lab-01.html
+```
+
+Print out the output and make sure it is in this lab. Also open the HTML in your browser to confirm it looks correct.
+
+```{bash}
+-rw-r--r--@ 1 yifanwang  staff  30291 Jan  7 19:35 JSC370-lab-01.html
+```

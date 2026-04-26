@@ -1,12 +1,28 @@
 ---
-title: "JSC370 2026: Final Project Report"
-subtitle: "JSC370 (Winter 2026)"
+title: "JSC370 2026 Final Project Report"
 author: "Yi Fan (Eric) Wang"
 date: "April 26, 2026"
 format:
   html:
     toc: true
     embed-resources: true
+    title-block-style: default
+  pdf:
+    geometry:
+      - margin=1in
+      - top=0.8in
+    fig-pos: "H"
+    include-in-header:
+      text: |
+        \usepackage{titling}
+        \usepackage{float}
+        \setlength{\droptitle}{-2.5cm}
+        \pretitle{\begin{flushleft}\Large\bfseries}
+        \posttitle{\par\end{flushleft}\vskip 0.4em}
+        \preauthor{\begin{flushleft}\normalsize}
+        \postauthor{\end{flushleft}}
+        \predate{\begin{flushleft}\normalsize}
+        \postdate{\end{flushleft}\vskip 0.5em\hrule\vskip 0.8em}
 jupyter: python3
 execute:
   enabled: true
@@ -32,69 +48,1338 @@ import statsmodels.api as sm
 import time
 import warnings
 from IPython.display import display
+from pathlib import Path
 from pygam import LinearGAM, s, l
+from sklearn.model_selection import (
+    GroupShuffleSplit, GroupKFold, RandomizedSearchCV
+)
+from sklearn.tree import DecisionTreeRegressor, plot_tree
+from sklearn.metrics import (
+    mean_squared_error, mean_absolute_error, r2_score
+)
+import xgboost as xgb
+from xgboost import XGBRegressor
 warnings.filterwarnings("ignore")
 
 ```
 
 # 1. Introduction
 
-Climate change is one of the major global challenges and is largely driven by carbon dioxide emissions from human activities. However, these emissions are not evenly distributed across countries. Countries at different stages of economic development rely on different energy sources, follow different urbanization trends, and face different land use pressures, all of which leave distinct imprints on their carbon dioxide emissions per capita. International climate commitments such as the Paris Agreement have also pushed many economies to decouple growth from carbon dioxide emissions, but the pace of that transition varies across countries. Therefore, understanding the factors that drive these country-level differences is important for designing effective climate and energy policies.
+Climate change is one of the major global challenges and is largely driven by carbon dioxide emissions from human activities. These emissions are not evenly distributed across countries: countries at different stages of economic development rely on different energy sources, follow different urbanization trends, and face different land-use pressures, all of which leave distinct imprints on their per-capita emissions. Understanding what drives these country-level differences is important for designing effective climate and energy policies.
 
-This project examines the following research question: 
+This project examines the following research question:
 
 **How have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?**
 
-Based on the midterm report analysis, this report hypothesizes that carbon dioxide emissions per capita increase with increases in GDP per capita and urban population share, decrease with increases in renewable energy share, and follow a non-monotonic trajectory with an overall slight net decline.
+Based on the midterm analysis, this report hypothesizes that GDP per capita, urban population share, and renewable energy share are the dominant cross-country drivers of carbon dioxide emissions per capita, while fossil-fuel electricity share, and the calendar year play a smaller role.
 
-To address this research question, this analysis uses data from 1990 to 2023 from the World Bank Open Data API, which provides a comprehensive set of development indicators covering economic, energy, and land use factors. The dataset includes carbon dioxide emissions per capita (metric tons), GDP per capita (constant 2015 US dollars), renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and the share of population living in urban areas. Furthermore, the year of observation is included as a key temporal indicator to account for global trends and technology and policy shifts over time.
+The analysis uses data from 1990 to 2023 from the World Bank Open Data API, which provides a comprehensive set of development indicators covering economic, energy, and land-use factors. The dataset includes carbon dioxide emissions per capita, GDP per capita, renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and urban population share, along with the year of observation as a temporal indicator.
 
-This analysis combines interpretable statistical models and machine learning methods to both explain and predict carbon dioxide emissions per capita. The midterm report found strong evidence of non-linearities in the relationships between carbon dioxide emissions per capita and its predictors. Therefore, this report adds a tree-based machine learning model, which is designed to capture nonlinear relationships and interactions, and evaluates its predictive performance on test data and reports variable importance to identify the key predictors of cross-country differences.
+This report extends the midterm analysis with more flexible methods that can capture more complex nonlinearities and interactions, and reports both predictive performance and variable importance to identify the dominant drivers of cross-country differences, as the midterm analysis found statistically significant evidence of non-linear relationships between carbon dioxide emissions per capita and its predictors.
 
 # 2. Methods
 
 ## 2.1 Data Source and Acquisition
 
-The data for this project were obtained from World Bank Open Data platform through the World Bank Open Data API. The API provides access to the World Development Indicators (WDI) database, which contains standardized economic, energy, and land-use indicators for all countries and regions around the world. The analysis focuses on the period from 1990 to 2023, which ensures sufficient data availability for most countries. Several relevant indicators were retrieved from the API by a loop, including carbon dioxide emissions per capita, GDP per capita, renewable energy share, fossil-fuel electricity share, forest area as a percentage of total land area, and the share of the population living in urban areas. The API responses were in JSON format and converted into `pandas` DataFrames for further analysis by using the `requests` library in Python. All data were retrieved programmatically through the API to ensure reproducibility of the data acquisition process.
+Data were obtained from the World Bank Open Data API for the period 1990–2023. The variables retained are carbon dioxide emissions per capita, GDP per capita, renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and urban population share.
 
 ## 2.2 Data Cleaning and Wrangling
 
-After retrieving the indicators from the API, several steps were taken to prepare the data for analysis. The raw API responses contain individual datasets for each indicator, so the first step was to organize these datasets into a consistent structure. The goal was to construct a dataset in which each row represents a country–year observation and each column represents a variable.
-
-The datasets were merged using ISO3 country codes, i.e. three-letter country codes, and year identifiers. These variables provide consistent keys across World Bank indicators and allow observations from different datasets to be combined into a single table. The reason that not using the country name is because the country name might not be consistent across the different datasets although the data comes from the same source.
-
-The separately retrieved indicator datasets were initially combined into a long-format dataset. If there were nested API fields, they were then flattened to extract the nested values into separate columns. As the World Bank dataset contains data for regions/aggregates as well as countries, such as Africa Eastern and Southern region, these regional aggregates were removed from the dataset to avoid misinterpretation. Therefore, it would be necessary to query the World Bank country metadata endpoint to collect all the country metadata in World Bank Open Data API. As the metadata contains a field called `region_name` for each country/region, when its value is "Aggregates", it means the row is a regional/group aggregate data rather than a country data. After collecting all the aggregate codes (name may also be fine, but codes are safer due to natural uniqueness), the dataset was filtered to retain only rows whose `countryiso3code` belongs to the valid country set. In effect, this step ensures that the final panel is composed only of individual countries, rather than regional summaries such as Africa Eastern and Southern or other World Bank aggregate groups. This is important because the project aims to compare country-level patterns, and aggregate units would distort those comparisons.
-
-To facilitate the analysis, the long dataset was reshaped into a wide country-year dataset, where each indicator becomes a column instead of a value in a single column which stored all the indicator names/codes. This process produced a unified dataset containing economic, energy, land-use, and demographic indicators for each country and year. Data types were then standardized to ensure consistency across datasets. All the indicator variables were converted to float, as they are either percentages or metric tons or dollars, which are all numerical float values. Country identifiers and year variables were also checked to ensure consistent formatting across the merged datasets. Missing values were inspected for each variable before analysis. They were coded to `NaN` from all possible missing-value placeholders to ensure the consistency of later missing-value handling. Finally, several validation checks were performed to verify the integrity of the dataset. These checks included identifying duplicate country–year observations, formating of the country ISO3 codes, year range, and inspecting the range of indicator variables. These steps help ensure that the dataset is suitable for subsequent exploratory and statistical analysis.
-
-For the main analysis, missing values were handled at the row level by dropping observations with missing values in the core analysis variables, while keeping all other available observations in the dataset until modelling. This approach keeps the missing value treatment transparent and avoids introducing additional assumptions through imputation.
+Rows were keyed by ISO3 country code and year to construct a country–year panel. Regional aggregates were removed. The table was reshaped to wide format, types and ranges were verified, and missing values were standardized as `NaN`. Missing observations were retained during EDA and dropped before regression analysis and modelling.
 
 ## 2.3 Exploratory Data Analysis
 
-EDA was conducted to examine the structure of the dataset and to identify patterns related to the research question. First, descriptive statistics were computed for all numerical variables included in the dataset. Counts, means, medians, standard deviation, minimum & maximum values, and percentiles were calculated to summarize the distribution of each numerical variable and not including country codes and names. These measures provide an overview of the variables' distributions, which can help identify potential extreme values or outliers.
+EDA used summary statistics, line plots, histograms, and scatter plots to examine temporal trends, distributional properties, and associations between emissions per capita and the explanatory variables.
 
-Visual exploration was then performed to examine patterns in the data. Several graphical methods were used to explore relationships between variables and to identify potential trends. Line plots were used to examine how carbon dioxide emissions per capita change over time. Histograms were used to inspect the distribution of individual variables and to identify skewness or potential outliers. Scatter plots were used to examine the relationship between carbon dioxide emissions per capita and explanatory variables. Box plots with the implementation of quantile binning were used to examine and confirm the relationship between carbon dioxide emissions per capita and explanatory variables that were identified in the scatter plots. So is the correlation matrix to examine the correlation between all the variables.
+## 2.4 Feature Engineering
 
-## 2.4 Modeling
+Log transformations were applied to right-skewed variables (carbon dioxide emissions per capita and GDP per capita) to reduce the influence of extreme values. Percentage variables were kept on their original scale. The year was centered at 1990 to make the intercept and model coefficients more interpretable.
 
-### 2.4.1 Train / validation / test split
+## 2.5 Regression Analysis
 
-### 2.4.2 Baseline Model — Generalized Additive Model (GAM)
+Before performing the regression analysis, rows with missing entries were dropped first, so all models were examined on a dataset with no missing entries.
 
-### 2.4.3 Tree-based Machine Learning model — XGBoost
+Ordinary least squares (OLS) and generalized additive models (GAMs) from the midterm were used to capture linear and nonlinear patterns. The nonlinear evidence from the GAM motivated the more flexible machine learning models later on.
 
-### 2.4.4 Variable importance
+## 2.6 Modeling
 
-### 2.4.5 Model Evaluation Metrics
+Because the GAM showed statistically significant nonlinear relationships, two tree-based models were added. A pruned Decision Tree Regressor was used as an interpretable baseline. Then a XGBoost Regressor was used as a flexible gradient-boosted ensemble that can capture more complex nonlinearities and interactions.
+
+### 2.6.1 Train / Validation / Test Split
+
+The dataset is a country–year panel, so observations were split at the country level (grouped by `countryiso3code`) to prevent leakage of country-specific effects across sets. The split was approximately 70% / 15% / 15% by country, with the same fixed random seed across models for reproducibility and fair comparison.
+
+Because countries (rather than years) are held out, test error measures generalization to **unseen countries given their full 1990–2023 predictor history** — directly matching the cross-country focus of the research question. It does **not** measure temporal forecasting (e.g., predicting 2024 from 1990–2023).
+
+### 2.6.2 Decision Tree Model
+
+A Decision Tree Regressor was fit as the interpretable baseline. The cost-complexity pruning parameter ($\alpha$) was tuned on the validation set, and the final pruned tree was refit on the combined training and validation sets and evaluated once on the test set.
+
+### 2.6.3 XGBoost Model
+
+XGBoost was tuned by randomized search over tree depth, learning rate, regularization, row/column subsampling, and minimum child weight, using 5-fold country-grouped cross-validation on the training set. The number of boosting rounds was then selected by cross-validated early stopping on the training set. Then the final tuned model was refit on those two sets and evaluated once on the test set. An untuned XGBoost (200 trees, maximum depth 5, learning rate 0.1) was also fit on the training set as an inline reference point.
+
+### 2.6.4 Model Evaluation and Comparison
+
+Models were compared on the same test set using regression model evaluation metrics, i.e. $R^2$, RMSE, and MAE. Variable importance was extracted from the final best model to identify the predictors contributing most to variation in emissions per capita.
 
 # 3. Results
 
-_TBD — publication-ready, numbered, captioned tables and figures. Reference the website for interactive versions._
+## 3.1 Data, EDA, and Regression Analysis Summary
 
-**Figure 1.** _Caption placeholder._
+```{python}
+#| label: data-acquisition
+#| output: false
+#| warning: false
+#| message: false
 
-**Table 1.** _Caption placeholder._
+WB_BASE_URL = "https://api.worldbank.org/v2"
+
+# Indicator variables codes aligned with the research question
+INDICATORS = {
+    "co2_per_capita": "EN.GHG.CO2.PC.CE.AR5",
+    "gdp_per_capita": "NY.GDP.PCAP.KD",
+    "fossil_electricity_share": "EG.ELC.FOSL.ZS",
+    "renewable_energy_share": "EG.FEC.RNEW.ZS",
+    "forest_area_percent_land": "AG.LND.FRST.ZS",
+    "urban_share_percent": "SP.URB.TOTL.IN.ZS"
+}
+
+START_YEAR = 1990
+END_YEAR = 2023
+
+def fetch_world_bank_indicator(indicator_code, start_year=1990, end_year=2023, per_page=20000):
+    page = 1
+    all_rows = []
+
+    while True:
+        url = f"{WB_BASE_URL}/country/all/indicator/{indicator_code}"
+        params = {
+            "format": "json",
+            "date": f"{start_year}:{end_year}",
+            "per_page": per_page,
+            "page": page,
+        }
+
+        response = requests.get(url, params=params, timeout=30)
+        response.raise_for_status()
+        payload = response.json()
+
+        if len(payload) < 2 or payload[1] is None:
+            break
+
+        all_rows.extend(payload[1])
+
+        total_pages = int(payload[0]["pages"])
+        if page >= total_pages:
+            break
+        page += 1
+        time.sleep(0.1)
+
+    return pd.DataFrame(all_rows)
+
+# Pull raw records directly from the API for all required indicators
+frames = []
+for variable_name, indicator_code in INDICATORS.items():
+    df_i = fetch_world_bank_indicator(indicator_code, START_YEAR, END_YEAR)
+    df_i["variable_name"] = variable_name
+    frames.append(df_i)
+
+wb_raw = pd.concat(frames, ignore_index=True)
+
+# Raw API preview dataframe
+display(wb_raw.head(20))
+print("Shape:", wb_raw.shape)
+```
+
+```{python}
+#| label: wb-data-flattening
+#| warning: false
+#| message: false
+
+# Flatten nested JSON fields
+# The World Bank API returns 'indicator' and 'country' as dicts inside each row. Extract the id/value fields into plain columns so the data can be filtered and merged as a regular flat table.
+wb_raw["indicator_code"] = wb_raw["indicator"].apply(lambda x: x["id"] if isinstance(x, dict) else None)
+wb_raw["indicator_name"] = wb_raw["indicator"].apply(lambda x: x["value"] if isinstance(x, dict) else None)
+wb_raw["country_name"] = wb_raw["country"].apply(lambda x: x["value"] if isinstance(x, dict) else None)
+
+flat_wb_raw_shape = wb_raw.shape
+```
+
+```{python}
+#| label: wb-data-aggregates-removal
+#| output: false
+#| warning: false
+#| message: false
+
+# Remove regional/income-group aggregates
+# The World Bank API mixes true country records with regional and income-group aggregates (e.g. "Africa Eastern and Southern"). Fetch the country metadata endpoint and retain only rows whose region_name is not "Aggregates".
+def get_country_metadata():
+    page = 1
+    all_countries = []
+
+    while True:
+        params = {"format": "json", "per_page": 400, "page": page}
+        response = requests.get(f"{WB_BASE_URL}/country", params=params, timeout=30)
+        response.raise_for_status()
+        payload = response.json()
+
+        metadata = payload[0]
+        rows = payload[1]
+        all_countries.extend(rows)
+
+        if page >= int(metadata["pages"]):
+            break
+        page += 1
+
+    countries_df = pd.DataFrame(all_countries)
+    countries_df["region_name"] = countries_df["region"].apply(
+        lambda x: x.get("value") if isinstance(x, dict) else np.nan
+    )
+    return countries_df
+
+
+countries_df = get_country_metadata()
+valid_iso3 = set(countries_df.loc[countries_df["region_name"] != "Aggregates", "id"].dropna())
+
+aggregate_rows = wb_raw[~wb_raw["countryiso3code"].isin(valid_iso3)].copy()
+aggregate_pairs = aggregate_rows[["countryiso3code", "country_name"]].drop_duplicates()
+print("Rows before removing aggregates:", wb_raw.shape[0])
+print("Unique aggregate (iso3, country) pairs removed:", aggregate_pairs.shape[0])
+display(aggregate_pairs.head(10))
+
+wb = wb_raw[wb_raw["countryiso3code"].isin(valid_iso3)].copy()
+
+wb_shape = wb.shape
+
+print("Rows after removing aggregates:", wb.shape[0])
+```
+
+```{python}
+#| label: wb-data-reshaping
+#| output: false
+#| warning: false
+#| message: false
+
+# Create the year identifier
+# Convert the API 'date' field to a numeric year column before selecting country-year keys for the reshape step below.
+wb["year"] = pd.to_numeric(wb["date"], errors="coerce")
+
+# Retain only columns needed for the analysis
+# Drop auxiliary API fields and keep the five columns required for reshaping.
+wb_clean = wb[
+    [
+        "countryiso3code",
+        "country_name",
+        "year",
+        "variable_name",
+        "indicator_code",
+        "value",
+    ]
+].copy()
+
+display(wb_clean.head(20))
+print("Clean panel shape:", wb_clean.shape)
+
+# Reshape long to wide (one row per country-year)
+# pivot_table spreads each variable_name into its own column, using ISO3 code and year as the row keys. country_name is added back as a label column via a left join, then moved to the front for readability.
+wb_wide = wb_clean.pivot_table(
+    index=["countryiso3code", "year"],
+    columns="variable_name",
+    values="value",
+).reset_index()
+
+country_year_labels = (
+    wb_clean[["countryiso3code", "year", "country_name"]]
+    .drop_duplicates(subset=["countryiso3code", "year"])
+)
+wb_wide = wb_wide.merge(
+    country_year_labels,
+    on=["countryiso3code", "year"],
+    how="left",
+)
+wb_wide = wb_wide[
+    ["countryiso3code", "country_name", "year"]
+    + [col for col in wb_wide.columns if col not in ["countryiso3code", "country_name", "year"]]
+]
+
+wb_wide_shape = wb_wide.shape
+```
+
+```{python}
+#| label: wb-data-type-standardization
+#| tbl-cap: "Data Type Inspection Table"
+#| output: false
+#| warning: false
+#| message: false
+
+# Standardize data types (If needed after checking initial data types)
+# All indicator columns are numeric (percentages, USD, metric tons). Coerce to float so downstream arithmetic and comparisons behave consistently. And year is stored as integer.
+
+display(wb_wide.dtypes.rename("dtype").reset_index().rename(columns={"index": "Columns"}))
+```
+
+```{python}
+#| label: wb-data-missing-value-standardization
+#| output: false
+#| warning: false
+#| message: fals
+
+# Standardize missing-value placeholders
+# Replace common string sentinels with NaN so that all missing-value checks operate on a single representation.
+missing_markers = ["", " ", "N/A", "NA", "na", "null", "Null", "NULL", "-", "--", ".."]
+wb_wide = wb_wide.replace(missing_markers, np.nan)
+```
+
+```{python}
+#| label: wb-data-plausibility-checks
+#| output: false
+#| warning: false
+#| message: false
+
+# Check for out-of-range values based on each variable's units and save counts
+plausibility_bounds = {
+    "co2_per_capita":          (0, None),                 # metric tons per capita
+    "gdp_per_capita":          (0, None),                 # constant 2015 USD per person
+    "fossil_electricity_share":(0, 100),                  # % of electricity from fossil fuels
+    "renewable_energy_share":  (0, 100),                  # % of total final energy consumption
+    "forest_area_percent_land":(0, 100),                  # % of land area
+    "urban_share_percent":     (0, 100),                  # % of population
+    "year":                    (START_YEAR, END_YEAR),    # within study period
+}
+
+oob_co2    = int((wb_wide["co2_per_capita"]           < 0).sum())
+oob_gdp    = int((wb_wide["gdp_per_capita"]           < 0).sum())
+oob_fossil = int(((wb_wide["fossil_electricity_share"] < 0) | (wb_wide["fossil_electricity_share"] > 100)).sum())
+oob_renew  = int(((wb_wide["renewable_energy_share"]   < 0) | (wb_wide["renewable_energy_share"]   > 100)).sum())
+oob_forest = int(((wb_wide["forest_area_percent_land"] < 0) | (wb_wide["forest_area_percent_land"] > 100)).sum())
+oob_urban  = int(((wb_wide["urban_share_percent"]      < 0) | (wb_wide["urban_share_percent"]      > 100)).sum())
+
+# Confirm ISO3 codes follow the 3-capital-letter standard, no duplicate country-year rows exist, year is within study period, and year dtype is correct before saving.
+invalid_iso3 = wb_wide[~wb_wide["countryiso3code"].str.match(r"^[A-Z]{3}$", na=False)]
+oob_iso3 = invalid_iso3.shape[0]
+duplicate_country_year = wb_wide.duplicated(["countryiso3code", "year"]).sum()
+oob_year = int(((wb_wide["year"] < START_YEAR) | (wb_wide["year"] > END_YEAR)).sum())
+print("Rows with non-standard ISO3 codes:", oob_iso3)
+print("Duplicate country-year rows:", duplicate_country_year)
+print(f"Rows outside study period ({START_YEAR}–{END_YEAR}):", oob_year)
+
+# Save cleaned wide dataset
+DATA_DIR = Path("data")
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+wb_wide_path = DATA_DIR / "with_missing_values.csv"
+wb_wide.to_csv(wb_wide_path, index=False)
+print(f"Saved {wb_wide_path}:", wb_wide.shape)
+```
+
+```{python}
+#| label: tbl-wb-plausibility-results
+#| tbl-cap: "Plausibility Check Results by Indicator"
+#| output: false
+#| warning: false
+#| message: false
+
+def _fmt_range(low, high):
+    low_s  = "-\u221E" if low  is None else f"{low}"
+    high_s = "\u221E"  if high is None else f"{high}"
+    return f"[{low_s}, {high_s}]"
+
+plausibility_tbl = pd.DataFrame(
+    [
+        {"Variable": var,
+         "Expected range": _fmt_range(lo, hi),
+         "Out-of-bounds rows": oob}
+        for var, (lo, hi), oob in [
+            ("co2_per_capita",           plausibility_bounds["co2_per_capita"],           oob_co2),
+            ("gdp_per_capita",           plausibility_bounds["gdp_per_capita"],           oob_gdp),
+            ("fossil_electricity_share", plausibility_bounds["fossil_electricity_share"], oob_fossil),
+            ("renewable_energy_share",   plausibility_bounds["renewable_energy_share"],   oob_renew),
+            ("forest_area_percent_land", plausibility_bounds["forest_area_percent_land"], oob_forest),
+            ("urban_share_percent",      plausibility_bounds["urban_share_percent"],      oob_urban),
+            ("year",                     plausibility_bounds["year"],                     oob_year),
+        ]
+    ]
+)
+
+display(plausibility_tbl)
+```
+
+```{python}
+#| label: wb-missing-values-inspection
+#| tbl-cap: "Missing Values Inspection Table"
+#| output: false
+#| warning: false
+#| message: false
+
+# Count and compute the share of missing values for every column in the wide dataset. Sorting by count (descending) puts the most problematic variables at the top so patterns are immediately visible.
+missing_counts = wb_wide.isna().sum()
+missing_pct    = (wb_wide.isna().mean() * 100).round(2)
+
+missing_tbl = (
+    pd.DataFrame({"Missing (count)": missing_counts, "Missing (%)": missing_pct})
+    .reset_index()
+    .rename(columns={"index": "Variable"})
+    .sort_values("Missing (count)", ascending=False)
+    .reset_index(drop=True)
+)
+
+display(missing_tbl)
+```
+
+```{python}
+#| label: wb-eda-summary-statistics
+#| tbl-cap: "Descriptive Statistics Table (For all numeric variables)"
+#| output: false
+#| warning: false
+#| message: false
+
+# Compute descriptive statistics for all numeric indicator columns.
+# Transposing puts variables as rows and statistics as columns, which is easier to read in a wide document layout.
+# Rounding to 2 decimal places keeps the table compact.
+summary_stats = (
+    wb_wide
+    .describe()
+    .T
+    .reset_index()
+    .rename(columns={"index": "Variable"})
+    .round(2)
+)
+
+display(summary_stats)
+```
+
+```{python}
+#| label: wb-eda-co2-zero
+#| tbl-cap: "Country with zero values in CO2 per capita, forest area, fossil electricity share, or renewable energy share"
+#| output: false
+#| warning: false
+#| message: false
+
+# Identify rows where any of the four indicators of interest equals zero.
+# Flag columns make it easy to see which variable(s) triggered the match.
+# Rows are included if at least one of the four flags is True.
+indicator_cols = [col for col in INDICATORS if col in wb_wide.columns]
+
+zero_flags = wb_wide.copy()
+zero_flags["co2_zero"]    = zero_flags["co2_per_capita"]           == 0
+zero_flags["forest_zero"] = zero_flags["forest_area_percent_land"] == 0
+zero_flags["fossil_zero"] = zero_flags["fossil_electricity_share"] == 0
+zero_flags["renew_zero"]  = zero_flags["renewable_energy_share"]   == 0
+
+zero_any = (
+    zero_flags[
+        zero_flags[["co2_zero", "forest_zero", "fossil_zero", "renew_zero"]].any(axis=1)
+    ]
+    [["countryiso3code", "country_name", "year"]
+     + indicator_cols
+     + ["co2_zero", "forest_zero", "fossil_zero", "renew_zero"]]
+    .sort_values(["country_name", "year"])
+    .reset_index(drop=True)
+)
+
+# Build one table: each row is a country, columns show which zero conditions apply
+zero_conditions = {
+    "co2_per_capita = 0":           "co2_zero",
+    "forest_area_percent_land = 0": "forest_zero",
+    "fossil_electricity_share = 0": "fossil_zero",
+    "renewable_energy_share = 0":   "renew_zero",
+}
+
+all_countries = sorted(zero_any["country_name"].dropna().unique().tolist())
+rows = []
+for country in all_countries:
+    country_rows = zero_any[zero_any["country_name"] == country]
+    rows.append({
+        "Country name": country,
+        **{label: "Yes" if country_rows[flag].any() else "" 
+           for label, flag in zero_conditions.items()}
+    })
+
+display(pd.DataFrame(rows))
+```
+
+```{python}
+#| label: fig-wb-eda-line-global
+#| fig-cap: "Global average CO2 emissions per capita over time (1990–2023)"
+#| warning: false
+#| message: false
+
+# Aggregate to global average per year to reveal the overall emissions trend.
+# Dropping NaN before groupby ensures only years with actual country data
+# contribute to the mean, avoiding artificially low averages.
+co2_trend = (
+    wb_wide
+    .groupby("year", as_index=False)["co2_per_capita"]
+    .mean()
+    .rename(columns={"co2_per_capita": "mean_co2"})
+)
+
+(
+    ggplot(co2_trend, aes(x="year", y="mean_co2")) +
+    geom_line(color="#2C7FB8", size=1) +
+    geom_point(color="#2C7FB8", size=2) +
+    labs(
+        title="Global Average Carbon Dioxide Emissions per Capita (1990–2023)",
+        x="Year",
+        y="Carbon Dioxide Emissions per Capita (metric tons)"
+    ) +
+    theme_minimal()
+)
+```
+
+```{python}
+#| label: wb-eda-line-countries
+#| fig-cap: "CO2 per capita trends for selected representative countries (1990–2023)"
+#| output: false
+#| warning: false
+#| message: false
+
+# Six countries chosen to represent a range of income levels and world regions, making the cross-country divergence in emission trajectories visible.
+selected_iso3 = ["USA", "CHN", "DEU", "IND", "BRA", "NGA"]
+
+co2_countries = (
+    wb_wide[wb_wide["countryiso3code"].isin(selected_iso3)]
+    [["country_name", "year", "co2_per_capita"]]
+    .dropna()
+)
+
+(
+    ggplot(co2_countries, aes(x="year", y="co2_per_capita", color="country_name")) +
+    geom_line(size=0.9) +
+    geom_point(size=1.5, alpha=0.7) +
+    labs(
+        title="CO2 Emissions per Capita for Selected Countries (1990–2023)",
+        x="Year",
+        y="CO2 per Capita (metric tons)",
+        color="Country"
+    ) +
+    theme_minimal() +
+    theme(legend_position="right")
+)
+```
+
+```{python}
+#| label: wb-eda-histograms-co2-gdp
+#| fig-cap: "Distributions of Carbon Dioxide Emissions per Capita and GDP per Capita"
+#| output: false
+#| warning: false
+#| message: false
+
+# CO2 and GDP are on their own panel because their units (metric tons, USD) differ from the percentage variables below.
+co2_gdp_vars = ["co2_per_capita", "gdp_per_capita"]
+wb_long_co2_gdp = wb_wide[co2_gdp_vars].melt(var_name="Variable", value_name="Value").dropna()
+
+(
+    ggplot(wb_long_co2_gdp, aes(x="Value")) +
+    geom_histogram(bins=40, fill="#2C7FB8", color="white", alpha=0.8) +
+    facet_wrap("~Variable", scales="free", ncol=2) +
+    labs(
+        title="Distributions of Carbon Dioxide Emissions per Capita and GDP per Capita",
+        x="Value",
+        y="Count"
+    ) +
+    theme_minimal() +
+    theme(strip_text=element_text(size=9), axis_text=element_text(size=8))
+)
+```
+
+```{python}
+#| label: wb-eda-histograms-pct
+#| fig-cap: "Distributions of percentage-scaled indicators"
+#| output: false
+#| warning: false
+#| message: false
+
+# All four variables share a 0–100 percentage scale, so a common x-axis range makes it easy to compare spreads across indicators directly.
+pct_vars = [
+    "fossil_electricity_share",
+    "renewable_energy_share",
+    "forest_area_percent_land",
+    "urban_share_percent",
+]
+wb_long_pct = wb_wide[pct_vars].melt(var_name="Variable", value_name="Value").dropna()
+
+(
+    ggplot(wb_long_pct, aes(x="Value")) +
+    geom_histogram(bins=40, fill="#41AB5D", color="white", alpha=0.8) +
+    facet_wrap("~Variable", scales="free_y", ncol=2) +
+    labs(
+        title="Distributions of Percentage-Scaled Indicators (0–100%)",
+        x="Value (%)",
+        y="Count"
+    ) +
+    theme_minimal() +
+    theme(strip_text=element_text(size=9), axis_text=element_text(size=8))
+)
+```
+
+```{python}
+#| label: wb-eda-log-transform
+#| output: false
+#| warning: false
+#| message: false
+
+# GDP per capita and CO2 per capita are right skewed with values spanning several orders of magnitude. A natural-log transformation compresses the scale.
+
+# GDP per capita is strictly positive, so the natural logarithm can be applied directly.
+wb_wide["log_gdp_per_capita"]   = np.log(wb_wide["gdp_per_capita"])
+
+# CO2 per capita contains some zero values, so log(1 + x) is used to avoid taking the logarithm of zero.
+wb_wide["log_co2_per_capita"]   = np.log1p(wb_wide["co2_per_capita"])
+
+# Center year at 1990 so that the intercept in regression represents the baseline year and coefficients are more interpretable on a human scale.
+wb_wide["year_centered"] = wb_wide["year"] - START_YEAR
+```
+
+```{python}
+#| label: wb-eda-scatter
+#| fig-cap: "Log Carbon Dioxide Emissions per Capita vs each explanatory variable (all country-year observations)"
+#| output: false
+#| warning: false
+#| message: false
+
+# Use the pre-computed log columns from the feature engineering step so that all scatter plots are consistent with the transformed variables used in regression.
+scatter_df = wb_wide[
+    ["log_co2_per_capita", "log_gdp_per_capita",
+     "fossil_electricity_share", "renewable_energy_share",
+     "forest_area_percent_land", "urban_share_percent"]
+].dropna().copy()
+
+pairs = [
+    ("log_gdp_per_capita",      "Log GDP per Capita"),
+    ("fossil_electricity_share","Fossil Electricity Share (%)"),
+    ("renewable_energy_share",  "Renewable Energy Share (%)"),
+    ("forest_area_percent_land","Forest Area (% of Land)"),
+    ("urban_share_percent",     "Urban Population Share (%)"),
+]
+
+fig, axes = plt.subplots(2, 3, figsize=(14, 8))
+fig.suptitle("Log Carbon Dioxide Emissions per Capita vs Explanatory Variables", fontsize=14)
+
+for i, (xcol, xlabel) in enumerate(pairs):
+    ax = axes[i // 3][i % 3]
+    ax.scatter(scatter_df[xcol], scatter_df["log_co2_per_capita"],
+               alpha=0.15, s=5, color="#2C7FB8")
+    ax.set_xlabel(xlabel, fontsize=9)
+    ax.set_ylabel("Log Carbon Dioxide Emissions per Capita" if i % 3 == 0 else "", fontsize=9)
+    ax.grid(True, alpha=0.3)
+
+axes[1, 2].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+
+```{python}
+#| label: wb-eda-boxplot-income
+#| fig-cap: "Distribution of log carbon dioxide emissions per capita by GDP income quartile"
+#| output: false
+#| warning: false
+#| message: false
+
+# Reuse the income-quartile grouping from the faceted scatter above.
+# Each box shows the spread of log CO2 per capita within one income tier, making it easy to compare medians and variability across development levels.
+avg_gdp_box = (
+    wb_wide.groupby("countryiso3code")["gdp_per_capita"]
+    .mean()
+    .reset_index()
+    .rename(columns={"gdp_per_capita": "avg_gdp"})
+)
+avg_gdp_box["income_group"] = pd.qcut(
+    avg_gdp_box["avg_gdp"],
+    q=4,
+    labels=["Q1 (Low)", "Q2 (Low-Mid)", "Q3 (Mid-High)", "Q4 (High)"]
+)
+
+box_income_df = (
+    wb_wide[["countryiso3code", "log_co2_per_capita"]]
+    .merge(avg_gdp_box[["countryiso3code", "income_group"]], on="countryiso3code")
+    .dropna()
+)
+
+(
+    ggplot(box_income_df, aes(x="income_group", y="log_co2_per_capita", fill="income_group")) +
+    geom_boxplot(alpha=0.7) +
+    labs(
+        title="Log Carbon Dioxide Emissions per Capita by GDP Income Quartile",
+        x="Income Group (GDP per Capita Quartile)",
+        y="Log Carbon Dioxide Emissions per Capita"
+    ) +
+    theme_minimal() +
+    theme(legend_position="none")
+)
+```
+
+```{python}
+#| label: wb-eda-boxplot-renewable
+#| fig-cap: "Distribution of log carbon dioxide emissions per capita by renewable energy share quartile"
+#| output: false
+#| warning: false
+#| message: false
+
+# The scatter plot showed a clearer negative pattern for renewable energy share than for fossil electricity share, so renewable share is the better choice for a grouped comparison with boxplots.
+box_renew_df = wb_wide[["log_co2_per_capita", "renewable_energy_share"]].dropna().copy()
+box_renew_df["renew_group"] = pd.qcut(
+    box_renew_df["renewable_energy_share"],
+    q=4,
+    labels=["Q1 (Low)", "Q2 (Low-Mid)", "Q3 (Mid-High)", "Q4 (High)"]
+)
+
+(
+    ggplot(box_renew_df, aes(x="renew_group", y="log_co2_per_capita", group="renew_group", fill="renew_group")) +
+    geom_boxplot(alpha=0.7) +
+    labs(
+        title="Log Carbon Dioxide Emissions per Capita by Renewable Energy Share Quartile",
+        x="Renewable Energy Share Group",
+        y="Log Carbon Dioxide Emissions per Capita"
+    ) +
+    theme_minimal() +
+    theme(legend_position="none")
+)
+```
+
+```{python}
+#| label: wb-eda-boxplot-urban
+#| fig-cap: "Distribution of log carbon dioxide emissions per capita by urban population share quartile"
+#| output: false
+#| warning: false
+#| message: false
+
+# Urban share showed a clear positive relationship with log CO2 in the scatter plots, so binning into quartiles shows whether the step-up in emissions is consistent and monotone across urbanisation levels.
+box_urban_df = wb_wide[["log_co2_per_capita", "urban_share_percent"]].dropna().copy()
+box_urban_df["urban_group"] = pd.qcut(
+    box_urban_df["urban_share_percent"],
+    q=4,
+    labels=["Q1 (Low)", "Q2 (Low-Mid)", "Q3 (Mid-High)", "Q4 (High)"]
+)
+
+(
+    ggplot(box_urban_df, aes(x="urban_group", y="log_co2_per_capita", group="urban_group", fill="urban_group")) +
+    geom_boxplot(alpha=0.7) +
+    labs(
+        title="Log Carbon Dioxide Emissions per Capita by Urban Population Share Quartile",
+        x="Urban Population Share Group",
+        y="Log Carbon Dioxide Emissions per Capita"
+    ) +
+    theme_minimal() +
+    theme(legend_position="none")
+)
+```
+
+```{python}
+#| label: wb-eda-corr-heatmap
+#| fig-cap: "Correlation Matrix of All Stakeholders variables"
+#| output: false
+#| warning: false
+#| message: false
+
+# Compute pairwise Pearson correlations across all analysis variables.
+# Log-transformed versions are used for the skewed variables (CO2, GDP) to be consistent with the regression specification.
+# The long-format reshape: melt the square matrix so that ggplot can map each cell to a tile.
+corr_vars = [
+    "log_co2_per_capita",
+    "log_gdp_per_capita",
+    "fossil_electricity_share",
+    "renewable_energy_share",
+    "forest_area_percent_land",
+    "urban_share_percent",
+]
+
+corr_matrix = wb_wide[corr_vars].corr()
+
+corr_long = (
+    corr_matrix
+    .reset_index()
+    .melt(id_vars="index", var_name="variable_2", value_name="correlation")
+    .rename(columns={"index": "variable_1"})
+)
+corr_long["corr_label"] = corr_long["correlation"].round(2)
+
+(
+    ggplot(corr_long, aes(x="variable_1", y="variable_2", fill="correlation"))
+    + geom_tile()
+    + geom_text(aes(label="corr_label"), size=7, color="black")
+    + scale_fill_gradient2(low="#2166ac", mid="white", high="#b2182b", midpoint=0)
+    + labs(
+        title="Correlation Matrix of All Stakeholders Variables",
+        x="",
+        y="",
+        fill="Correlation"
+    )
+    + theme_minimal()
+    + theme(axis_text_x=element_text(angle=45, ha="right"))
+)
+```
+```{python}
+#| label: wb-regression-data-missing-value-removal
+#| output: false
+#| warning: false
+#| message: false
+
+# Drop any row that has a missing value before fitting. This matches the row-level missing-value rule stated in the methods section and ensures that all models are estimated on an identical sample.
+core_analysis_vars = [
+    "log_co2_per_capita",
+    "log_gdp_per_capita",
+    "fossil_electricity_share",
+    "renewable_energy_share",
+    "forest_area_percent_land",
+    "urban_share_percent",
+    "year_centered",
+]
+
+rows_before = wb_wide.shape[0]
+analysis_df = wb_wide.dropna(subset=core_analysis_vars).copy()
+rows_after  = analysis_df.shape[0]
+
+# Save complete-case modelling dataset (post missing-value removal)
+analysis_df_path = DATA_DIR / "without_missing_values.csv"
+analysis_df.to_csv(analysis_df_path, index=False)
+print(f"Saved {analysis_df_path}:", analysis_df.shape)
+```
+
+```{python}
+#| label: wb-regression-ols
+#| tbl-cap: "OLS regression: log carbon dioxide emissions per capita on all predictors"
+#| output: false
+#| warning: false
+#| message: false
+
+# Predictor list matches the research question: economic development, energy structure, land use, and demographics. Log-transformed versions are used for the skewed variables to be consistent with the feature engineering step.
+predictors = [
+    "log_gdp_per_capita",
+    "fossil_electricity_share",
+    "renewable_energy_share",
+    "forest_area_percent_land",
+    "urban_share_percent",
+    "year_centered",
+]
+predictor_labels = [
+    "Log GDP per Capita",
+    "Fossil Electricity Share (% of total electricity consumption)",
+    "Renewable Energy Share (% of total final energy consumption)",
+    "Forest Area (% of total land area)",
+    "Urban Population Share (% of total population)",
+    "Year (centered at 1990)",
+]
+
+X = analysis_df[predictors].values
+y = analysis_df["log_co2_per_capita"].values
+
+# Add intercept constant
+X_const = sm.add_constant(X)
+linear_mod = sm.OLS(y, X_const).fit()
+
+# Format the coefficient table for display — summary2().tables[1] returns a DataFrame; rename columns and replace numeric index with readable variable names.
+coef_tbl = (
+    linear_mod.summary2().tables[1]
+    .reset_index()
+    .rename(columns={
+        "index":    "Variable",
+        "Coef.":    "Coefficient",
+        "Std.Err.": "Std. Error",
+        "t":        "t-stat",
+        "P>|t|":    "p-value",
+        "[0.025":   "CI 2.5%",
+        "0.975]":   "CI 97.5%",
+    })
+)
+coef_tbl["Variable"] = ["Intercept"] + predictor_labels
+display(coef_tbl.round(4))
+```
+
+```{python}
+#| label: wb-regression-gam
+#| tbl-cap: "GAM smooth-term summary"
+#| warning: false
+#| message: false
+
+# Fit a GAM with one smooth spline term per predictor. The column index i matches the order in X.
+gam_mod = LinearGAM(
+    s(0, n_splines=20) +   # log_gdp_per_capita
+    s(1, n_splines=20) +   # fossil_electricity_share
+    s(2, n_splines=20) +   # renewable_energy_share
+    s(3, n_splines=20) +   # forest_area_percent_land
+    s(4, n_splines=20) +   # urban_share_percent
+    l(5)                   # year_centered as linear control
+).fit(X, y)
+
+# Build a term-level GAM summary table. pygam stores EDoF per coefficient, so sum across the coefficient block belonging to each term to align with the feature-level p-values.
+term_labels = predictor_labels + ["Intercept"]
+edof_per_coef = gam_mod.statistics_["edof_per_coef"]
+p_values = gam_mod.statistics_["p_values"]
+
+term_edof = []
+coef_start = 0
+for term in gam_mod.terms:
+    coef_stop = coef_start + term.n_coefs
+    term_edof.append(edof_per_coef[coef_start:coef_stop].sum())
+    coef_start = coef_stop
+
+gam_tbl = pd.DataFrame({
+    "Term": term_labels,
+    "EDoF": term_edof,
+    "p-value": p_values,
+})
+display(gam_tbl.round(4))
+```
+
+```{python}
+#| label: wb-regression-gam-pdp
+#| fig-cap: "GAM partial dependence curves for each predictor"
+#| output: false
+#| warning: false
+#| message: false
+
+# Plot partial dependence curves for the 6 smooth terms. year_centered uses l() and is excluded from the PDP.
+# define variables and colors (term index, x-column index, x-label, color, panel title)
+spec = [
+    (0, 0, "Log GDP per Capita",           "#2C7FB8", "Effect of Log GDP per Capita"),
+    (1, 1, "Fossil Electricity Share (%)", "#FE9929", "Effect of Fossil Electricity Share"),
+    (2, 2, "Renewable Energy Share (%)",   "#E84539", "Effect of Renewable Energy Share"),
+    (3, 3, "Forest Area (% of Land)",      "#756BB1", "Effect of Forest Area"),
+    (4, 4, "Urban Population Share (%)",   "#636363", "Effect of Urban Population Share"),
+]
+
+fig, axes = plt.subplots(2, 3, figsize=(14, 8))
+fig.suptitle("GAM Partial Dependence of Log CO2 Emissions per Capita", fontsize=13)
+
+# loop over smooth variables
+for ax, (term, xcol, xlabel, color, title) in zip(axes.flat, spec):
+    XX = gam_mod.generate_X_grid(term=term)
+    x  = XX[:, xcol]
+    pd_effect = gam_mod.partial_dependence(term=term, X=XX)
+    _, ci     = gam_mod.partial_dependence(term=term, X=XX, width=0.95)
+
+    ax.plot(x, pd_effect, color=color, lw=2)
+    ax.plot(x, ci, color=color, ls="--", lw=1)
+    ax.set(xlabel=xlabel, ylabel="Partial Effect on Log CO2", title=title)
+    ax.grid(True, alpha=0.3)
+
+axes[1, 2].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+The cleaned dataset covers 1990–2023 after regional aggregates were removed and variable ranges were verified. Missing values were moderate (most notably for fossil-fuel electricity share) and were handled by removing all the rows with missing entries before regression analysis and modelling. The dataset had `{python} rows_before` rows before removal and `{python} rows_after` rows after.
+
+According to @fig-wb-eda-line-global, carbon dioxide emissions per capita rose through the 2000s and declined after the early 2010s, with developed countries trending down and developing countries trending up in the long term. Emissions and GDP per capita were strongly right-skewed, which motivated the log transformations. According to @wb-regression-gam, the GAM showed clear nonlinear relationships between emissions and the predictors (with extremely high EDoF values except for the year variable), which motivated the use of tree-based machine learning models to capture more complex patterns.
+
+## 3.2 Modeling
+
+```{python}
+#| label: wb-model-split
+#| warning: false
+#| message: false
+
+# Country-grouped 70/15/15 split so every row of a country falls in a single set.
+# Step 1: hold out 15% of countries as the test set.
+# Step 2: split the remaining 85% into ~70/15 train/val (0.15 / 0.85 ≈ 0.1765).
+X_full = analysis_df[predictors].values
+y_full = analysis_df["log_co2_per_capita"].values
+groups = analysis_df["countryiso3code"].values
+
+gss_test = GroupShuffleSplit(n_splits=1, test_size=0.15, random_state=42)
+trainval_idx, test_idx = next(gss_test.split(X_full, y_full, groups))
+
+X_trainval, X_test = X_full[trainval_idx], X_full[test_idx]
+y_trainval, y_test = y_full[trainval_idx], y_full[test_idx]
+groups_trainval  = groups[trainval_idx]
+
+gss_val = GroupShuffleSplit(n_splits=1, test_size=0.1765, random_state=42)
+train_idx, val_idx = next(gss_val.split(X_trainval, y_trainval, groups_trainval))
+
+X_train, X_val = X_trainval[train_idx], X_trainval[val_idx]
+y_train, y_val = y_trainval[train_idx], y_trainval[val_idx]
+groups_train = groups_trainval[train_idx]
+groups_val   = groups_trainval[val_idx]
+
+# Pre-combine train+validation so tuning can use the full 85% of countries.
+X_trval = np.vstack([X_train, X_val])
+y_trval = np.concatenate([y_train, y_val])
+groups_trval = np.concatenate([groups_train, groups_val])
+
+split_summary = pd.DataFrame({
+    "Set":       ["Train", "Validation", "Test"],
+    "Rows":      [X_train.shape[0], X_val.shape[0], X_test.shape[0]],
+    "Countries": [len(set(groups_train)), len(set(groups_val)), len(set(groups[test_idx]))],
+})
+```
+
+```{python}
+#| label: tbl-wb-model-split
+#| tbl-cap: "Country-grouped train / validation / test split"
+#| warning: false
+#| message: false
+
+display(split_summary)
+```
+
+According to @tbl-wb-model-split, the country-level data split placed roughly 70% of countries (136 out of 196) in the training set, 15% (30 out of 196) in the validation set, and 15% (30 out of 196) in the test set, with no country has observations appearing in more than one set. Therefore, test error measures generalization to unseen countries given their full 1990–2023 predictor history, which directly addresses the cross-country focus of the research question.
+
+```{python}
+#| label: wb-model-tree-tune
+#| warning: false
+#| message: false
+
+# Fit a full unpruned regression tree to obtain the cost-complexity pruning path.
+full_tree = DecisionTreeRegressor(
+    min_samples_split=20,
+    min_samples_leaf=5,
+    random_state=42,
+)
+full_tree.fit(X_train, y_train)
+
+path = full_tree.cost_complexity_pruning_path(X_train, y_train)
+ccp_alphas_pos = path.ccp_alphas[path.ccp_alphas > 0]
+
+# Subsample ~25 log-spaced alpha values; fitting a tree for every alpha is too slow.
+log_alphas = np.unique(np.concatenate((
+    [0.0],
+    np.logspace(
+        np.log10(ccp_alphas_pos.min()),
+        np.log10(ccp_alphas_pos.max()),
+        num=25,
+    ),
+)))
+
+# Tune ccp_alpha on the validation set: for each alpha, fit on train and score on val.
+tree_tune_rows = []
+for alpha in log_alphas:
+    tree_a = DecisionTreeRegressor(
+        min_samples_split=20,
+        min_samples_leaf=5,
+        ccp_alpha=alpha,
+        random_state=42,
+    )
+    tree_a.fit(X_train, y_train)
+    val_pred_a = tree_a.predict(X_val)
+    tree_tune_rows.append({
+        "ccp_alpha": alpha,
+        "n_leaves":  tree_a.get_n_leaves(),
+        "val_rmse":  float(np.sqrt(mean_squared_error(y_val, val_pred_a))),
+        "val_r2":    float(r2_score(y_val, val_pred_a)),
+    })
+
+tree_tune_df = pd.DataFrame(tree_tune_rows).sort_values("val_rmse").reset_index(drop=True)
+best_alpha = float(tree_tune_df.iloc[0]["ccp_alpha"])
+```
+
+```{python}
+#| label: wb-model-tree-final
+#| warning: false
+#| message: false
+
+# Fit the pruned tree on train+val (same sample the XGBoost final model uses),
+# then evaluate on the held-out test set.
+tree_final = DecisionTreeRegressor(
+    min_samples_split=20,
+    min_samples_leaf=5,
+    ccp_alpha=best_alpha,
+    random_state=42,
+)
+tree_final.fit(X_trval, y_trval)
+
+tree_test_pred = tree_final.predict(X_test)
+tree_rmse = float(np.sqrt(mean_squared_error(y_test, tree_test_pred)))
+tree_mae  = float(mean_absolute_error(y_test, tree_test_pred))
+tree_r2   = float(r2_score(y_test, tree_test_pred))
+
+tree_leaves = int(tree_final.get_n_leaves())
+tree_depth  = int(tree_final.get_depth())
+```
+
+```{python}
+#| label: wb-model-xgb-baseline
+#| warning: false
+#| message: false
+
+# Baseline XGBoost with sensible defaults; fit on train and evaluated on the test set
+# to serve as a "no-tuning" reference point for the tuned model below.
+xgb_base = XGBRegressor(
+    n_estimators=200,
+    max_depth=5,
+    learning_rate=0.1,
+    importance_type="gain",
+    tree_method="hist",
+    random_state=42,
+    n_jobs=-1,
+)
+xgb_base.fit(X_train, y_train)
+
+xgb_base_test_pred = xgb_base.predict(X_test)
+xgb_base_rmse = float(np.sqrt(mean_squared_error(y_test, xgb_base_test_pred)))
+xgb_base_mae  = float(mean_absolute_error(y_test, xgb_base_test_pred))
+xgb_base_r2   = float(r2_score(y_test, xgb_base_test_pred))
+```
+
+```{python}
+#| label: wb-model-xgb-tune
+#| warning: false
+#| message: false
+
+# Randomized hyperparameter search on the training set.
+# Use GroupKFold so that country observations never leak across folds.
+# The grid covers depth/shrinkage, L1/L2 regularization, and row/column subsampling,
+# which together control capacity and are critical for generalizing to unseen countries.
+param_dist = {
+    "max_depth":        [3, 4, 5, 6, 8],
+    "learning_rate":    [0.01, 0.03, 0.05, 0.1],
+    "reg_lambda":       [0.1, 1, 5, 10, 50],
+    "reg_alpha":        [0, 0.1, 1, 10],
+    "subsample":        [0.6, 0.8, 1.0],
+    "colsample_bytree": [0.6, 0.8, 1.0],
+    "min_child_weight": [1, 3, 5, 10],
+    "gamma":            [0, 0.1, 0.5, 1.0],
+}
+
+gkf = GroupKFold(n_splits=5)
+cv_folds_train = list(gkf.split(X_train, y_train, groups=groups_train))
+
+xgb_rs = XGBRegressor(
+    n_estimators=500,
+    tree_method="hist",
+    random_state=42,
+    n_jobs=1,
+    verbosity=0,
+)
+
+rand_search = RandomizedSearchCV(
+    estimator=xgb_rs,
+    param_distributions=param_dist,
+    n_iter=40,
+    cv=cv_folds_train,
+    scoring="neg_root_mean_squared_error",
+    random_state=42,
+    n_jobs=-1,
+    verbose=0,
+)
+rand_search.fit(X_train, y_train)
+
+best_params = rand_search.best_params_
+best_cv_rmse = float(-rand_search.best_score_)
+```
+
+```{python}
+#| label: wb-model-xgb-earlystop
+#| warning: false
+#| message: false
+
+# Use `xgb.cv` with GroupKFold + early stopping on the combined train+validation
+# set to pick `n_estimators` directly. CV-based early stopping is more stable than
+# picking the best iteration from a single validation split.
+cv_folds_trval = list(gkf.split(X_trval, y_trval, groups=groups_trval))
+dtrval = xgb.DMatrix(X_trval, label=y_trval)
+
+cv_params = dict(best_params)
+cv_params.update({
+    "objective":   "reg:squarederror",
+    "eval_metric": "rmse",
+    "tree_method": "hist",
+    "seed":        42,
+})
+
+cv_results = xgb.cv(
+    params=cv_params,
+    dtrain=dtrval,
+    num_boost_round=3000,
+    folds=cv_folds_trval,
+    early_stopping_rounds=50,
+    as_pandas=True,
+    verbose_eval=False,
+)
+best_n_estimators = int(cv_results.shape[0])
+best_cv_rmse_trval = float(cv_results["test-rmse-mean"].iloc[-1])
+```
+
+```{python}
+#| label: wb-model-xgb-final
+#| warning: false
+#| message: false
+
+# Refit the tuned XGBoost with the best hyperparameters and the CV-selected
+# n_estimators on the full train+validation data, then evaluate once on test.
+xgb_final = XGBRegressor(
+    n_estimators=best_n_estimators,
+    importance_type="gain",
+    tree_method="hist",
+    random_state=42,
+    n_jobs=-1,
+    **best_params,
+)
+xgb_final.fit(X_trval, y_trval)
+
+xgb_test_pred = xgb_final.predict(X_test)
+xgb_rmse = float(np.sqrt(mean_squared_error(y_test, xgb_test_pred)))
+xgb_mae  = float(mean_absolute_error(y_test, xgb_test_pred))
+xgb_r2   = float(r2_score(y_test, xgb_test_pred))
+```
+
+```{python}
+#| label: tbl-wb-model-compare
+#| tbl-cap: "Test-set performance comparison across models"
+#| warning: false
+#| message: false
+
+model_compare = pd.DataFrame({
+    "Model":     ["Decision Tree (pruned)", "XGBoost (tuned)"],
+    "Test R²":   [tree_r2,    xgb_r2],
+    "Test RMSE": [tree_rmse,  xgb_rmse],
+    "Test MAE":  [tree_mae,   xgb_mae],
+}).round(4)
+display(model_compare)
+```
+
+```{python}
+#| label: wb-model-prose-values
+#| output: false
+#| warning: false
+#| message: false
+
+# Pre-format model-performance numbers as strings so the inline references in the
+# prose below render with consistent decimal precision.
+tree_r2_s        = f"{tree_r2:.3f}"
+tree_rmse_s      = f"{tree_rmse:.3f}"
+tree_mae_s       = f"{tree_mae:.3f}"
+xgb_r2_s         = f"{xgb_r2:.3f}"
+xgb_rmse_s       = f"{xgb_rmse:.3f}"
+xgb_mae_s        = f"{xgb_mae:.3f}"
+xgb_base_r2_s    = f"{xgb_base_r2:.3f}"
+xgb_base_rmse_s  = f"{xgb_base_rmse:.3f}"
+xgb_base_mae_s   = f"{xgb_base_mae:.3f}"
+best_cv_rmse_s        = f"{best_cv_rmse:.4f}"
+best_cv_rmse_trval_s  = f"{best_cv_rmse_trval:.4f}"
+xgb_vs_tree_r2_diff_s = f"{xgb_r2 - tree_r2:+.3f}"
+```
+
+The pruned Decision Tree, after tuning `ccp_alpha` on the validation set and refitting on combined train and validation data, contained `{python} tree_leaves` leaves at depth `{python} tree_depth` and reached a test-set $R^2$ of `{python} tree_r2_s`, RMSE of `{python} tree_rmse_s`, and MAE of `{python} tree_mae_s` on log carbon dioxide emissions per capita.
+
+```{python}
+#| label: tbl-wb-model-xgb-params
+#| tbl-cap: "Tuned XGBoost hyperparameters (5-fold GroupKFold random search + CV early stopping)"
+#| warning: false
+#| message: false
+
+xgb_param_tbl = pd.DataFrame(
+    [
+        ("max_depth",          best_params["max_depth"]),
+        ("learning_rate",      best_params["learning_rate"]),
+        ("n_estimators",       best_n_estimators),
+        ("reg_lambda",         best_params["reg_lambda"]),
+        ("reg_alpha",          best_params["reg_alpha"]),
+        ("subsample",          best_params["subsample"]),
+        ("colsample_bytree",   best_params["colsample_bytree"]),
+        ("min_child_weight",   best_params["min_child_weight"]),
+        ("gamma",              best_params["gamma"]),
+        ("CV RMSE (random search)", round(best_cv_rmse, 4)),
+        ("CV RMSE (early stop)",    round(best_cv_rmse_trval, 4)),
+    ],
+    columns=["Hyperparameter", "Value"],
+)
+display(xgb_param_tbl)
+```
+
+The tuned XGBoost used the hyperparameters in @tbl-wb-model-xgb-params, where the hyperparameters were selected by 5-fold country-level randomized search on the training set (best CV RMSE = `{python} best_cv_rmse_s`) and refined by cross-validated early stopping on the combined train and validation sets, which selected `{python} best_n_estimators` boosting rounds (CV RMSE = `{python} best_cv_rmse_trval_s`). Refit on the combined sets, it reached a $R^2$ of `{python} xgb_r2_s`, RMSE of `{python} xgb_rmse_s`, and MAE of `{python} xgb_mae_s` as the test performance. The untuned baseline XGBoost (200 trees, depth 5, learning rate 0.1) reached $R^2$ = `{python} xgb_base_r2_s`, RMSE = `{python} xgb_base_rmse_s`, MAE = `{python} xgb_base_mae_s`, confirming that tuned XGBoost outperformed the untuned baseline.
+
+On the same test set (@tbl-wb-model-compare), the tuned XGBoost outperformed the pruned Decision Tree on every metric: $R^2$ rose from `{python} tree_r2_s` to `{python} xgb_r2_s`, and RMSE and MAE both fell from `{python} tree_rmse_s` to `{python} xgb_rmse_s` log units and from `{python} tree_mae_s` to `{python} xgb_mae_s` log units, respectively. The bettern performance across all three metrics indicates the tuned XGBoost Regressor captures more complex nonlinearities and predictor interactions that the single pruned tree could not. Therefore, the tuned XGBoost Regressor is the final best model.
+
+
+```{python}
+#| label: fig-wb-model-importance
+#| fig-cap: "Gain-based feature importance for the tuned XGBoost (final model)"
+#| fig-width: 9
+#| fig-height: 4.5
+#| warning: false
+#| message: false
+
+short_labels = {
+    "Log GDP per Capita":                                            "Log GDP per Capita",
+    "Fossil Electricity Share (% of total electricity consumption)": "Fossil Electricity Share (%)",
+    "Renewable Energy Share (% of total final energy consumption)":  "Renewable Energy Share (%)",
+    "Forest Area (% of total land area)":                            "Forest Area (%)",
+    "Urban Population Share (% of total population)":                "Urban Population Share (%)",
+    "Year (centered at 1990)":                                       "Year (centered at 1990)",
+}
+
+xgb_imp = pd.DataFrame({
+    "feature":    [short_labels[label] for label in predictor_labels],
+    "importance": xgb_final.feature_importances_,
+})
+
+feature_order = (
+    xgb_imp.sort_values("importance")["feature"].tolist()
+)
+xgb_imp["feature"] = pd.Categorical(xgb_imp["feature"], categories=feature_order)
+
+(
+    ggplot(xgb_imp, aes(x="feature", y="importance"))
+    + geom_col(fill="#2C7FB8", width=0.7)
+    + coord_flip()
+    + labs(
+        title="Variable Importance — Tuned XGBoost",
+        x="",
+        y="Importance (gain)",
+    )
+    + theme_minimal()
+    + theme(
+        plot_margin=0.02,
+        plot_title=element_text(size=12, ha="center"),
+        axis_text_y=element_text(size=10),
+        axis_text_x=element_text(size=9),
+        axis_title_x=element_text(size=10),
+    )
+)
+```
+
+According to @fig-wb-model-importance, gain-based variable importance from the final model ranks log GDP per capita first by a clear margin, so log GDP per capita is the most important feature in determining the variation in carbon dioxide emissions per capita. Then renewable energy share and urban population share are the second and third most important features, followed by forest area, fossil electricity share, and the year. This ordering agrees with the hypothesis that economic development, energy sources, and urbanization are the key predictors of cross-country differences, while the calendar year adds little once those are known.
+
+```{python}
+#| label: fig-wb-model-pred-vs-actual
+#| fig-cap: "Predicted vs actual log carbon dioxide emissions per capita on the test set (tuned XGBoost)"
+#| warning: false
+#| message: false
+
+# Diagnostic scatter + residual histogram: tuned XGBoost on the held-out test set.
+xgb_residuals = y_test - xgb_test_pred
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+axes[0].scatter(y_test, xgb_test_pred, alpha=0.3, s=10, color="#2C7FB8")
+mn, mx = float(y_test.min()), float(y_test.max())
+axes[0].plot([mn, mx], [mn, mx], "r--")
+axes[0].set_xlabel("Actual log CO2 per capita")
+axes[0].set_ylabel("Predicted log CO2 per capita")
+axes[0].set_title("Predicted vs Actual — Tuned XGBoost")
+axes[0].grid(True, alpha=0.3)
+
+axes[1].hist(xgb_residuals, bins=40, color="#2C7FB8", alpha=0.8)
+axes[1].axvline(0, color="red", linestyle="--")
+axes[1].set_xlabel("Residual (actual − predicted)")
+axes[1].set_title("Residual Distribution — Tuned XGBoost")
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+```
+
+According to @fig-wb-model-pred-vs-actual, the predicted outcome V.S. actual target diagnostic plot shows points clustered along the 45-degree line with no systematic curvature, and residuals are roughly symmetric and centered approximately at zero, meaning the model is not consistently too high or too low for either low emissions or high emissions countries. The remaining spread likely reflects country related features, such as natural resources, climate changes, etc., that the available predictors do not capture directly in the dataset.
 
 # 4. Conclusions and Summary
 
-_TBD — interpret findings in the bigger picture, connect back to the research question, state limitations and possible extensions._
+## 4.1 Summary of Findings and Bigger Picture
+
+Carbon dioxide emissions per capita rose through the 2000s, peaked in the early 2010s, and declined afterward. On the modelling side, the tuned XGBoost Regressor outperformed the pruned Decision Tree and an untuned XGBoost baseline on every regression model evaluation metric ($R^2$, RMSE, MAE), with residuals roughly symmetric around zero in the predicted outcome V.S. actual target diagnostic plot. Gain-based variable importance ranked log GDP per capita as the most important predictor by a clear margin, then renewable energy share and urban population share, with forest area, fossil-fuel electricity share, and the calendar year contributing least, which is consistent with the hypothesis that economic development, energy sources, and urbanization are the dominant cross-country drivers, which proves the hypothesis. 
+
+Economic development remains the strongest predictor of carbon dioxide emissions per capita even after energy and land-use indicators are included. Growth aspirations and sustainable development goals in developing and less developed countries can only be reconciled through structural shifts (clean energy, more efficient technology, low carbon industry) rather than restraint on growth itself.
+
+Renewable energy share was the second most important predictor, while fossil-fuel electricity share contributed far less. Renewable share likely includes fossil-fuel electricity information because it reflects the whole energy systemr ather than just electricity. In terms of policy implications, investing in renewables is the strongest single lever within this set of predictors.
+
+## 4.3 Limitations
+
+The country-level data split measures generalization to unseen countries given their full 1990–2023 predictor history, not temporal forecasting; predicting 2024 from 1990–2023 would require a forcasting princple split (strictly use 1990-2022 to trian and validate models, and use 2023 data for testing).
+
+Dropping rows with missing entries before modelling removed a non-trivial share of country-years. If missingness is not uniform across countries, the modelled sample may skew toward those with stronger statistical reporting.
+
+The predictor set is small and entirely national aggregated. Plausible predictors are not included, such as energy prices, weather,etc., which could account for some of the residual variance. The carbon dioxide emissions measure is also production-based, whereas trade-intensive countries look different under a consumption-based attribution.
+
+Finally, all results are associational. Tree-based models do not produce causal estimates, and predictor importance reflects predictive contribution within the model rather than policy effectiveness.
+

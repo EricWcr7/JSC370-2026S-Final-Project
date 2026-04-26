@@ -1,0 +1,620 @@
+---
+title: "Lab 08 - Trees and Random Forests"
+format:
+  html:
+    embed-resources: true
+jupyter: python3
+execute:
+  eval: true
+---
+
+# Learning goals
+
+- Perform classification and regression with tree-based methods in Python
+- Use cost-complexity pruning to select optimal tree size
+- Compare the performance of pruned trees and random forests
+- Examine variable importance
+
+# Lab description
+
+##### Download lab `.qmd` [here](https://github.com/JSC370/JSC370-2026/blob/main/labs/lab8/lab08-trees-boosting.qmd)
+
+For this lab we will be working with the `cps_clean.csv` dataset.
+
+The Current Population Survey (CPS) has been run from 1962 to the present, and it covers detailed labor force, income, and demographic data. We are using the Annual Social and Economic Supplement (ASEC) from 2020-2025. Source: [IPUMS CPS](https://cps.ipums.org/cps/).
+
+
+# Deliverables
+
+Questions 1-4 answered, qmd and html uploaded to Quercus
+
+
+## Data dictionary for cleaned dataset (`cps_clean.csv`)
+
+
+| Variable | Description | Type | Values |
+|----------|-------------|------|--------|
+| `AGE` | Age in years | Numeric | 0-99 |
+| `female` | Sex | Binary | 0 = Male, 1 = Female |
+| `married` | Marital status | Binary | 0 = Not married, 1 = Married |
+| `educ_cat` | Education level | Ordinal | 1 = Less than HS, 2 = HS diploma, 3 = Some college/Associates, 4 = Bachelor's, 5 = Graduate |
+| `faminc_cat` | Family income bracket | Ordinal | 1 = Low (<$40k), 2 = Middle ($40k-$100k), 3 = High ($100k+) |
+| `metro_binary` | Metropolitan area | Binary | 0 = Non-metro, 1 = Metro |
+| `race_cat` | Race | Categorical | White, Black, Asian, Other |
+| `us_citizen` | US citizenship | Binary | 0 = Not a citizen, 1 = US citizen (born or naturalized) |
+| `has_children` | Has children in household | Binary | 0 = No, 1 = Yes |
+| `insured` | Health insurance last year | Binary | 0 = No, 1 = Yes |
+| `OCC` | Occupation code | Numeric | 4-digit Census occupation codes |
+| `IND` | Industry code | Numeric | 4-digit Census industry codes |
+| `INCWAGE` | Wage and salary income | Numeric | Dollar amount |
+| `FIRMSIZE` | Employer firm size | Ordinal | 0 = NIU, 1 = Under 10, 2 = 10-24, 5 = 25-99, 7 = 100-499, 8 = 500-999, 9 = 1000+ |
+| `NCHILD` | Number of own children | Numeric | 0-9 |
+| `YEAR` | Survey year | Numeric | 2020-2025 |
+| `STATEFIP` | State FIPS code | Numeric | 1-56 |
+| `worker_cat` | Worker category | Categorical| Unemployed, Part-time, Private for-profit, Private nonprofit, Government, Self-employed |
+
+
+### Setup
+
+We will use the following Python libraries: `scikit-learn` (trees, random forest), `pandas`, `numpy`, `plotnine`, `matplotlib` (for tree plots).
+
+### Load packages and data
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from plotnine import *
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, plot_tree
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.metrics import accuracy_score, mean_squared_error, r2_score, confusion_matrix, ConfusionMatrixDisplay
+import warnings
+warnings.filterwarnings('ignore')
+
+cps = pd.read_csv("https://raw.githubusercontent.com/JSC370/JSC370-2026/main/data/cps_clean.csv")
+cps = cps[cps['YEAR'].isin([2024, 2025])]
+print(f"Dataset size (2024-2025): {cps.shape[0]} rows")
+cps.head()
+```
+
+
+### Data preparation
+
+We will use the following features as predictors: `AGE`, `female`, `married`, `educ_cat`, `faminc_cat`, `metro_binary`, `race_cat`, `us_citizen`, `has_children`, `insured`, `FIRMSIZE`, `NCHILD`.
+
+First let's encode race into dummy (binary) variables.
+
+```{python}
+cps_encoded = pd.get_dummies(cps, columns=['race_cat'], drop_first=True)
+
+feature_cols = ['AGE', 'female', 'married', 'educ_cat', 'faminc_cat',
+                'metro_binary', 'us_citizen', 'has_children', 'insured',
+                'FIRMSIZE', 'NCHILD',
+                'race_cat_Black', 'race_cat_Other', 'race_cat_White']
+
+cps_encoded.head()
+```
+
+
+---
+
+## Part 1: Classification — Predicting `worker_cat`
+
+We want to predict worker category (Unemployed, Part-time, Private for-profit, Private nonprofit, Government, Self-employed) using the demographic and economic features listed above.
+
+
+### Question 1: Classification Trees with Cost-Complexity Pruning
+
+**a)** Split the data into training (70%) and testing (30%) sets using [`train_test_split`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html). Use `random_state=65`. Print the sizes of the training and testing sets, and show the count and proportion of each `worker_cat` category in the training set.
+
+```{python}
+# YOUR CODE HERE
+X_class = cps_encoded[feature_cols]
+Y_class = cps_encoded['worker_cat']
+
+X_train_c, X_test_c, Y_train_c, Y_test_c = train_test_split(
+  X_class, Y_class, test_size=0.30, random_state=65
+)
+
+print(f"Training set size: {X_train_c.shape[0]}")
+print(f"Testing set size: {X_test_c.shape[0]}")
+print(f"\nCount of each worker_cat category in training set:")
+train_counts = Y_train_c.value_counts().sort_index()
+print(train_counts)
+print(f"\nProportions:")
+train_props = Y_train_c.value_counts(normalize=True).sort_index()
+print(train_props)
+```
+
+**b)** Fit a full (unpruned) classification tree using [`DecisionTreeClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) with `min_samples_split=20` and `min_samples_leaf=5`. Plot the tree using [`plot_tree`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.plot_tree.html) (hint: use `max_depth=3` for readability). How many leaves does the full tree have?
+
+```{python}
+# YOUR CODE HERE
+class_labels = sorted(Y_class.unique())
+
+full_tree_c = DecisionTreeClassifier(
+  min_samples_split=20,
+  min_samples_leaf=5,
+  random_state=65
+)
+full_tree_c.fit(X_train_c, Y_train_c)
+
+print(f"Number of leaves in full tree: {full_tree_c.get_n_leaves()}")
+print(f"Depth of full tree: {full_tree_c.get_depth()}")
+
+plt.figure(figsize=(24, 10))
+plot_tree(
+  full_tree_c,
+  feature_names=feature_cols,
+  class_names=class_labels,
+  filled=True,
+  rounded=True,
+  max_depth=3,
+  fontsize=8
+)
+plt.title("Full Classification Tree (showing top 3 levels)")
+plt.tight_layout()
+plt.show()
+```
+
+**c)** Use [`cost_complexity_pruning_path`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier.cost_complexity_pruning_path) to explore how `ccp_alpha` affects tree size. Plot the number of leaves as a function of `ccp_alpha`. Choose a `ccp_alpha` that produces a reasonably small tree (e.g., 5-15 leaves).
+
+```{python}
+path = full_tree_c.cost_complexity_pruning_path(X_train_c, Y_train_c)
+ccp_alphas = path.ccp_alphas
+ccp_alphas_pos = ccp_alphas[ccp_alphas > 0]
+
+# Subsample ~25 log-spaced alpha values (fitting a tree for every alpha is too slow)
+# Log-spacing captures the interesting range where tree size changes most
+log_alphas = np.logspace(
+    np.log10(ccp_alphas_pos.min()),
+    np.log10(ccp_alphas_pos.max()),
+    num=25
+)
+log_alphas = np.unique(np.concatenate(([0.0], log_alphas)))
+
+# Compute number of leaves for each sampled alpha
+n_leaves = []
+for alpha in log_alphas:
+    tree = DecisionTreeClassifier(
+        min_samples_split=20,
+        min_samples_leaf=5,
+        ccp_alpha=alpha,
+        random_state=65
+    )
+    tree.fit(X_train_c, Y_train_c)
+    n_leaves.append(tree.get_n_leaves())
+
+ccp_df = pd.DataFrame({'ccp_alpha': log_alphas, 'n_leaves': n_leaves})
+print(ccp_df)
+```
+
+```{python}
+# Plot number of leaves vs ccp_alpha
+(
+  ggplot(ccp_df, aes(x='ccp_alpha', y='n_leaves')) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10() +
+  labs(
+    title='Cost-Complexity Pruning Path (Classification Tree)',
+    x='ccp_alpha (log scale)',
+    y='Number of leaves'
+  ) +
+  theme_minimal()
+)
+```
+
+```{python}
+# Choose a ccp_alpha that gives a small, interpretable tree
+# Look at the table above and pick one with ~5-15 leaves
+optimal_ccp_alpha_c = 1.843922e-03
+expected_leaves_c = int(
+    ccp_df.loc[np.isclose(ccp_df['ccp_alpha'], optimal_ccp_alpha_c), 'n_leaves'].iloc[0]
+)
+print(f"Chosen ccp_alpha: {optimal_ccp_alpha_c}")
+print(f"Expected number of leaves: {expected_leaves_c}")
+```
+
+**d)** Fit a pruned tree using the chosen `ccp_alpha` and plot it. How does the pruned tree compare to the full tree in terms of complexity? Which variables appear most important for splitting?
+
+```{python}
+pruned_tree_c = DecisionTreeClassifier(
+    min_samples_split=20,
+    min_samples_leaf=5,
+    ccp_alpha=optimal_ccp_alpha_c,
+    random_state=65
+)
+pruned_tree_c.fit(X_train_c, Y_train_c)
+
+print(f"Number of leaves in pruned tree: {pruned_tree_c.get_n_leaves()}")
+print(f"Depth of pruned tree: {pruned_tree_c.get_depth()}")
+
+plt.figure(figsize=(20, 10))
+plot_tree(
+    pruned_tree_c,
+    feature_names=feature_cols,
+    class_names=class_labels,
+    filled=True,
+    rounded=True,
+    fontsize=8
+)
+plt.title("Pruned Classification Tree")
+plt.tight_layout()
+plt.show()
+```
+
+**e)** Compute the test accuracy and test misclassification error of the pruned tree. Also display the [`confusion_matrix`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html). Which categories are easiest/hardest to predict?
+
+```{python}
+Y_pred_c = pruned_tree_c.predict(X_test_c)
+test_acc_c = accuracy_score(Y_test_c, Y_pred_c)
+test_error_c = 1 - test_acc_c
+print(f"Test accuracy (pruned tree): {test_acc_c}")
+print(f"Test misclassification error (pruned tree): {test_error_c}")
+
+# Confusion matrix
+cm = confusion_matrix(Y_test_c, Y_pred_c, labels=class_labels)
+fig, ax = plt.subplots(figsize=(10, 8))
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_labels)
+disp.plot(ax=ax, cmap='Blues', xticks_rotation=45)
+plt.title("Confusion Matrix - Pruned Classification Tree")
+plt.tight_layout()
+plt.show()
+```
+
+**Summary:**
+
+According to the confusion matrix, **Private for-profit** is the easiest category to predict by the pruned tree because the model correctly identified `{python} int(cm[class_labels.index("Private for-profit"), class_labels.index("Private for-profit")])` out of `{python} int(cm[class_labels.index("Private for-profit"), :].sum())` workers, which is `{python} f"{float(cm[class_labels.index('Private for-profit'), class_labels.index('Private for-profit')] / cm[class_labels.index('Private for-profit'), :].sum() * 100):.2f}"`%. However, **Unemployed**, **Self-employed**, and **Government** are the hardest categories to predict because the pruned tree cannot correctly identify any of the workers in these categories.
+
+### Question 2: Classification Random Forest
+
+**a)** Tune the [`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) by trying a few values of `max_features` and `min_samples_leaf` using out of bag (OOB) accuracy. Use `n_estimators=200`, `oob_score=True`, and `random_state=65`. Report the best parameters, then fit the best model with `n_estimators=500` and report OOB and test accuracy. How do these compare to the pruned tree?
+
+*Hint: Try `max_features` in `['sqrt', 1/3, 0.5]` (corresponding to sqrt(p), p/3, and p/2 features per split) and `min_samples_leaf` in `[1, 5, 10]`.*
+
+```{python}
+# print(X_train_c.isnull().sum())
+# print(Y_train_c.isnull().sum())
+# print(X_test_c.isnull().sum())
+# print(Y_test_c.isnull().sum())
+```
+
+
+```{python}
+# Tune: try all combinations of max_features and min_samples_leaf
+results = []
+for mf in ['sqrt', 1/3, 0.5]:
+    for msl in [1, 5, 10]:
+        rf = RandomForestClassifier(
+            n_estimators=200,
+            oob_score=True,
+            random_state=65,
+            max_features=mf,
+            min_samples_leaf=msl
+        )
+        rf.fit(X_train_c, Y_train_c)
+        results.append({
+            'max_features': mf, 'min_samples_leaf': msl,
+            'oob_accuracy': rf.oob_score_
+        })
+
+tune_df = pd.DataFrame(results).sort_values('oob_accuracy', ascending=False)
+print(tune_df.to_string(index=False))
+```
+
+```{python}
+# Fit the best model with n_estimators=500
+best = tune_df.iloc[0]
+print(f"Best parameters: max_features={best['max_features']}, min_samples_leaf={best['min_samples_leaf']}")
+
+rf_class = RandomForestClassifier(
+    n_estimators=500,
+    oob_score=True,
+    random_state=65,
+    max_features=best['max_features'],
+    min_samples_leaf=int(best['min_samples_leaf'])
+)
+rf_class.fit(X_train_c, Y_train_c)
+
+y_pred_rf_c = rf_class.predict(X_test_c)
+rf_test_acc_c = accuracy_score(Y_test_c, y_pred_rf_c)
+rf_oob_acc_c = rf_class.oob_score_
+
+print(f"\nRandom Forest OOB accuracy: {rf_oob_acc_c}")
+print(f"Random Forest OOB error: {1 - rf_oob_acc_c}")
+print(f"Random Forest test accuracy: {rf_test_acc_c}")
+print(f"Random Forest test error: {1 - rf_test_acc_c}")
+```
+
+**b)** Generate a feature importance plot using gain (scikit-learn's `feature_importances_`). Which are the top 3 most important features? Do these align with the variables that appeared in the pruned classification tree?
+
+```{python}
+rf_importances_c = rf_class.feature_importances_
+
+imp_df_c = pd.DataFrame({
+    'feature': feature_cols,
+    'importance': rf_importances_c
+}).sort_values('importance')
+imp_df_c['feature'] = pd.Categorical(imp_df_c['feature'], categories=imp_df_c['feature'])
+
+(
+    ggplot(imp_df_c, aes(x='feature', y='importance')) +
+    geom_col() +
+    coord_flip() +
+    labs(
+        title='Random Forest Feature Importances (Classification)',
+        x='Feature',
+        y='Importance'
+    ) +
+    theme_minimal()
+)
+```
+
+**Summary:**
+
+According to the feature importance plot, the top 3 most important features are `AGE`, `FIRMSIZE`, and `educ_cat`. These features align with the variables that appeared in the pruned classification tree. These features align with the variables that appeared in the pruned classification tree.
+
+**c)** Compare the pruned tree and random forest test performance in a summary table. Which model performs better and why might that be?
+
+```{python}
+comparison_c = pd.DataFrame({
+    'Model': ['Pruned Decision Tree', 'Random Forest'],
+    'Test Accuracy': [test_acc_c, rf_test_acc_c],
+    'Test Misclassification Error': [test_error_c, 1 - rf_test_acc_c]
+})
+print(comparison_c.to_string(index=False))
+```
+
+**Summary:**
+
+According to the comparison table, the random forest performs better than the pruned tree on the test set. The random forest has a test accuracy of `{python} round(rf_test_acc_c * 100, 2)`% and a test misclassification error of `{python} round((1 - rf_test_acc_c) * 100, 2)`%, while the pruned tree has a test accuracy of `{python} round(test_acc_c * 100, 2)`% and a test misclassification error of `{python} round(test_error_c * 100, 2)`%. This is expected because Random Forests reduce variance by averaging many decorrelated trees. A single decision tree is prone to high variance and can overfit (or underfit if pruned too heavily), whereas the ensemble approach of Random Forest captures more complex patterns and generalizes better to unseen data.
+
+---
+
+## Part 2: Regression — Predicting `INCWAGE`
+
+Now we switch to predicting wage income (`INCWAGE`) as a continuous outcome. We will include `worker_cat` as a predictor (one-hot encoded) along with the other features.
+
+
+### Question 3: Regression Trees with Cost-Complexity Pruning
+
+**a)** Prepare the data for regression. One-hot encode `worker_cat` and add it to the feature set. Split into training (70%) and testing (30%) with `random_state=65`. Print the mean and standard deviation of `INCWAGE` in the training set.
+
+```{python}
+cps_reg = pd.get_dummies(cps_encoded, columns=['worker_cat'], drop_first=True)
+
+# Build the regression feature list
+worker_cat_cols = [c for c in cps_reg.columns if c.startswith('worker_cat_')]
+reg_feature_cols = feature_cols + worker_cat_cols
+
+X_reg = cps_reg[reg_feature_cols]
+Y_reg = cps_reg['INCWAGE']
+
+X_train_r, X_test_r, Y_train_r, Y_test_r = train_test_split(
+    X_reg, Y_reg, test_size=0.30, random_state=65
+)
+
+print(f"Training set size: {X_train_r.shape[0]}")
+print(f"Testing set size: {X_test_r.shape[0]}")
+print(f"\nINCWAGE in training set:")
+print(f"  Mean: ${Y_train_r.mean():.2f}")
+print(f"  Std:  ${Y_train_r.std():.2f}")
+print(f"  Min:  ${Y_train_r.min():.2f}")
+print(f"  Max:  ${Y_train_r.max():.2f}")
+```
+
+**b)** Fit a full regression tree using [`DecisionTreeRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html) with `min_samples_split=20` and `min_samples_leaf=5`. Plot the tree (use `max_depth=3` for readability). How many leaves does the full tree have?
+
+```{python}
+full_tree_r = DecisionTreeRegressor(
+    min_samples_split=20,
+    min_samples_leaf=5,
+    random_state=65
+)
+full_tree_r.fit(X_train_r, Y_train_r)
+
+print(f"Number of leaves in full tree: {full_tree_r.get_n_leaves()}")
+print(f"Depth of full tree: {full_tree_r.get_depth()}")
+
+plt.figure(figsize=(24, 10))
+plot_tree(
+    full_tree_r,
+    feature_names=reg_feature_cols,
+    filled=True,
+    rounded=True,
+    max_depth=3,
+    fontsize=8
+)
+plt.title("Full Regression Tree (showing top 3 levels)")
+plt.tight_layout()
+plt.show()
+```
+
+**c)** Use [`cost_complexity_pruning_path`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html#sklearn.tree.DecisionTreeRegressor.cost_complexity_pruning_path) to explore how `ccp_alpha` affects tree size. Plot the number of leaves as a function of `ccp_alpha`. Choose a `ccp_alpha` that produces a reasonably small tree.
+
+```{python}
+# Get the pruning path
+path_r = full_tree_r.cost_complexity_pruning_path(X_train_r, Y_train_r)
+ccp_alphas_r = path_r.ccp_alphas
+ccp_alphas_r_pos = ccp_alphas_r[ccp_alphas_r > 0]
+# Subsample ~25 log-spaced alpha values (fitting a tree for every alpha is too slow)
+log_alphas_r = np.logspace(
+    np.log10(ccp_alphas_r_pos.min()),
+    np.log10(ccp_alphas_r_pos.max()),
+    num=25
+)
+log_alphas_r = np.unique(np.concatenate(([0.0], log_alphas_r)))
+
+# Compute number of leaves for each sampled alpha
+n_leaves_r = []
+for alpha in log_alphas_r:
+    tree = DecisionTreeRegressor(
+        min_samples_split=20,
+        min_samples_leaf=5,
+        ccp_alpha=alpha,
+        random_state=65
+    )
+    tree.fit(X_train_r, Y_train_r)
+    n_leaves_r.append(tree.get_n_leaves())
+
+ccp_df_r = pd.DataFrame({'ccp_alpha': log_alphas_r, 'n_leaves': n_leaves_r})
+print(ccp_df_r)
+```
+
+```{python}
+# Plot number of leaves vs ccp_alpha
+(
+    ggplot(ccp_df_r, aes(x='ccp_alpha', y='n_leaves')) +
+    geom_line() +
+    geom_point() +
+    scale_x_log10() +
+    labs(
+        title='Cost-Complexity Pruning Path (Regression Tree)',
+        x='ccp_alpha (log scale)',
+        y='Number of leaves'
+    ) +
+    theme_minimal()
+)
+```
+
+```{python}
+# Choose a ccp_alpha that gives a small, interpretable tree
+optimal_ccp_alpha_r = 5.553071e+07
+expected_leaves_r = int(
+    ccp_df_r.loc[np.isclose(ccp_df_r['ccp_alpha'], optimal_ccp_alpha_r), 'n_leaves'].iloc[0]
+)
+print(f"Chosen ccp_alpha: {optimal_ccp_alpha_r}")
+print(f"Expected number of leaves: {expected_leaves_r}")
+```
+
+**d)** Fit a pruned regression tree with the optimal `ccp_alpha` and plot it. Compute the test RMSE ([`mean_squared_error`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mean_squared_error.html)) and R-squared ([`r2_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.r2_score.html)).
+
+```{python}
+pruned_tree_r = DecisionTreeRegressor(
+    min_samples_split=20,
+    min_samples_leaf=5,
+    ccp_alpha=optimal_ccp_alpha_r,
+    random_state=65
+)
+pruned_tree_r.fit(X_train_r, Y_train_r)
+
+print(f"Number of leaves in pruned tree: {pruned_tree_r.get_n_leaves()}")
+print(f"Depth of pruned tree: {pruned_tree_r.get_depth()}")
+
+# Test performance
+y_pred_r = pruned_tree_r.predict(X_test_r)
+test_rmse_tree = np.sqrt(mean_squared_error(Y_test_r, y_pred_r))
+test_r2_tree = r2_score(Y_test_r, y_pred_r)
+print(f"\nTest RMSE (pruned tree): ${test_rmse_tree:,.2f}")
+print(f"Test R-squared (pruned tree): {test_r2_tree:.4f}")
+
+plt.figure(figsize=(24, 12))
+plot_tree(
+    pruned_tree_r,
+    feature_names=reg_feature_cols,
+    filled=True,
+    rounded=True,
+    fontsize=8
+)
+plt.title("Pruned Regression Tree")
+plt.tight_layout()
+plt.show()
+```
+
+
+### Question 4: Regression Random Forest
+
+**a)** Tune the [`RandomForestRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html) by trying a few values of `max_features` and `min_samples_leaf` using OOB R-squared. Use `n_estimators=200`, `oob_score=True`, and `random_state=65`. Report the best parameters, then fit the best model with `n_estimators=500` and report OOB R-squared, test RMSE, and test R-squared. How does it compare to the pruned regression tree?
+
+*Hint: Try `max_features` in `['sqrt', 1/3, 0.5]` (corresponding to sqrt(p), p/3, and p/2 features per split) and `min_samples_leaf` in `[1, 5, 10]`.*
+
+```{python}
+# Tune over a small grid using OOB score
+results_r = []
+for mf in ['sqrt', 1/3, 0.5]:
+    for msl in [1, 5, 10]:
+        rf = RandomForestRegressor(
+            n_estimators=200,
+            oob_score=True,
+            random_state=65,
+            max_features=mf,
+            min_samples_leaf=msl
+        )
+        rf.fit(X_train_r, Y_train_r)
+        results_r.append({
+            'max_features': mf, 'min_samples_leaf': msl,
+            'oob_r2': rf.oob_score_
+        })
+
+tune_df_r = pd.DataFrame(results_r).sort_values('oob_r2', ascending=False)
+print(tune_df_r.to_string(index=False))
+```
+
+```{python}
+# Fit the best model with n_estimators=500
+best_r = tune_df_r.iloc[0]
+print(f"Best parameters: max_features={best_r['max_features']}, min_samples_leaf={best_r['min_samples_leaf']}")
+
+rf_reg = RandomForestRegressor(
+    n_estimators=500,
+    oob_score=True,
+    random_state=65,
+    max_features=best_r['max_features'],
+    min_samples_leaf=int(best_r['min_samples_leaf'])
+)
+rf_reg.fit(X_train_r, Y_train_r)
+
+y_pred_rf_r = rf_reg.predict(X_test_r)
+rf_test_rmse = np.sqrt(mean_squared_error(Y_test_r, y_pred_rf_r))
+rf_test_r2 = r2_score(Y_test_r, y_pred_rf_r)
+rf_oob_r2 = rf_reg.oob_score_
+
+print(f"\nRandom Forest OOB R-squared: {rf_oob_r2}")
+print(f"Random Forest test RMSE: ${rf_test_rmse:,.2f}")
+print(f"Random Forest test R-squared: {rf_test_r2}")
+```
+
+**b)** Generate a feature importance plot. Which are the top 3 most important predictors of wage income? Do these make substantive sense?
+
+```{python}
+rf_importances_r = rf_reg.feature_importances_
+
+imp_df_r = pd.DataFrame({
+    'feature': reg_feature_cols,
+    'importance': rf_importances_r
+}).sort_values('importance')
+imp_df_r['feature'] = pd.Categorical(imp_df_r['feature'], categories=imp_df_r['feature'])
+
+(
+    ggplot(imp_df_r, aes(x='feature', y='importance')) +
+    geom_col() +
+    coord_flip() +
+    labs(
+        title='Random Forest Feature Importances (Regression)',
+        x='Feature',
+        y='Importance'
+    ) +
+    theme_minimal()
+)
+```
+
+**Summary:**
+
+According to the feature importance plot, the top 3 most important features are `educ_cat`, `faminc_cat`, and `AGE`. These features make substantive sense because they are all related to the worker's income.
+
+**c)** Create a summary table comparing the pruned regression tree and random forest on test RMSE and R-squared. Briefly discuss which model you would recommend and why.
+
+```{python}
+comparison_r = pd.DataFrame({
+    'Model': ['Pruned Regression Tree', 'Random Forest'],
+    'Test RMSE': [test_rmse_tree, rf_test_rmse],
+    'Test R-squared': [test_r2_tree, rf_test_r2]
+})
+print(comparison_r.to_string(index=False))
+```
+
+**Summary:**
+
+I would recommend the random forest because it has a higher test R-squared and lower test RMSE. This means that the random forest is able to capture more variance in the data and is able to generalize better to unseen data.

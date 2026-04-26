@@ -1,0 +1,280 @@
+---
+title: "Lab 03 - EDA and Viz 1"
+subtitle: "JSC370 (Winter 2026)"
+date: "January 21, 2026"
+format:
+  html:
+    toc: true
+    embed-resources: true
+jupyter: python3
+execute:
+  enabled: true
+  echo: true
+  output: true
+  warning: false
+  message: false
+---
+
+# Learning Goals
+
+-   Download [lab 3 here](https://github.com/JSC370/JSC370-2026/blob/main/labs/lab3/lab03-github.qmd)
+-   Read in from github and get familiar with a meteorology dataset
+-   Plan out how to tackle the objective question
+-   Step through the EDA "checklist" presented in the class slides
+-   Make exploratory graphs and maps
+
+# Deliverables
+
+-   Complete the code and summaries and upload your .qmd and rendered .html to Quercus
+
+# Lab Description
+
+We will work with similar meteorological data that was presented in lecture. Recall the dataset consists of weather station readings in the contiguous US.
+
+**The objective of the lab is to find the weather station with the lowest elevation, find out where this location is (make a map), and make a time series plot of temperature at this station.**
+
+# Steps
+
+### 0. Load libraries
+
+Notes:
+
+-   import the necessary libraries
+-   note setting pandas options for nicer display of the output
+-   in the yaml above set enabled to true when you want the code to render
+
+```{python}
+import pandas as pd
+pd.set_option("display.float_format", "{:.2f}".format) 
+import numpy as np
+import matplotlib.pyplot as plt
+import geopandas as gpd
+import contextily as cx
+from IPython.display import display
+```
+
+### 1. Read in the data
+
+Connect to github and read in data with pandas.
+
+```{python}
+url = "https://raw.githubusercontent.com/JSC370/JSC370-2026/main/data/met_all_2025.gz"
+met = pd.read_csv(url, compression="gzip")
+met.head(4)
+```
+
+### 2. Check the memory size, dataset dimensions, and the header. How many columns, rows are there?
+
+-   fill in where there are ...
+
+```{python}
+met.memory_usage(deep=True).sum() / 1024 ** 3
+```
+
+```{python}
+print("shape:", met.shape)
+print("n_rows:", met.shape[0])
+print("n_cols:", met.shape[1])
+```
+
+```{python}
+met.head
+```
+
+Summary: - add bullets with your summary
+
+-   The total memory used by the DataFrame is 2.46GB approximately.
+-   There are 5381580 rows and 30 columns.
+-   There are a lot of variables which are similar to the example provided in the lecture.
+
+### 3. Look at data types of the variables in the dataset.
+
+```{python}
+met.dtypes
+```
+
+Summary: - add bullets with your summary
+
+-   The data types of the variables in the dataset are either integers, floats, or objects.
+
+### 4. Take a closer look at the key variables (`temp` and `elev`).
+
+-   Are there missing data in these variables? If so, make sure they are coded correctly.
+
+```{python}
+key_vars = ['temp', 'elev']
+
+met[key_vars].isnull().sum()
+```
+
+-   Are there any unusual values that look suspicious?
+
+```{python}
+
+minT = met['temp'].min()
+maxT = met['temp'].max()
+
+minE = met['elev'].min()
+maxE = met['elev'].max()
+
+print(minT, maxT, minE, maxE)
+
+```
+
+Summary:
+
+-   There are no missing values in either `temp` or `elev` variables (both show 0 null values).
+-   Temperature ranges from -40.0°C to 999.9°C. The maximum value of 999.9°C is highly suspicious and likely represents a missing data code or measurement error, as this temperature is physically impossible.
+-   Elevation ranges from -35 meters to 3680 meters. The minimum elevation of -35m is plausible (below sea level locations exist in the US, such as Death Valley), and the maximum of 3680m is reasonable for high-altitude weather stations.
+
+### 5. Check the data against an external data source and make any other adjustments.
+
+-   Check that the range of elevations make sense. Google or ChatGPT is your friend here.
+
+-   Fix any problems that arise in your checks.
+
+```{python}
+
+met.loc[met['temp'] > 60, 'temp'] = np.nan
+met[['temp']].describe().round(4)
+```
+
+Summary:
+
+-   Removed implausible temperature values above 60°C (such as the 999.9°C value identified earlier) by setting them to NaN.
+-   After cleaning, the temperature now ranges from -40.0°C to 56.0°C, which are both physically plausible for weather stations in the US.
+-   The mean temperature is 23.71°C with a standard deviation of 6.05°C.
+-   The temperature distribution appears reasonable, with the median (24°C) close to the mean, suggesting a roughly symmetric distribution.
+
+```{python}
+cold_temps = met[met['temp'] < -20]
+
+# display data here extract lat and lon and check google
+cold_temps[['USAFID', 'temp', 'lat', 'lon', 'elev']].head(10)
+```
+
+Summary:
+- I've extracted the latitude and longitude of the weather stations with temperatures below -20°C.
+- I've found that the majority of the data is provided by the station with lat 28.21 and lon -100.02. This station is located at the boarder of United States and Mexico in Texas. It does not seems to make sense to me that the temperature is so low in this area (like -20°C to -40°C).
+- Also, there are several observations that the temperature is below -20°C at the station with lat 29.84 and lon -82.05.01. This station is located in Florida. It does not seems to make sense to me that the temperature is so low in this area (-20°C to -40°C).
+
+```{python}
+
+# Fix up data here, remove implausible values
+# Remove extremely cold temperatures only from warm-climate locations (Texas and Florida)
+# based on the suspicious stations identified above
+met.loc[(met['temp'] < -20) & (met['USAFID'].isin([720742, 749048])), 'temp'] = np.nan
+
+# Verify the cleaning
+print("Temperature range after cleaning:")
+print(f"Min: {met['temp'].min()}, Max: {met['temp'].max()}")
+print(f"\nNumber of observations with temp < -20 remaining: {(met['temp'] < -20).sum()}")
+```
+
+## 6. Answer research questions
+
+Remember to keep the initial questions in mind. We want to pick out the weather station with minimum elevation and examine its temperature.
+
+Some ideas for steps: 1. subset the data for the weather station with minimum elevation 2. look at histograms of temperature 3. make a time series plot (need to create date variable) 4. make a map to see where it is
+
+### 6a. Subset minimum elevation site
+
+```{python}
+# Subset data for the weather station with minimum elevation
+# First filter to only use data with valid temperatures (> -20°C)
+met_filtered = met[met['temp'] > -20].copy()
+
+min_elevation = met_filtered['elev'].min()
+print(f"Minimum elevation: {min_elevation} meters")
+
+min_elev_station = met_filtered[met_filtered['elev'] == min_elevation].copy()
+
+print(f"Number of observations at minimum elevation station: {len(min_elev_station)}")
+print(f"Station USAFID: {min_elev_station['USAFID'].unique()}")
+```
+
+### 6b. Histogram of temperature at minimum elevation site
+
+```{python}
+plt.hist(min_elev_station['temp'].dropna(), bins=50, edgecolor='black')
+plt.xlabel('Temperature (°C)')
+plt.ylabel('Frequency')
+plt.title(f'Temperature Distribution at Minimum Elevation Station (Elevation: {min_elevation}m)')
+plt.grid(axis='y', alpha=0.3)
+plt.show()
+```
+
+### 6c. Create date variable and time series plot
+
+-   Look at the time series of temperature at this location. For this we will need to create a date-time variable for the x-axis.
+
+-   Summarize any trends that you see in these time series plots.
+
+```{python}
+# Create a date variable for min_elev_station
+min_elev_station = min_elev_station.copy()
+min_elev_station['date'] = pd.to_datetime(
+    min_elev_station[['year', 'month', 'day', 'hour']]
+)
+
+# Sort by date
+min_elev_station = min_elev_station.sort_values('date')
+
+# Create line plot of temperature by date
+plt.figure(figsize=(12, 6))
+plt.plot(min_elev_station['date'], min_elev_station['temp'], linewidth=0.8, alpha=0.7)
+plt.xlabel('Date')
+plt.ylabel('Temperature (°C)')
+plt.title(f'Temperature Time Series at Minimum Elevation Station (Elevation: {min_elevation}m)')
+plt.grid(True, alpha=0.3)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+```
+
+Summarize time series plot:
+
+-   The time series plot shows temperature variations from early June through early August 2025 at the minimum elevation station (elevation: -35m).
+-   There is a very clear and consistent daily temperature cycle, with temperatures oscillating between approximately 18-20°C at night and 42-48°C during the day.
+-   The daily temperature range is remarkably large (about 20-25°C difference between day and night), which is characteristic of desert environments with low humidity.
+-   Maximum temperatures frequently reach 45-48°C, which are extremely high values consistent with a location like Death Valley (below sea level, desert climate).
+-   There is no strong seasonal trend visible over this short summer period, but the consistently high temperatures and large diurnal variations are typical for a low-elevation desert location in the summer months.
+
+### 6d. Where is the lowest weather station?
+
+```{python}
+station_location = min_elev_station[['lat', 'lon', 'elev', 'USAFID']].drop_duplicates()
+
+lat = station_location['lat'].iloc[0]
+lon = station_location['lon'].iloc[0]
+elev = station_location['elev'].iloc[0]
+usafid = station_location['USAFID'].iloc[0]
+
+print(f"Lowest elevation station details:")
+print(f"USAFID: {usafid}")
+print(f"Latitude: {lat}, Longitude: {lon}")
+print(f"Elevation: {elev} m")
+
+gdf = gpd.GeoDataFrame(
+    {'elevation': [elev]},
+    geometry=gpd.points_from_xy([lon], [lat]),
+    crs='EPSG:4326'
+)
+
+gdf = gdf.to_crs('EPSG:3857')
+
+fig, ax = plt.subplots(figsize=(10, 8))
+gdf.plot(ax=ax, color='red', markersize=300, marker='*', edgecolor='black', linewidth=2, zorder=5)
+cx.add_basemap(ax, source=cx.providers.OpenStreetMap.Mapnik)
+ax.set_xlabel('Longitude')
+ax.set_ylabel('Latitude')
+ax.set_title(f'Lowest Elevation Station (Elevation: {elev} m)')
+plt.show()
+```
+
+Summarize where the lowest elevation station is located:
+
+-   The lowest elevation weather station in the dataset (USAFID: 747187) is at an elevation of -35 meters (below sea level).
+-   Based on the coordinates (Latitude: 33.632, Longitude: -116.164) and the map, this station is located in Southern California, in the Imperial Valley/Salton Sea region, east of San Diego near the Mexican border.
+-   The red star on the map shows the precise location of this station in the desert region of southeastern California.
+-   This is one of the lowest elevation points in the contiguous United States where meteorological data is collected. The extreme temperatures observed (45-48°C) are consistent with this low-lying desert location.
