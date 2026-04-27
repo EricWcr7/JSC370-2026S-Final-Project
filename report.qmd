@@ -81,11 +81,11 @@ This report extends the midterm analysis with more flexible methods that can cap
 
 ## 2.1 Data Source and Acquisition
 
-Data were obtained from the World Bank Open Data API for the period 1990–2023. The variables retained are carbon dioxide emissions per capita, GDP per capita, renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and urban population share.
+Data were obtained from the World Bank Open Data API for 1990–2023. The indicators selected are carbon dioxide emissions per capita, GDP per capita, renewable energy share, fossil-fuel electricity share, forest area as a percentage of land area, and urban population share.
 
 ## 2.2 Data Cleaning and Wrangling
 
-Rows were keyed by ISO3 country code and year to construct a country–year panel. Regional aggregates were removed. The table was reshaped to wide format, types and ranges were verified, and missing values were standardized as `NaN`. Missing observations were retained during EDA and dropped before regression analysis and modelling.
+The data were indexed by ISO3 country code and year to form a country–year panel. Regional aggregates were removed. The dataset was reshaped to wide format, variable types and ranges were checked, and missing values were recorded as `NaN`. Missing observations were kept during EDA but dropped before regression and modelling. 
 
 ## 2.3 Exploratory Data Analysis
 
@@ -97,9 +97,9 @@ Log transformations were applied to right-skewed variables (carbon dioxide emiss
 
 ## 2.5 Regression Analysis
 
-Before performing the regression analysis, rows with missing entries were dropped first, so all models were examined on a dataset with no missing entries.
+Before modelling, rows with missing values were removed so that all models used the same complete dataset.
 
-Ordinary least squares (OLS) and generalized additive models (GAMs) from the midterm were used to capture linear and nonlinear patterns. The nonlinear evidence from the GAM motivated the more flexible machine learning models later on.
+OLS and GAM models from the midterm were used to capture linear and nonlinear relationships. The nonlinear patterns identified by the GAM motivated the use of more flexible machine learning models in capturing more complex nonlinear patterns in the next step.
 
 ## 2.6 Modeling
 
@@ -109,7 +109,7 @@ Because the GAM showed statistically significant nonlinear relationships, two tr
 
 The dataset is a country–year panel, so observations were split at the country level (grouped by `countryiso3code`) to prevent leakage of country-specific effects across sets. The split was approximately 70% / 15% / 15% by country, with the same fixed random seed across models for reproducibility and fair comparison.
 
-Because countries (rather than years) are held out, test error measures generalization to **unseen countries given their full 1990–2023 predictor history** — directly matching the cross-country focus of the research question. It does **not** measure temporal forecasting (e.g., predicting 2024 from 1990–2023).
+Since entire countries were held out, test performance reflects generalization to unseen countries using their full 1990–2023 data. This setup does not evaluate time-based forecasting.
 
 ### 2.6.2 Decision Tree Model
 
@@ -117,7 +117,7 @@ A Decision Tree Regressor was fit as the interpretable baseline. The cost-comple
 
 ### 2.6.3 XGBoost Model
 
-XGBoost was tuned by randomized search over tree depth, learning rate, regularization, row/column subsampling, and minimum child weight, using 5-fold country-grouped cross-validation on the training set. The number of boosting rounds was then selected by cross-validated early stopping on the training set. Then the final tuned model was refit on those two sets and evaluated once on the test set. An untuned XGBoost (200 trees, maximum depth 5, learning rate 0.1) was also fit on the training set as an inline reference point.
+XGBoost was tuned by randomized search over tree depth, learning rate, regularization, row/column subsampling, and minimum child weight, using 5-fold country-grouped cross-validation on the training set. The number of boosting rounds was then selected by cross-validated early stopping on the training set. The final tuned model was refit on the combined training and validation data and evaluated on the test set. An untuned XGBoost baseline (200 trees, max depth 5, learning rate 0.1) was also trained for comparison.
 
 ### 2.6.4 Model Evaluation and Comparison
 
@@ -500,7 +500,7 @@ display(pd.DataFrame(rows))
 
 ```{python}
 #| label: fig-wb-eda-line-global
-#| fig-cap: "Global average CO2 emissions per capita over time (1990–2023)"
+#| fig-cap: "Global average Carbon Dioxide emissions per capita over time (1990–2023)"
 #| fig-width: 6
 #| fig-height: 3
 #| warning: false
@@ -521,7 +521,7 @@ co2_trend = (
     geom_line(color="#2C7FB8", size=1) +
     geom_point(color="#2C7FB8", size=2) +
     labs(
-        title="Global Average Carbon Dioxide Emissions per Capita (1990–2023)",
+        title="Global Avg CO2 emissions per Capita (1990–2023)",
         x="Year",
         y="Carbon Dioxide Emissions per Capita (metric tons)"
     ) +
@@ -892,7 +892,7 @@ display(coef_tbl.round(4))
 ```
 
 ```{python}
-#| label: wb-regression-gam
+#| label: tbl-wb-regression-gam
 #| tbl-cap: "GAM smooth-term summary"
 #| warning: false
 #| message: false
@@ -966,7 +966,7 @@ plt.show()
 
 The cleaned dataset covers 1990–2023 after regional aggregates were removed and variable ranges were verified. Missing values were moderate (most notably for fossil-fuel electricity share) and were handled by removing all the rows with missing entries before regression analysis and modelling. The dataset had `{python} rows_before` rows before removal and `{python} rows_after` rows after.
 
-According to @fig-wb-eda-line-global, carbon dioxide emissions per capita rose through the 2000s and declined after the early 2010s, with developed countries trending down and developing countries trending up in the long term. Emissions and GDP per capita were strongly right-skewed, which motivated the log transformations. According to @wb-regression-gam, the GAM showed clear nonlinear relationships between emissions and the predictors (with extremely high EDoF values except for the year variable), which motivated the use of tree-based machine learning models to capture more complex patterns.
+According to @fig-wb-eda-line-global, carbon dioxide emissions per capita rose through the 2000s and declined after the early 2010s, with developed countries trending down and developing countries trending up in the long term. Emissions and GDP per capita were strongly right-skewed, which motivated the log transformations. According to @tbl-wb-regression-gam, the GAM showed clear nonlinear relationships between emissions and the predictors (with extremely high EDoF values except for the year variable), which motivated the use of tree-based machine learning models to capture more complex patterns.
 
 ## 3.2 Modeling
 
@@ -1255,7 +1255,7 @@ best_cv_rmse_trval_s  = f"{best_cv_rmse_trval:.4f}"
 xgb_vs_tree_r2_diff_s = f"{xgb_r2 - tree_r2:+.3f}"
 ```
 
-The pruned Decision Tree, after tuning `ccp_alpha` on the validation set and refitting on combined train and validation data, contained `{python} tree_leaves` leaves at depth `{python} tree_depth` and reached a test-set $R^2$ of `{python} tree_r2_s`, RMSE of `{python} tree_rmse_s`, and MAE of `{python} tree_mae_s` on log carbon dioxide emissions per capita.
+The pruned Decision Tree, after tuning `ccp_alpha` on the validation set and refitting on combined train and validation data, contained `{python} tree_leaves` leaves at depth `{python} tree_depth` and (according to @tbl-wb-model-compare) reached a test-set $R^2$ of `{python} tree_r2_s`, RMSE of `{python} tree_rmse_s`, and MAE of `{python} tree_mae_s` on log carbon dioxide emissions per capita.
 
 ```{python}
 #| label: tbl-wb-model-xgb-params
@@ -1291,7 +1291,7 @@ On the same test set (@tbl-wb-model-compare), the tuned XGBoost outperformed the
 #| label: fig-wb-model-importance
 #| fig-cap: "Gain-based feature importance for the tuned XGBoost (final model)"
 #| fig-width: 9
-#| fig-height: 4.5
+#| fig-height: 3
 #| warning: false
 #| message: false
 
@@ -1371,19 +1371,19 @@ According to @fig-wb-model-pred-vs-actual, the predicted outcome V.S. actual tar
 
 ## 4.1 Summary of Findings and Bigger Picture
 
-Carbon dioxide emissions per capita rose through the 2000s, peaked in the early 2010s, and declined afterward. On the modelling side, the tuned XGBoost Regressor outperformed the pruned Decision Tree and an untuned XGBoost baseline on every regression model evaluation metric ($R^2$, RMSE, MAE), with residuals roughly symmetric around zero in the predicted outcome V.S. actual target diagnostic plot. Gain-based variable importance ranked log GDP per capita as the most important predictor by a clear margin, then renewable energy share and urban population share, with forest area, fossil-fuel electricity share, and the calendar year contributing least, so that economic development, energy sources, and urbanization are the dominant cross-country drivers, which supports the hypothesis. 
+Carbon dioxide emissions per capita increased throughout the 2000s, peaked in the early 2010s, and declined afterward. The tuned XGBoost model outperformed the pruned Decision Tree and the untuned baseline on all metrics ($R^2$, RMSE, MAE), with residuals roughly centered around zero. Variable importance shows log GDP per capita as the dominant predictor, followed by renewable energy and urban population share, while other variables contribute much less. These results answer the research question and supports the hypothesis that economic development, energy structure, and urbanization drive cross-country differences.
 
-Economic development remains the strongest predictor of carbon dioxide emissions per capita even after energy and land-use indicators are included. Growth aspirations and sustainable development goals in developing and less developed countries can only be reconciled through structural shifts (clean energy, more efficient technology, low carbon industry) rather than restraint on growth itself.
+Economic development remains the strongest predictor of carbon dioxide emissions per capita even after energy and land-use indicators are included. For developing countries, this highlights a key challenge: balancing economic growth with sustainability. The results suggest that this balance is more likely to come from structural changes, such as adopting cleaner energy, improving efficiency, and shifting toward low-carbon industries, rather than simply limiting growth.
 
-Renewable energy share was the second most important predictor, while fossil-fuel electricity share contributed far less. Renewable share likely includes fossil-fuel electricity information because it reflects the whole energy systemr ather than just electricity. In terms of policy implications, investing in renewables is the strongest single lever within this set of predictors.
+Renewable energy share was the second most important predictor, while fossil-fuel electricity share contributed far less. One possible reason is that renewable share captures broader aspects of the overall energy system, not just electricity. From a policy perspective, this suggests that increasing investment in renewable energy may be one of the most effective ways to reduce emissions among the factors considered here.
 
-## 4.3 Limitations
+## 4.2 Limitations
 
-The country-level data split measures generalization to unseen countries given their full 1990–2023 predictor history, not temporal forecasting; predicting 2024 from 1990–2023 would require a forcasting princple split (strictly use 1990-2022 to trian and validate models, and use 2023 data for testing).
+The country-level split tests generalization to unseen countries using full 1990–2023 data, not time-based forecasting. Predicting future values would require a different setup (e.g., train on 1990–2022 and test on 2023).
 
-Dropping rows with missing entries before modelling removed a non-trivial share of country-years. If missingness is not uniform across countries, the modelled sample may skew toward those with stronger statistical reporting.
+Dropping rows with missing entries before modelling removed a non-trivial share of country-years. If missing data is not evenly distributed across countries, this could bias the sample toward countries with better data availability.
 
-The predictor set is small and entirely national aggregated. Plausible predictors are not included, such as energy prices, weather,etc., which could account for some of the residual variance. The carbon dioxide emissions measure is also production-based, whereas trade-intensive countries look different under a consumption-based attribution.
+The set of predictors is small and only reflects country-level aggregates. Some potentially relevant variables, such as energy prices or weather conditions, are not included, but they may explain part of the remaining variation in emissions. In addition, emissions are measured on a production basis, so countries that rely heavily on trade may appear differently if emissions were instead measured based on consumption.
 
-Finally, all results are associational. Tree-based models do not produce causal estimates, and predictor importance reflects predictive contribution within the model rather than policy effectiveness.
+Finally, it is important to note that the results are purely associational. Tree-based ML models do not provide causal conclusions, and the variable importance measures only indicate how useful each predictor is for making predictions within this model, not how effective a policy based on that variable would be.
 

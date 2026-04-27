@@ -70,6 +70,13 @@ ul.task-list li input[type="checkbox"] {
 <style>
   body { /* tag the home page so the global CSS can scope hero overrides */ }
 </style>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
 
 <link rel="stylesheet" href="styles.css">
@@ -181,8 +188,59 @@ ul.task-list li input[type="checkbox"] {
     <p>How have carbon dioxide emissions per capita evolved across countries from 1990 to 2023, and which economic, energy, and land-use factors explain and predict these differences?</p>
   </div>
   <div class="section-prose">
-    <p>The <a href="midterm.html"><strong>Midterm Report</strong></a> built the data pipeline from the World Bank Open Data API, cleaned 7,378 country-year records down to 5,499 complete cases, and laid the explanatory groundwork with an <strong>OLS regression</strong> (adj. R² ≈ 0.66) and a <strong>Generalized Additive Model</strong> (pseudo R² ≈ 0.73). The GAM's significantly nonlinear smooth terms made it clear that a strictly linear story was leaving variance on the table.</p>
+    <p>The <a href="midterm.html"><strong>Midterm Report</strong></a> built the data pipeline from the World Bank Open Data API, cleaned 7,378 country-year records down to 5,499 complete cases, and laid the explanatory groundwork with an <strong>OLS regression</strong> (adjusted $R^2$ approximately 0.66) and a <strong>Generalized Additive Model</strong> (pseudo $R^2$ approximately 0.73). The GAM's significantly nonlinear smooth terms made it clear that a strictly linear story was leaving variance on the table.</p>
     <p>The <strong>Final Report</strong> picks up from there. It keeps the same panel and the same predictor set so the two reports stay directly comparable, then swaps in two flexible tree-based models — a pruned <strong>Decision Tree</strong> as an interpretable baseline and a tuned <strong>XGBoost Regressor</strong> as the flexible predictor — with country-grouped train/validation/test splits to avoid country-level leakage. The result is both better predictive performance and a sharper, gain-based picture of which predictors actually do the work.</p>
+  </div>
+</section>
+
+<section class="section">
+  <span class="section-label">Data sources</span>
+  <h2 class="anchored">World Bank Open Data API</h2>
+  <p class="section-prose-lead">All six indicators come from the <a href="https://data.worldbank.org/" target="_blank" rel="noopener">World Bank Open Data API</a> (WDI), pulled live for 1990–2023 across every country reporting. After dropping regional aggregates and standardizing missing markers, the panel covers <strong>196 countries</strong> with <strong>7,378 country–year rows</strong>, which the modelling stage filters to <strong>5,499 complete cases</strong>.</p>
+  <div class="data-table-wrap">
+    
+<table class="data-table caption-top table">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Indicator</th>
+<th data-quarto-table-cell-role="th">WDI code</th>
+<th data-quarto-table-cell-role="th">Unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CO<sub>2</sub> emissions per capita <span class="role">outcome</span></td>
+<td><code>EN.GHG.CO2.PC.CE.AR5</code></td>
+<td>metric tons / capita</td>
+</tr>
+<tr class="even">
+<td>GDP per capita</td>
+<td><code>NY.GDP.PCAP.KD</code></td>
+<td>constant 2015 USD / person</td>
+</tr>
+<tr class="odd">
+<td>Fossil-fuel electricity share</td>
+<td><code>EG.ELC.FOSL.ZS</code></td>
+<td>% of electricity</td>
+</tr>
+<tr class="even">
+<td>Renewable energy share</td>
+<td><code>EG.FEC.RNEW.ZS</code></td>
+<td>% of final energy</td>
+</tr>
+<tr class="odd">
+<td>Forest area</td>
+<td><code>AG.LND.FRST.ZS</code></td>
+<td>% of land area</td>
+</tr>
+<tr class="even">
+<td>Urban population share</td>
+<td><code>SP.URB.TOTL.IN.ZS</code></td>
+<td>% of population</td>
+</tr>
+</tbody>
+</table>
+
   </div>
 </section>
 
@@ -206,6 +264,41 @@ ul.task-list li input[type="checkbox"] {
       <p>Followed by renewable energy share and urban population share. Forest area, fossil-fuel electricity share, and the calendar year contribute the least.</p>
     </article>
   </div>
+</section>
+
+<section class="section">
+  <span class="section-label">Model comparison</span>
+  <h2 class="anchored">Test performance across models</h2>
+  <p class="section-prose-lead">All three models are evaluated on the same held-out test set of unseen countries, using country-grouped train/validation/test splits to prevent country-level leakage. Metrics are on log carbon dioxide emissions per capita.</p>
+  <div class="data-table-wrap">
+    
+<table class="data-table model-table caption-top table">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Model</th>
+<th data-quarto-table-cell-role="th">Test R²</th>
+<th data-quarto-table-cell-role="th">Test RMSE</th>
+<th data-quarto-table-cell-role="th">Test MAE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Decision Tree (pruned)</td>
+<td>0.706</td>
+<td>0.558</td>
+<td>0.374</td>
+</tr>
+<tr class="is-best even">
+<td>XGBoost (tuned) <span class="role">best</span></td>
+<td>0.722</td>
+<td>0.543</td>
+<td>0.359</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+  <p class="table-note">Higher R² is better; lower RMSE and MAE are better. The tuned XGBoost wins on every metric — see <a href="report.html#model-comparison">the report</a> for full hyperparameters and importance plots.</p>
 </section>
 
 <section class="section">
@@ -250,7 +343,6 @@ ul.task-list li input[type="checkbox"] {
     <span class="method-step">Evaluation</span>
   </div>
 </section>
-
 
 
 

@@ -173,7 +173,7 @@ header.headroom { background: var(--paper) !important; }
   font-size: 1.05rem;
   line-height: 1.7;
   color: var(--ink-soft);
-  max-width: 38rem;
+  max-width: 50rem;
   margin: 0 0 var(--space-4);
 }
 .section-prose p strong { color: var(--ink); font-weight: 600; }
@@ -636,6 +636,101 @@ main code:not(pre code) {
   display: none !important;
 }
 .home-page main.content { padding-top: 0 !important; }
+
+/* ---------- Home-page lead paragraph ---------- */
+.section-prose-lead {
+  font-size: 1.02rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  max-width: 50rem;
+  margin: 0 0 var(--space-5);
+}
+.section-prose-lead strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- Data + model comparison tables ---------- */
+.data-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.96rem;
+  font-family: var(--font-sans);
+}
+.data-table thead th {
+  text-align: left;
+  padding: var(--space-3) var(--space-5);
+  background: var(--surface-warm);
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.data-table tbody td {
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  vertical-align: middle;
+}
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover td { background: var(--surface-warm); }
+.data-table code {
+  background: var(--accent-tint);
+  color: var(--accent-hover);
+  font-size: 0.86em;
+  padding: 0.1em 0.45em;
+  border-radius: 3px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.data-table .role {
+  display: inline-block;
+  margin-left: 0.5em;
+  padding: 0.08em 0.55em;
+  background: var(--cool-soft);
+  color: var(--cool);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  vertical-align: 0.1em;
+}
+
+.model-table tbody tr.is-best:hover td,
+.model-table tbody tr.is-best td {
+  background: var(--accent-tint);
+  font-weight: 600;
+  color: var(--ink);
+}
+.model-table tbody tr.is-best td:first-child {
+  border-left: 3px solid var(--accent);
+  padding-left: calc(var(--space-5) - 3px);
+}
+.model-table tbody tr.is-best .role {
+  background: var(--accent);
+  color: #fff;
+}
+.model-table thead th + th,
+.model-table tbody td + td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.table-note {
+  font-size: 0.86rem;
+  color: var(--ink-muted);
+  margin: var(--space-3) 0 0;
+  font-style: italic;
+  max-width: 50rem;
+}
+.table-note a { color: var(--accent); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
