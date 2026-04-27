@@ -46,8 +46,6 @@ Country metadata (used to drop regional aggregates):
 
 API documentation: [https://datahelpdesk.worldbank.org/knowledgebase/topics/125589-developer-information](https://datahelpdesk.worldbank.org/knowledgebase/topics/125589-developer-information)
 
-Cached snapshots of the cleaned data live in `[data/](data/)` (`with_missing_values.csv`, `without_missing_values.csv`, `country_meta.csv`) so the website can be re-rendered offline.
-
 ## 📁 Repository layout
 
 ```
