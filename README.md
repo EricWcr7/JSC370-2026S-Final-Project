@@ -52,7 +52,6 @@ API documentation: [https://datahelpdesk.worldbank.org/knowledgebase/topics/1255
 .
 ├── README.md                      # This file
 ├── LICENSE                        # MIT
-├── CLAUDE.md                      # Project context for Claude Code (rubric, skills, midterm recap)
 │
 ├── _quarto.yml                    # Site config (navbar, theme, footer, render list)
 ├── styles.css                     # Editorial design system (palette, typography, layout)
