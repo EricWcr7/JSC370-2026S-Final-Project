@@ -69,10 +69,10 @@ API documentation: [https://datahelpdesk.worldbank.org/knowledgebase/topics/1255
 │
 ├── docs/                          # Rendered website (GitHub Pages serves this folder)
 │   ├── index.html
-│   ├── report.html                # Fina report — HTML
-│   ├── report.pdf                 # Final report — PDF
-│   ├── midterm.html               # Midterm report - HTML
-│   ├── viz.html                   # 3 Different Interactive Visualizations
+│   ├── report.html                #   Fina report — HTML
+│   ├── report.pdf                 #   Final report — PDF
+│   ├── midterm.html               #   Midterm report - HTML
+│   ├── viz.html                   #   3 Different Interactive Visualizations
 │   ├── styles.css
 │   ├── search.json
 │   └── site_libs/                 #   Bootstrap, plotly, Quarto runtime assets
